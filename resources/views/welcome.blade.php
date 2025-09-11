@@ -9,19 +9,25 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        .hero-section {
+            background-image: url('https://dpkp.bandung.go.id/storage/app/media/upt-rusunawa.png');
+            background-size: cover;
+            background-position: center;
+        }
+        .text-shadow {
+            text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 <body class="antialiased bg-green-50/50 text-gray-800">
 
     <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="/" class="text-xl font-bold text-gray-800">Sistem Informasi Disperkim</a>
+            <a href="/" class="text-xl font-bold text-gray-800">Sistem Informasi Dinas Perumahan Dan Permukiman Kabupaten Garut</a>
             <div class="flex items-center space-x-4">
-                <button class="text-gray-600 hover:text-green-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                </button>
-                <button class="text-gray-600 hover:text-green-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-                </button>
+                
                 @auth
                     <a href="{{ url('/dashboard') }}" class="text-gray-600 hover:text-green-700">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
@@ -36,35 +42,26 @@
     </header>
 
     <main>
-        <section class="container mx-auto px-6 py-16">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="text-center md:text-left">
-                    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                        Layanan Pengaduan <span class="text-green-600">Disperkim</span> Kabupaten Garut
+        <section class="hero-section">
+            <div class="container mx-auto px-6 py-32 md:py-48 flex flex-col items-center justify-center text-center">
+                <div class="max-w-xl">
+                    <h1 class="text-shadow text-4xl md:text-5xl font-bold text-white leading-tight">
+                        Layanan Pengaduan <span class="text-green-400">Disperkim</span> Kabupaten Garut
                     </h1>
-                    <p class="mt-4 text-lg text-gray-600">
+                    <p class="text-shadow mt-4 text-lg text-white">
                         Sampaikan keluhan dan laporan Anda mengenai perumahan dan kawasan permukiman. Kami siap melayani untuk mewujudkan lingkungan yang lebih baik.
                     </p>
                     
-                    {{-- KODE TOMBOL YANG SUDAH DIPERBARUI DIMASUKKAN DI SINI --}}
-                    <div class="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
+                    <div class="mt-8 flex flex-wrap justify-center gap-4">
                         <a href="{{ route('register') }}"
                            class="inline-block bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
-                            Buat Pengaduan
+                            Masuk ke Sistem
                         </a>
                         <a href="#"
-                           class="inline-block bg-transparent border-2 border-green-600 text-green-600 font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-600 hover:text-white hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
+                           class="inline-block bg-white border-2 border-white text-green-700 font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-100 hover:border-green-100 hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
                             Lihat Peta Laporan
                         </a>
                     </div>
-
-                    <div class="mt-8 flex items-center justify-center md:justify-start space-x-6 text-sm text-gray-600">
-                        <span class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> (0262) 123-4567</span>
-                        <span class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> disperkim@garutkab.go.id</span>
-                    </div>
-                </div>
-                <div class="flex items-center justify-center p-8 bg-white rounded-2xl shadow-xl">
-                    <img src="https://storage.googleapis.com/gemini-prod-us-west1-423928499222/images/4183d294-0aa7-432d-8acb-656091008f51.png" alt="Ilustrasi Gedung Disperkim" class="rounded-lg">
                 </div>
             </div>
         </section>

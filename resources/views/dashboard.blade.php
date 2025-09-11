@@ -1,60 +1,99 @@
 <x-app-layout>
-    <div class="space-y-6">
-
-        <!-- Greeting -->
-        <div class="bg-white p-6 rounded-xl shadow">
-            <h2 class="text-2xl font-bold text-gray-800">Selamat Datang, {{ Auth::user()->name }} 👋</h2>
-            <p class="mt-2 text-gray-600">Kelola laporan pengaduan dan informasi Anda di sini.</p>
-        </div>
-
-        <!-- Ringkasan -->
+    <!-- Header Halaman -->
+    <div class="flex justify-between items-center mb-6">
         <div>
-            <h3 class="text-lg font-semibold text-gray-700 mb-3">📊 Ringkasan Laporan</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                
-                <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-                    <h4 class="text-4xl font-bold text-gray-800">{{ $stats['total'] ?? 0 }}</h4>
-                    <p class="mt-2 text-gray-600">Total Laporan</p>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-                    <h4 class="text-4xl font-bold text-yellow-500">{{ $stats['in_progress'] ?? 0 }}</h4>
-                    <p class="mt-2 text-gray-600">Dalam Proses</p>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-                    <h4 class="text-4xl font-bold text-green-600">{{ $stats['completed'] ?? 0 }}</h4>
-                    <p class="mt-2 text-gray-600">Selesai</p>
+            <h2 class="text-2xl font-bold text-gray-800">Dashboard</h2>
+            <p class="mt-1 text-gray-600">Selamat datang di sistem Disperkim</p>
+        </div>
+        <div>
+            <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                Online
+            </span>
+        </div>
+    </div>
+
+    <!-- Grid Utama -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Kolom Kiri -->
+        <div class="lg:col-span-2 space-y-6">
+
+            <!-- Baris Kartu Statistik -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Kartu Ringkasan Laporan -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Ringkasan Laporan</p>
+                        <p class="mt-2 text-sm text-gray-600">
+                           <i class="fas fa-chart-line text-green-600"></i> Total: {{ $stats['total'] ?? 0 }} laporan
+                        </p>
+                    </div>
+                    <div class="bg-gray-100 text-gray-600 p-3 rounded-full">
+                        <i class="fas fa-file-invoice fa-lg"></i>
+                    </div>
                 </div>
 
+                <!-- Kartu Dalam Proses -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start justify-between">
+                    <div>
+                        <p class="text-3xl font-bold text-gray-800">{{ $stats['in_progress'] ?? 0 }}</p>
+                        <p class="mt-1 text-sm font-medium text-gray-500">Dalam Proses</p>
+                    </div>
+                    <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full">
+                        <i class="fas fa-hourglass-half fa-lg"></i>
+                    </div>
+                </div>
+
+                <!-- Kartu Aksi Cepat -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Aksi Cepat</p>
+                        <a href="{{ route('complaints.create') }}" 
+                           class="mt-2 inline-block bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                            Buat Laporan Baru
+                        </a>
+                    </div>
+                    <div class="bg-green-100 text-green-600 p-3 rounded-full">
+                        <i class="fas fa-bolt fa-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kartu Riwayat Laporan -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
+                <div>
+                    <h3 class="font-semibold text-gray-800">Riwayat Laporan</h3>
+                    <p class="text-sm text-gray-500 mt-1">Lihat semua laporan yang pernah Anda buat dan pantau statusnya.</p>
+                    <a href="{{ route('complaints.index') }}" class="text-sm text-green-600 font-semibold mt-4 inline-block hover:underline">
+                        Lihat Riwayat &rarr;
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-lg font-bold text-green-600 mr-4">{{ $stats['total'] ?? 0 }} Total</span>
+                    <div class="bg-green-100 text-green-600 p-4 rounded-full">
+                        <i class="fas fa-history fa-lg"></i>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Aksi Cepat -->
-        <div>
-            <h3 class="text-lg font-semibold text-gray-700 mb-3">⚡ Aksi Cepat</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                <a href="{{ route('complaints.create') }}" 
-                   class="bg-blue-600 text-white p-6 rounded-xl shadow hover:bg-blue-700 hover:shadow-lg transition">
-                    <h4 class="font-bold text-xl">Buat Pengaduan</h4>
-                    <p class="mt-2 text-blue-100">Laporkan masalah Anda sekarang.</p>
+        <!-- Kolom Kanan -->
+        <div class="lg:col-span-1">
+            <!-- Kartu Profil Saya -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+               <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-gray-800">Profil Saya</h3>
+                    <span class="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Lengkap</span>
+                </div>
+                <div class="bg-gray-50 text-gray-600 p-4 rounded-lg border">
+                    <i class="fas fa-user-shield text-green-600 mr-2"></i>
+                    <p class="text-sm inline">Perbarui informasi data diri dan password Anda untuk keamanan akun.</p>
+                </div>
+                <a href="{{ route('profile.edit') }}" class="w-full mt-4 inline-block text-center bg-gray-200 text-gray-700 font-semibold text-sm px-4 py-2 rounded-lg hover:bg-gray-300 transition">
+                    Atur Profil &rarr;
                 </a>
-
-                <a href="{{ route('complaints.index') }}" 
-                   class="bg-white border p-6 rounded-xl shadow hover:shadow-lg transition">
-                    <h4 class="font-bold text-xl text-gray-800">Riwayat Laporan</h4>
-                    <p class="mt-2 text-gray-600">Lihat laporan yang pernah Anda buat.</p>
-                </a>
-
-                <a href="{{ route('profile.edit') }}" 
-                   class="bg-white border p-6 rounded-xl shadow hover:shadow-lg transition">
-                    <h4 class="font-bold text-xl text-gray-800">Profil Saya</h4>
-                    <p class="mt-2 text-gray-600">Kelola informasi pribadi Anda.</p>
-                </a>
-
             </div>
         </div>
-
     </div>
 </x-app-layout>
