@@ -16,9 +16,8 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        // Untuk sementara, kita akan arahkan ke halaman dashboard saja
-        // karena view untuk edit profil belum kita buat.
-        return view('dashboard', [
+        // Ganti 'dashboard' menjadi 'profile.edit'
+        return view('profile.edit', [
             'user' => $request->user(),
         ]);
     }

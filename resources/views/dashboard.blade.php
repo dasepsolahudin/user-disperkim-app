@@ -5,8 +5,17 @@
         </h2>
     </x-slot>
 
-    <div class="py-12 bg-gray-50">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-4">
+        @if (session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Sukses!</strong>
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        @endif
+    </div>
+
+    <div class="py-12 bg-gray-50">       
+         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-8">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-2xl font-bold">Selamat Datang, {{ Auth::user()->name }}!</h3>
@@ -50,6 +59,11 @@
                         <p class="text-gray-600 mb-4">Perbarui informasi data diri dan password Anda.</p>
                         <span class="font-semibold text-green-600">Atur Profil &rarr;</span>
                     </a>
+                    <a href="{{ route('complaints.index') }}" class="block p-6 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border">
+    <h4 class="font-bold text-xl mb-2 text-gray-800">Riwayat Laporan</h4>
+    <p class="text-gray-600 mb-4">Lihat semua laporan yang pernah Anda buat.</p>
+    <span class="font-semibold text-green-600">Lihat Riwayat &rarr;</span>
+</a>
                 </div>
             </div>
 

@@ -29,18 +29,16 @@
                 <td>{{ $user->id }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
-                <td>
-                    {{-- Tombol Edit --}}
-                    <a href="/users/{{ $user->id }}/edit" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="/users/{{ $user->id }}/edit" class="btn btn-warning btn-sm">Edit</a>
-    
-    {{-- Form untuk Tombol Hapus --}}
-    <form action="/users/{{ $user->id }}" method="POST" class="d-inline">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+    <a href="{{ route('admin.users.edit', $user->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+    </td>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
         @csrf
         @method('DELETE')
-        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Hapus</button>
+        <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
     </form>
-                </td>
+</td>
             </tr>
             @endforeach
         </tbody>

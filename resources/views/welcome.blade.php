@@ -45,16 +45,19 @@
                     <p class="mt-4 text-lg text-gray-600">
                         Sampaikan keluhan dan laporan Anda mengenai perumahan dan kawasan permukiman. Kami siap melayani untuk mewujudkan lingkungan yang lebih baik.
                     </p>
-                    <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                        <a href="{{ route('complaints.create') }}" class="inline-flex items-center justify-center px-6 py-3 font-semibold text-white bg-green-600 rounded-lg hover:bg-green-700 transition duration-300 shadow-lg">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    
+                    {{-- KODE TOMBOL YANG SUDAH DIPERBARUI DIMASUKKAN DI SINI --}}
+                    <div class="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
+                        <a href="{{ route('register') }}"
+                           class="inline-block bg-green-600 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-700 hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
                             Buat Pengaduan
                         </a>
-                        <a href="#" class="inline-flex items-center justify-center px-6 py-3 font-semibold text-gray-700 bg-white rounded-lg hover:bg-gray-100 transition duration-300 border border-gray-300 shadow-lg">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <a href="#"
+                           class="inline-block bg-transparent border-2 border-green-600 text-green-600 font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-600 hover:text-white hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300">
                             Lihat Peta Laporan
                         </a>
                     </div>
+
                     <div class="mt-8 flex items-center justify-center md:justify-start space-x-6 text-sm text-gray-600">
                         <span class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> (0262) 123-4567</span>
                         <span class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg> disperkim@garutkab.go.id</span>
@@ -66,6 +69,8 @@
             </div>
         </section>
 
+        {{-- Sisa kode di bawah ini tidak diubah --}}
+        
         <section class="py-16 bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
@@ -101,7 +106,7 @@
                     <a href="#" class="block p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border">
                         <h3 class="font-bold text-xl mb-2 text-gray-800">Informasi Layanan</h3>
                         <p class="text-gray-600 mb-4">Pelajari lebih lanjut tentang layanan kami.</p>
-                        <span class="font-semibold text-green-600">Akses Layanan &rarr;</span>
+                        <span class="font-semibold">Akses Layanan &rarr;</span>
                     </a>
                 </div>
             </div>
