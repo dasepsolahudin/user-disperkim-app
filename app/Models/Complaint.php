@@ -17,6 +17,7 @@ class Complaint extends Model
      */
     protected $fillable = [
         'user_id',
+        'category', // <-- TAMBAHKAN INI
         'title',
         'description',
         'status',

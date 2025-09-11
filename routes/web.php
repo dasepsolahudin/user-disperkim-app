@@ -46,6 +46,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/complaints/create', [ComplaintController::class, 'create'])->name('complaints.create');
+    Route::get('/complaints/create/{category}', [ComplaintController::class, 'showForm'])->name('complaints.form');
+    
+    Route::post('/complaints', [ComplaintController::class, 'store'])->name('complaints.store');
 });
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
