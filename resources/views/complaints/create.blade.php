@@ -1,41 +1,42 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Buat Laporan Pengaduan Baru') }}
-        </h2>
-    </x-slot>
+    <div class="max-w-3xl mx-auto space-y-6">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{-- Formulir untuk mengirim pengaduan --}}
-                    <form method="POST" action="{{ route('complaints.store') }}">
-                        @csrf
+        <!-- Judul -->
+        <div class="bg-white p-6 rounded-xl shadow">
+            <h2 class="text-2xl font-bold text-gray-800">📝 Buat Pengaduan Baru</h2>
+            <p class="mt-2 text-gray-600">Silakan isi formulir di bawah ini untuk membuat laporan pengaduan Anda.</p>
+        </div>
 
-                        {{-- Input untuk Judul Laporan --}}
-                        <div>
-                            <x-input-label for="title" :value="__('Judul Laporan')" />
-                            <x-text-input id="title" class="block mt-1 w-full" type="text" name="title" :value="old('title')" required autofocus />
-                            <x-input-error :messages="$errors->get('title')" class="mt-2" />
-                        </div>
+        <!-- Form -->
+        <div class="bg-white p-6 rounded-xl shadow">
+            <form action="{{ route('complaints.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+                @csrf
 
-                        {{-- Input untuk Isi/Deskripsi Laporan --}}
-                        <div class="mt-4">
-                            <x-input-label for="description" :value="__('Isi Laporan')" />
-                            <textarea id="description" name="description" rows="5" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">{{ old('description') }}</textarea>
-                            <x-input-error :messages="$errors->get('description')" class="mt-2" />
-                        </div>
-
-                        {{-- Tombol Kirim --}}
-                        <div class="flex items-center justify-end mt-4">
-                            <x-primary-button>
-                                {{ __('Kirim Laporan') }}
-                            </x-primary-button>
-                        </div>
-                    </form>
+                <!-- Judul -->
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Judul Pengaduan</label>
+                    <input type="text" name="title" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300" required>
                 </div>
-            </div>
+
+                <!-- Deskripsi -->
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Deskripsi</label>
+                    <textarea name="description" rows="5" class="w-full border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300" required></textarea>
+                </div>
+
+                <!-- Upload Foto -->
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Lampiran Foto</label>
+                    <input type="file" name="photo" class="w-full text-gray-700">
+                </div>
+
+                <!-- Tombol -->
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                        🚀 Kirim Pengaduan
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </x-app-layout>

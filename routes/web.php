@@ -29,8 +29,12 @@ Route::get('/dashboard', function () {
         'completed' => Complaint::where('user_id', $user->id)->whereIn('status', ['approved', 'rejected'])->count(),
     ];
 
-    return view('dashboard', ['stats' => $stats, 'user' => $user]);
+    return view('dashboard', [
+        'stats' => $stats,
+        'user'  => $user, // kirim juga user ke view kalau perlu
+    ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 
 // GRUP UNTUK PENGGUNA YANG SUDAH LOGIN

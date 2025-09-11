@@ -1,45 +1,50 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Riwayat Laporan Saya') }}
-        </h2>
-    </x-slot>
+    <div class="space-y-6">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    @if($complaints->isEmpty())
-                        <p>Anda belum pernah membuat laporan.</p>
-                    @else
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Dibuat</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($complaints as $complaint)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $complaint->title }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                @if($complaint->status == 'pending') bg-yellow-100 text-yellow-800 @endif
-                                                @if($complaint->status == 'approved') bg-green-100 text-green-800 @endif
-                                                @if($complaint->status == 'rejected') bg-red-100 text-red-800 @endif">
-                                                {{ ucfirst($complaint->status) }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">{{ $complaint->created_at->format('d M Y, H:i') }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    @endif
-                </div>
-            </div>
+        <!-- Judul -->
+        <div class="bg-white p-6 rounded-xl shadow">
+            <h2 class="text-2xl font-bold text-gray-800">📑 Riwayat Pengaduan</h2>
+            <p class="mt-2 text-gray-600">Daftar laporan yang sudah Anda buat.</p>
         </div>
+
+        <!-- Tabel -->
+        <div class="bg-white p-6 rounded-xl shadow overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-blue-600 text-white">
+                        <th class="px-4 py-3 rounded-tl-lg">Judul</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Tanggal</th>
+                        <th class="px-4 py-3 rounded-tr-lg">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($complaints as $complaint)
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="px-4 py-3">{{ $complaint->title }}</td>
+                            <td class="px-4 py-3">
+                                @if($complaint->status == 'completed')
+                                    <span class="px-3 py-1 bg-green-100 text-green-700 text-sm rounded-lg">Selesai</span>
+                                @elseif($complaint->status == 'in_progress')
+                                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-sm rounded-lg">Diproses</span>
+                                @else
+                                    <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-lg">Menunggu</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-3">{{ $complaint->created_at->format('d M Y') }}</td>
+                            <td class="px-4 py-3">
+                                <a href="{{ route('complaints.show', $complaint->id) }}" 
+                                   class="text-blue-600 hover:underline">Detail</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-4 py-6 text-center text-gray-500">Belum ada laporan.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </x-app-layout>
