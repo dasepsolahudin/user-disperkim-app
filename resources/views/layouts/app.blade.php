@@ -41,12 +41,7 @@
                     <i class="fas fa-home fa-fw w-6 text-center"></i>
                     <span class="ml-3" x-show="sidebarOpen">Dashboard</span>
                 </a>
-                <a href="#" 
-                   class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
-                          {{ request()->routeIs('complaints.*') ? 'bg-green-600 text-white' : 'text-gray-600 hover:bg-green-100 hover:text-gray-900' }}">
-                    <i class="fas fa-file-alt fa-fw w-6 text-center"></i>
-                    <span class="ml-3" x-show="sidebarOpen">Pengaduan</span>
-                </a>
+                
                  <a href="{{ route('profile.edit') }}" 
                    class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
                           {{ request()->routeIs('profile.edit') ? 'bg-green-600 text-white' : 'text-gray-600 hover:bg-green-100 hover:text-gray-900' }}">
