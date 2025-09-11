@@ -33,32 +33,56 @@
                     <i class="fas" :class="{ 'fa-chevron-left': sidebarOpen, 'fa-chevron-right': !sidebarOpen }"></i>
                 </button>
             </div>
+{{-- Salin dan ganti seluruh isi tag <nav> dengan kode ini --}}
+<nav class="flex-1 mt-4 px-3 space-y-2">
+    {{-- Menu Dashboard --}}
+    <a href="{{ route('dashboard') }}" 
+       class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors 
+              {{ request()->routeIs('dashboard') ? 'bg-green-600 text-white shadow-sm' : 'text-gray-600 hover:bg-green-100 hover:text-gray-900' }}">
+        <i class="fas fa-home fa-fw w-6 text-center"></i>
+        <span class="ml-3" x-show="sidebarOpen">Dashboard</span>
+    </a>
 
-            <nav class="flex-1 mt-4 px-3 space-y-2">
-                <a href="{{ route('dashboard') }}" 
-                   class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors 
-                          {{ request()->routeIs('dashboard') ? 'bg-green-600 text-white' : 'text-gray-600 hover:bg-green-100 hover:text-gray-900' }}">
-                    <i class="fas fa-home fa-fw w-6 text-center"></i>
-                    <span class="ml-3" x-show="sidebarOpen">Dashboard</span>
-                </a>
-                
-                 <a href="{{ route('profile.edit') }}" 
-                   class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
-                          {{ request()->routeIs('profile.edit') ? 'bg-green-600 text-white' : 'text-gray-600 hover:bg-green-100 hover:text-gray-900' }}">
-                    <i class="fas fa-user-circle fa-fw w-6 text-center"></i>
-                    <span class="ml-3" x-show="sidebarOpen">Profil</span>
-                </a>
-                
-                <form method="POST" action="{{ route('logout') }}" class="pt-2">
-                    @csrf
-                    <a href="{{ route('logout') }}"
-                       onclick="event.preventDefault(); this.closest('form').submit();"
-                       class="flex items-center p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-green-100 hover:text-gray-900 transition-colors">
-                        <i class="fas fa-sign-out-alt fa-fw w-6 text-center"></i>
-                        <span class="ml-3" x-show="sidebarOpen">Logout</span>
-                    </a>
-                </form>
-            </nav>
+    {{-- Menu Buat Laporan Baru --}}
+    <a href="{{ route('complaints.create') }}" 
+       class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
+              {{ request()->routeIs('complaints.create') || request()->routeIs('complaints.form') ? 'bg-green-600 text-white shadow-sm' : 'text-gray-600 hover:bg-green-100 hover:text-gray-900' }}">
+        <i class="fas fa-plus-circle fa-fw w-6 text-center"></i>
+        <span class="ml-3" x-show="sidebarOpen">Buat Laporan Baru</span>
+    </a>
+
+    {{-- Menu Pengaduan Saya --}}
+    <a href="{{ route('pengaduan.index') }}" 
+       class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
+              {{ request()->routeIs('pengaduan.index') || request()->routeIs('pengaduan.show') ? 'bg-green-600 text-white shadow-sm' : 'text-gray-600 hover:bg-green-100 hover:text-gray-900' }}">
+        <i class="fas fa-folder-open fa-fw w-6 text-center"></i>
+        <span class="ml-3" x-show="sidebarOpen">Pengaduan Saya</span>
+    </a>
+
+    {{-- Garis Pemisah --}}
+    <div class="pt-2">
+        <hr class="border-t border-green-200">
+    </div>
+
+    {{-- Menu Profil --}}
+    <a href="{{ route('profile.edit') }}" 
+       class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
+              {{ request()->routeIs('profile.edit') ? 'bg-green-600 text-white shadow-sm' : 'text-gray-600 hover:bg-green-100 hover:text-gray-900' }}">
+        <i class="fas fa-user-circle fa-fw w-6 text-center"></i>
+        <span class="ml-3" x-show="sidebarOpen">Profil</span>
+    </a>
+
+    {{-- Menu Logout --}}
+    <form method="POST" action="{{ route('logout') }}">
+        @csrf
+        <a href="{{ route('logout') }}"
+           onclick="event.preventDefault(); this.closest('form').submit();"
+           class="flex items-center p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-green-100 hover:text-gray-900 transition-colors">
+            <i class="fas fa-sign-out-alt fa-fw w-6 text-center"></i>
+            <span class="ml-3" x-show="sidebarOpen">Logout</span>
+        </a>
+    </form>
+</nav>
 
             <div class="p-4 mt-auto" x-show="sidebarOpen">
                 <div class="bg-gray-100 text-gray-600 text-center p-4 rounded-lg border">

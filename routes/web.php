@@ -22,6 +22,7 @@ Route::get('/users/{user}/edit', [UserController::class, 'edit']);
 Route::put('/users/{user}', [UserController::class, 'update']);
 Route::delete('/users/{user}', [UserController::class, 'destroy']);
 Route::get('/', [HomepageController::class, 'index'])->name('homepage');
+Route::get('/pengaduan/{complaint}', [PengaduanController::class, 'show'])->name('pengaduan.show');
 
 // Rute untuk Dashboard (Setelah Login)
 Route::get('/dashboard', function () {

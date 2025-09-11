@@ -1,33 +1,69 @@
-@extends('layouts.app')
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Daftar Pengaduan Saya') }}
+        </h2>
+    </x-slot>
 
-@section('content')
-<div class="p-6 space-y-6">
-    {{-- Judul Halaman --}}
-    <div>
-        <h1 class="text-2xl font-bold text-gray-800">Halaman Pengaduan</h1>
-        <p class="mt-1 text-gray-600">Silakan kelola dan buat pengaduan di sini.</p>
-    </div>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
 
-    {{-- Aksi Cepat --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white shadow rounded-lg p-4 flex items-center justify-between">
-            <div>
-                <h2 class="text-sm text-gray-500">Aksi Cepat</h2>
-                <a href="{{ route('pengaduan.create') }}" 
-                   class="mt-2 inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">
-                    Buat Laporan Baru
-                </a>
-            </div>
-            <div class="bg-green-100 p-3 rounded-full">
-                <i class="bi bi-lightning-charge text-green-600 text-xl"></i>
+                    <div class="flex justify-end mb-4">
+                        <a href="{{ route('complaints.create') }}" class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150">
+                            Buat Pengaduan Baru
+                        </a>
+                    </div>
+
+                    {{-- Tabel untuk menampilkan data --}}
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul Pengaduan</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Lapor</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="relative px-6 py-3">
+                                        <span class="sr-only">Aksi</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {{-- Lakukan perulangan di sini --}}
+                                @forelse ($complaints as $complaint)
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $complaint->title }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $complaint->category }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $complaint->created_at->format('d F Y') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                @if($complaint->status == 'Baru') bg-blue-100 text-blue-800 
+                                                @elseif($complaint->status == 'Verifikasi') bg-yellow-100 text-yellow-800
+                                                @elseif($complaint->status == 'Pengerjaan') bg-orange-100 text-orange-800
+                                                @else bg-green-100 text-green-800 @endif">
+                                                {{ $complaint->status }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <a href="{{ route('pengaduan.show', $complaint->id) }}" class="text-indigo-600 hover:text-indigo-900">Detail</a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    {{-- Tampilan jika tidak ada data --}}
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                            Anda belum membuat pengaduan.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
-
-    {{-- Daftar Pengaduan (opsional kalau sudah ada data) --}}
-    <div class="bg-white shadow rounded-lg p-4">
-        <h2 class="text-lg font-semibold text-gray-700 mb-4">Daftar Pengaduan</h2>
-        <p class="text-gray-500 text-sm">Belum ada data pengaduan.</p>
-    </div>
-</div>
-@endsection
+</x-app-layout>
