@@ -56,6 +56,7 @@ Route::get('/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])
 
     // Rute Pengaturan (Sebelumnya Profil)
     Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::get('/settings/{section?}', [App\Http\Controllers\SettingsController::class, 'edit'])->name('settings.edit');
     Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
     Route::post('/settings/photo', [SettingsController::class, 'updatePhoto'])->name('settings.photo.update');

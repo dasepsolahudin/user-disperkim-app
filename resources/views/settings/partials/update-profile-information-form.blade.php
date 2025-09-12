@@ -1,69 +1,89 @@
 <section x-data="{ editing: false }">
     {{-- HEADER --}}
-    <header class="flex items-center justify-between border-b pb-4 mb-6 dark:border-gray-700">
-        <div>
-            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ __('Informasi Profil') }}
-            </h2>
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {{ __("Lihat dan perbarui data diri serta alamat Anda.") }}
-            </p>
-        </div>
-        
-        {{-- Tombol Edit / Batal --}}
-        <div>
-            <template x-if="!editing">
-                <x-primary-button @click="editing = true">{{ __('Edit Profil') }}</x-primary-button>
-            </template>
-            <template x-if="editing">
-                <x-secondary-button @click="editing = false">{{ __('Batal') }}</x-secondary-button>
-            </template>
+    <header>
+        {{-- Header Box dengan Latar Belakang Biru Minimalis --}}
+        <div class="bg-indigo-50 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+                {{-- Sisi Kiri: Ikon dan Teks --}}
+                <div class="flex items-center space-x-3">
+                    <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-lg">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            Informasi Profil
+                        </h2>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            Lihat dan perbarui data diri serta alamat Anda.
+                        </p>
+                    </div>
+                </div>
+                {{-- Sisi Kanan: Tombol Edit/Batal --}}
+                <div>
+                    <template x-if="!editing">
+                        <x-primary-button @click="editing = true">{{ __('Edit Profil') }}</x-primary-button>
+                    </template>
+                    <template x-if="editing">
+                        <x-secondary-button @click="editing = false">{{ __('Batal') }}</x-secondary-button>
+                    </template>
+                </div>
+            </div>
         </div>
     </header>
-    
-    <hr class="my-6 dark:border-gray-700">
 
-    {{-- TAMPILAN SAAT MELIHAT DATA (VIEW MODE) --}}
-    <div x-show="!editing" class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
-        {{-- FOTO PROFIL DI MODE VIEW --}}
-        <div class="mb-6 flex items-center gap-4">
-            <span class="font-semibold text-gray-500">Foto Profil</span>
+    {{-- ================================================================= --}}
+    {{-- TAMPILAN SAAT MELIHAT DATA (VIEW MODE) - BAGIAN YANG DIPERBAIKI --}}
+    {{-- ================================================================= --}}
+    <div x-show="!editing" class="mt-6 space-y-4">
+        
+        {{-- Kotak Foto Profil --}}
+        <div class="bg-gray-50 p-4 rounded-lg border flex justify-between items-center">
+            <p class="font-semibold text-gray-600">Foto Profil</p>
             <div>
                 @if($user->photo)
-                    <img class="h-20 w-20 rounded-full object-cover" src="{{ asset('storage/' . $user->photo) }}" alt="{{ $user->name }}">
+                    <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('storage/' . $user->photo) }}" alt="{{ $user->name }}">
                 @else
-                    <img class="h-20 w-20 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=10b981&color=ffffff" alt="{{ $user->name }}">
+                    <img class="h-16 w-16 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=10b981&color=ffffff" alt="{{ $user->name }}">
                 @endif
             </div>
         </div>
+
+        {{-- Kotak Nama Lengkap --}}
+        <div class="bg-gray-50 p-4 rounded-lg border">
+            <p class="text-xs text-gray-500">Nama Lengkap</p>
+            <p class="font-semibold text-gray-800">{{ $user->name }}</p>
+        </div>
+
+        {{-- Kotak Email --}}
+        <div class="bg-gray-50 p-4 rounded-lg border">
+            <p class="text-xs text-gray-500">Email</p>
+            <p class="font-semibold text-gray-800">{{ $user->email }}</p>
+        </div>
         
-        <div class="grid grid-cols-3 gap-4">
-            <span class="font-semibold text-gray-500">Nama Lengkap</span>
-            <span class="col-span-2">{{ $user->name }}</span>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-            <span class="font-semibold text-gray-500">Email</span>
-            <span class="col-span-2">{{ $user->email }}</span>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-            <span class="font-semibold text-gray-500">Kabupaten/Kota</span>
-            <span class="col-span-2">{{ $user->kabupaten ?? '-' }}</span>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-            <span class="font-semibold text-gray-500">Kecamatan</span>
-            <span class="col-span-2">{{ $user->kecamatan ?? '-' }}</span>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-            <span class="font-semibold text-gray-500">Desa/Kelurahan</span>
-            <span class="col-span-2">{{ $user->desa ?? '-' }}</span>
+        {{-- Kotak Alamat --}}
+        <div class="bg-gray-50 p-4 rounded-lg border grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <p class="text-xs text-gray-500">Kabupaten/Kota</p>
+                <p class="font-semibold text-gray-800">{{ $user->kabupaten ?? '-' }}</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-500">Kecamatan</p>
+                <p class="font-semibold text-gray-800">{{ $user->kecamatan ?? '-' }}</p>
+            </div>
+            <div>
+                <p class="text-xs text-gray-500">Desa/Kelurahan</p>
+                <p class="font-semibold text-gray-800">{{ $user->desa ?? '-' }}</p>
+            </div>
         </div>
     </div>
 
 
-    {{-- TAMPILAN SAAT MENGEDIT DATA (EDIT MODE) --}}
+    {{-- TAMPILAN SAAT MENGEDIT DATA (EDIT MODE) - TIDAK DIUBAH --}}
     <div x-show="editing" x-cloak>
         {{-- FORM UPLOAD FOTO PROFIL --}}
-        <form method="post" action="{{ route('settings.photo.update') }}" enctype="multipart/form-data" class="mb-8 flex items-center gap-4">
+        <form method="post" action="{{ route('settings.photo.update') }}" enctype="multipart/form-data" class="mt-6 flex items-center gap-4">
             @csrf
             <div>
                 @if($user->photo)
@@ -144,8 +164,12 @@
                 <x-input-error class="mt-2" :messages="$errors->get('desa')" />
             </div>
 
-            <div class="flex items-center gap-4">
-                <x-primary-button>{{ __('Simpan Perubahan') }}</x-primary-button>
+            <div class="flex items-center gap-4 pt-2">
+                <x-primary-button>
+                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                    Simpan Perubahan
+                </x-primary-button>
+
                 @if (session('status') === 'profile-updated')
                     <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)" class="text-sm text-gray-600 dark:text-gray-400">{{ __('Tersimpan.') }}</p>
                 @endif
@@ -153,3 +177,4 @@
         </form>
     </div>
 </section>
+

@@ -29,7 +29,7 @@
                         </a>
 
                         {{-- Menu Notifikasi (Belum Aktif) --}}
-                        <a href="#" {{-- Arahkan ke route('settings.edit', 'notifications') nanti --}}
+                        <a href="#"
                            class="flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-lg transition text-gray-400 cursor-not-allowed">
                             <i class="fas fa-bell fa-fw"></i>
                             <span>Notifikasi</span>
@@ -45,16 +45,10 @@
                             @include('settings.partials.update-profile-information-form')
                         </div>
                     
-                    {{-- Konten untuk Section KEAMANAN --}}
+                    {{-- Konten untuk Section KEAMANAN (DIPERBAIKI) --}}
                     @elseif ($section == 'security')
-                        <div class="space-y-6">
-                            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                                @include('settings.partials.update-password-form')
-                            </div>
-                            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                                @include('settings.partials.delete-user-form')
-                            </div>
-                        </div>
+                        {{-- Cukup panggil layout keamanan. File ini sudah menangani semuanya. --}}
+                        @include('settings.partials.security-layout')
                     @endif
                 </main>
 
