@@ -9,7 +9,7 @@ use App\Http\Controllers\PengaduanController; // <-- Tambahkan ini biar lebih ra
 use Illuminate\Support\Facades\Auth;
 use App\Models\Complaint;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\SettingsController;
 
 // Rute untuk Halaman Utama
 Route::get('/', [HomepageController::class, 'index']);
@@ -54,11 +54,11 @@ Route::get('/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])
 
     
 
-    // Profile
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
+    // Rute Pengaturan (Sebelumnya Profil)
+    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
+    Route::post('/settings/photo', [SettingsController::class, 'updatePhoto'])->name('settings.photo.update');
     
 
     // Pengaduan (menu sidebar)

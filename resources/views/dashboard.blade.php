@@ -1,5 +1,4 @@
 <x-app-layout>
-    <!-- Header Halaman -->
     <div class="flex justify-between items-center mb-6">
         <div>
             <h2 class="text-2xl font-bold text-gray-800">Dashboard</h2>
@@ -13,20 +12,16 @@
         </div>
     </div>
 
-    <!-- Grid Utama -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <!-- Kolom Kiri -->
         <div class="lg:col-span-2 space-y-6">
 
-            <!-- Baris Kartu Statistik -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Kartu Ringkasan Laporan -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-500">Ringkasan Laporan</p>
                         <p class="mt-2 text-sm text-gray-600">
-                           <i class="fas fa-chart-line text-green-600"></i> Total: {{ $stats['total'] ?? 0 }} laporan
+                            <i class="fas fa-chart-line text-green-600"></i> Total: {{ $stats['total'] ?? 0 }} laporan
                         </p>
                     </div>
                     <div class="bg-gray-100 text-gray-600 p-3 rounded-full">
@@ -34,7 +29,6 @@
                     </div>
                 </div>
 
-                <!-- Kartu Dalam Proses -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start justify-between">
                     <div>
                         <p class="text-3xl font-bold text-gray-800">{{ $stats['in_progress'] ?? 0 }}</p>
@@ -45,13 +39,12 @@
                     </div>
                 </div>
 
-                <!-- Kartu Aksi Cepat -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-500">Aksi Cepat</p>
                         <a href="{{ route('complaints.create') }}" 
                            class="mt-2 inline-block bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-lg hover:bg-green-700 transition">
-                            Buat Laporan Baru
+                             Buat Laporan Baru
                         </a>
                     </div>
                     <div class="bg-green-100 text-green-600 p-3 rounded-full">
@@ -60,7 +53,6 @@
                 </div>
             </div>
 
-            <!-- Kartu Riwayat Laporan -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between">
                 <div>
                     <h3 class="font-semibold text-gray-800">Riwayat Laporan</h3>
@@ -78,20 +70,19 @@
             </div>
         </div>
 
-        <!-- Kolom Kanan -->
         <div class="lg:col-span-1">
-            <!-- Kartu Profil Saya -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-semibold text-gray-800">Profil Saya</h3>
+                    <h3 class="font-semibold text-gray-800">Pengaturan Akun</h3>
                     <span class="px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Lengkap</span>
                 </div>
                 <div class="bg-gray-50 text-gray-600 p-4 rounded-lg border">
                     <i class="fas fa-user-shield text-green-600 mr-2"></i>
                     <p class="text-sm inline">Perbarui informasi data diri dan password Anda untuk keamanan akun.</p>
                 </div>
-                <a href="{{ route('profile.edit') }}" class="w-full mt-4 inline-block text-center bg-gray-200 text-gray-700 font-semibold text-sm px-4 py-2 rounded-lg hover:bg-gray-300 transition">
-                    Atur Profil &rarr;
+                {{-- KODE YANG DIPERBAIKI --}}
+                <a href="{{ route('settings.edit') }}" class="w-full mt-4 inline-block text-center bg-gray-200 text-gray-700 font-semibold text-sm px-4 py-2 rounded-lg hover:bg-gray-300 transition">
+                    Buka Pengaturan &rarr;
                 </a>
             </div>
         </div>

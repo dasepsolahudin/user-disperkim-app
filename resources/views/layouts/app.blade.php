@@ -33,7 +33,6 @@
                     <i class="fas" :class="{ 'fa-chevron-left': sidebarOpen, 'fa-chevron-right': !sidebarOpen }"></i>
                 </button>
             </div>
-{{-- Salin dan ganti seluruh isi tag <nav> dengan kode ini --}}
 <nav class="flex-1 mt-4 px-3 space-y-2">
     {{-- Menu Dashboard --}}
     <a href="{{ route('dashboard') }}" 
@@ -64,12 +63,12 @@
         <hr class="border-t border-green-200">
     </div>
 
-    {{-- Menu Profil --}}
-    <a href="{{ route('profile.edit') }}" 
+    {{-- Menu Pengaturan --}}
+    <a href="{{ route('settings.edit', 'profile') }}" 
        class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
-              {{ request()->routeIs('profile.edit') ? 'bg-green-600 text-white shadow-sm' : 'text-gray-600 hover:bg-green-100 hover:text-gray-900' }}">
-        <i class="fas fa-user-circle fa-fw w-6 text-center"></i>
-        <span class="ml-3" x-show="sidebarOpen">Profil</span>
+              {{ request()->routeIs('settings.edit') ? 'bg-green-600 text-white shadow-sm' : 'text-gray-600 hover:bg-green-100 hover:text-gray-900' }}">
+        <i class="fas fa-cog fa-fw w-6 text-center"></i>
+        <span class="ml-3" x-show="sidebarOpen">Pengaturan</span>
     </a>
 
     {{-- Menu Logout --}}
@@ -100,10 +99,15 @@
                  <div class="relative" x-data="{ open: false }">
                     <button @click="open = !open" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-green-100">
                          <span class="font-semibold text-sm text-gray-700 hidden sm:block">{{ Auth::user()->name }}</span>
-                        <img class="h-8 w-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=10b981&color=ffffff" alt="Avatar">
+                        {{-- TAMPILAN FOTO PROFIL DI HEADER --}}
+                        @if(Auth::user()->photo)
+                            <img class="h-8 w-8 rounded-full object-cover" src="{{ asset('storage/' . Auth::user()->photo) }}" alt="{{ Auth::user()->name }}">
+                        @else
+                            <img class="h-8 w-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=10b981&color=ffffff" alt="{{ Auth::user()->name }}">
+                        @endif
                     </button>
                     <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-xl z-20" x-cloak>
-                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil Saya</a>
+                        <a href="{{ route('settings.edit', 'profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengaturan Akun</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
