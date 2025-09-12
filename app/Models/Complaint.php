@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo; // Pastikan ini di-import
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Complaint extends Model
 {
@@ -32,4 +33,14 @@ class Complaint extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    public function photos(): HasMany
+    {
+        return $this->hasMany(ComplaintPhoto::class);
+    }
+
+    public function responses()
+{
+    return $this->hasMany(Response::class)->latest(); // Mengambil semua tanggapan, diurutkan dari yang terbaru
+}
 }

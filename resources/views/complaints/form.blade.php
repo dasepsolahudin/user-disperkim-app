@@ -53,9 +53,11 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                              <div>
-                                <x-input-label for="photo" :value="__('Foto Aduan (Wajib)')" />
-                                <input type="file" id="photo" name="photo" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200 mt-1" required/>
-                                <x-input-error :messages="$errors->get('photo')" class="mt-2" />
+                                <x-input-label for="photos" :value="__('Foto Aduan (Wajib, bisa lebih dari satu)')" />
+{{-- Tambahkan 'multiple' dan ubah name menjadi 'photos[]' --}}
+<input type="file" id="photos" name="photos[]" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200 mt-1" required multiple/>
+<x-input-error :messages="$errors->get('photos')" class="mt-2" />
+<x-input-error :messages="$errors->get('photos.*')" class="mt-2" />
                             </div>
 
                             <div>

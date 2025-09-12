@@ -45,51 +45,52 @@ class ComplaintController extends Controller
     /**
      * Menyimpan pengaduan baru ke database.
      */
-    public function store(Request $request): RedirectResponse
-    {
-        // 1. Validasi semua input termasuk file
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category' => 'required|string|in:rutilahu,infrastruktur,tata_kota,air_bersih_sanitasi',
-            'location_text' => 'nullable|string|max:255',
-            // --- PERUBAHAN DI SINI ---
-            // Aturan 'mimes' dihapus, aturan 'image' sudah cukup untuk memvalidasi file gambar umum.
-            'photo' => 'required|image|max:2048', // Foto aduan wajib, maks 2MB
-            'ktp_photo' => 'nullable|image|max:2048', // Foto KTP opsional, maks 2MB
-        ]);
+    // app/Http/Controllers/ComplaintController.php
 
-        $complaintData = $validated;
-        $complaintData['user_id'] = Auth::id();
-        $complaintData['status'] = 'Baru';
+public function store(Request $request): RedirectResponse
+{
+    // 1. Validasi input
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'category' => 'required|string|in:rutilahu,infrastruktur,tata_kota,air_bersih_sanitasi',
+        'location_text' => 'nullable|string|max:255',
+        'photos' => 'required|array', // Pastikan 'photos' adalah array
+        'photos.*' => 'image|max:2048', // Validasi setiap file dalam array 'photos'
+        'ktp_photo' => 'nullable|image|max:2048',
+    ]);
 
-        // 2. Handle upload foto aduan
-        if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('complaint-photos', 'public');
-            $complaintData['photo'] = $path;
+    // 2. Buat data pengaduan tanpa foto terlebih dahulu
+    $complaint = Complaint::create([
+        'user_id' => Auth::id(),
+        'title' => $validated['title'],
+        'description' => $validated['description'],
+        'category' => $validated['category'],
+        'location_text' => $validated['location_text'],
+        'status' => 'Baru',
+    ]);
+
+    // 3. Loop dan simpan setiap foto aduan
+    if ($request->hasFile('photos')) {
+        foreach ($request->file('photos') as $photoFile) {
+            $path = $photoFile->store('complaint-photos', 'public');
+            $complaint->photos()->create(['path' => $path]); // Buat record baru di complaint_photos
         }
+    }
 
-        // 3. Simpan data pengaduan
-        Complaint::create($complaintData);
-
-        // 4. Handle upload foto KTP (jika ada) dan update profil user
-        if ($request->hasFile('ktp_photo')) {
-            $user = Auth::user();
-            
-            if ($user->ktp_photo) {
-                Storage::disk('public')->delete($user->ktp_photo);
-            }
-
-            $ktpPath = $request->file('ktp_photo')->store('ktp-photos', 'public');
-            $user->update(['ktp_photo' => $ktpPath]);
+    // 4. Handle upload foto KTP (jika ada) dan update profil user
+    if ($request->hasFile('ktp_photo')) {
+        $user = Auth::user();
+        if ($user->ktp_photo) {
+            Storage::disk('public')->delete($user->ktp_photo);
         }
+        $ktpPath = $request->file('ktp_photo')->store('ktp-photos', 'public');
+        $user->update(['ktp_photo' => $ktpPath]);
+    }
 
-        // 5. Arahkan kembali ke daftar pengaduan dengan pesan sukses
-        return redirect()->route('complaints.index')->with('success', 'Laporan Anda berhasil dikirim!');
-        if ($complaint->user_id !== Auth::id()) {
-            abort(403, 'Akses Ditolak');
-        }
+    // 5. Arahkan kembali
+    return redirect()->route('pengaduan.index')->with('success', 'Laporan Anda berhasil dikirim!');
+}}
 
         return view('complaints.show', compact('complaint'));
-    }
-}
+    
