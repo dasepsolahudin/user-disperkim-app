@@ -2,12 +2,12 @@
     {{-- HEADER --}}
     <header>
         {{-- Header Box dengan Latar Belakang Biru Minimalis --}}
-        <div class="bg-indigo-50 rounded-lg p-4">
+        <div class="bg-indigo-50 dark:bg-gray-800/50 rounded-lg p-4">
             <div class="flex items-center justify-between">
                 {{-- Sisi Kiri: Ikon dan Teks --}}
                 <div class="flex items-center space-x-3">
                     <div class="flex-shrink-0">
-                        <div class="w-10 h-10 bg-indigo-100 text-indigo-600 flex items-center justify-center rounded-lg">
+                        <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center rounded-lg">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         </div>
                     </div>
@@ -36,45 +36,58 @@
     {{-- ================================================================= --}}
     {{-- TAMPILAN SAAT MELIHAT DATA (VIEW MODE) - BAGIAN YANG DIPERBAIKI --}}
     {{-- ================================================================= --}}
-    <div x-show="!editing" class="mt-6 space-y-4">
+    <div x-show="!editing" class="mt-6 space-y-6">
         
-        {{-- Kotak Foto Profil --}}
-        <div class="bg-gray-50 p-4 rounded-lg border flex justify-between items-center">
-            <p class="font-semibold text-gray-600">Foto Profil</p>
+        {{-- Foto Profil --}}
+        <div class="flex items-center gap-4">
             <div>
                 @if($user->photo)
-                    <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('storage/' . $user->photo) }}" alt="{{ $user->name }}">
+                    <img class="h-20 w-20 rounded-full object-cover" src="{{ asset('storage/' . $user->photo) }}" alt="{{ $user->name }}">
                 @else
-                    <img class="h-16 w-16 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=10b981&color=ffffff" alt="{{ $user->name }}">
+                    <img class="h-20 w-20 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=10b981&color=ffffff" alt="{{ $user->name }}">
                 @endif
             </div>
         </div>
 
-        {{-- Kotak Nama Lengkap --}}
-        <div class="bg-gray-50 p-4 rounded-lg border">
-            <p class="text-xs text-gray-500">Nama Lengkap</p>
-            <p class="font-semibold text-gray-800">{{ $user->name }}</p>
+        <hr class="dark:border-gray-700">
+        
+        {{-- Nama --}}
+        <div>
+            <x-input-label for="view_name" :value="__('Nama Lengkap')" />
+            <div id="view_name" class="mt-1 block w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-300 rounded-md shadow-sm p-2.5 text-sm">
+                {{ $user->name }}
+            </div>
         </div>
 
-        {{-- Kotak Email --}}
-        <div class="bg-gray-50 p-4 rounded-lg border">
-            <p class="text-xs text-gray-500">Email</p>
-            <p class="font-semibold text-gray-800">{{ $user->email }}</p>
+        {{-- Email --}}
+        <div>
+            <x-input-label for="view_email" :value="__('Email')" />
+            <div id="view_email" class="mt-1 block w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-300 rounded-md shadow-sm p-2.5 text-sm">
+                {{ $user->email }}
+            </div>
         </div>
         
-        {{-- Kotak Alamat --}}
-        <div class="bg-gray-50 p-4 rounded-lg border grid grid-cols-1 md:grid-cols-3 gap-4">
+        {{-- Baris untuk Kabupaten & Kecamatan --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <p class="text-xs text-gray-500">Kabupaten/Kota</p>
-                <p class="font-semibold text-gray-800">{{ $user->kabupaten ?? '-' }}</p>
+                <x-input-label for="view_kabupaten" :value="__('Kabupaten/Kota')" />
+                <div id="view_kabupaten" class="mt-1 block w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-300 rounded-md shadow-sm p-2.5 text-sm">
+                    {{ $user->kabupaten ?? '-' }}
+                </div>
             </div>
             <div>
-                <p class="text-xs text-gray-500">Kecamatan</p>
-                <p class="font-semibold text-gray-800">{{ $user->kecamatan ?? '-' }}</p>
+                <x-input-label for="view_kecamatan" :value="__('Kecamatan')" />
+                <div id="view_kecamatan" class="mt-1 block w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-300 rounded-md shadow-sm p-2.5 text-sm">
+                    {{ $user->kecamatan ?? '-' }}
+                </div>
             </div>
-            <div>
-                <p class="text-xs text-gray-500">Desa/Kelurahan</p>
-                <p class="font-semibold text-gray-800">{{ $user->desa ?? '-' }}</p>
+        </div>
+
+        {{-- Desa --}}
+        <div>
+            <x-input-label for="view_desa" :value="__('Desa/Kelurahan')" />
+            <div id="view_desa" class="mt-1 block w-full border border-gray-300 dark:border-gray-700 dark:bg-gray-900/50 dark:text-gray-300 rounded-md shadow-sm p-2.5 text-sm">
+                {{ $user->desa ?? '-' }}
             </div>
         </div>
     </div>
@@ -177,4 +190,3 @@
         </form>
     </div>
 </section>
-

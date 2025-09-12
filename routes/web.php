@@ -60,6 +60,9 @@ Route::get('/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])
     Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
     Route::post('/settings/photo', [SettingsController::class, 'updatePhoto'])->name('settings.photo.update');
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])
+    ->middleware('auth')
+    ->name('profile.updatePhoto');
     
 
     // Pengaduan (menu sidebar)
@@ -80,5 +83,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 });
 
+
+Route::prefix('pengaturan')->group(function () {
+    Route::get('/profil', [SettingController::class, 'profile'])->name('settings.profile');
+    Route::get('/keamanan', [SettingController::class, 'security'])->name('settings.security');
+    });
 // Rute autentikasi bawaan Laravel
 require __DIR__.'/auth.php';
+

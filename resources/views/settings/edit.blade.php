@@ -49,6 +49,12 @@
                     @elseif ($section == 'security')
                         {{-- Cukup panggil layout keamanan. File ini sudah menangani semuanya. --}}
                         @include('settings.partials.security-layout')
+
+                        {{-- Konten untuk Section NOTIFIKASI --}}
+                    @elseif ($section == 'notifications')
+                        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                            @include('settings.partials.update-notification-preferences-form')
+                        </div>
                     @endif
                 </main>
 

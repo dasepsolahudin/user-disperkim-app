@@ -36,7 +36,7 @@
                                     <p><strong>Desa/Kel:</strong> {{ Auth::user()->desa ?: '-' }}</p>
                                     <p><strong>Kecamatan:</strong> {{ Auth::user()->kecamatan ?: '-' }}</p>
                                     <p><strong>Kabupaten:</strong> {{ Auth::user()->kabupaten ?: '-' }}</p>
-                                    <a href="{{ route('profile.edit') }}" class="text-indigo-600 hover:underline text-xs mt-2 inline-block">Ubah Alamat di Profil</a>
+                                    <a href="{{ route('user.edit') }}">Edit Profil</a> class="text-indigo-600 hover:underline text-xs mt-2 inline-block">Ubah Alamat di Profil</a>
                                 </div>
                             </div>
 
