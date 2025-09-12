@@ -20,6 +20,15 @@ class ComplaintController extends Controller
         return view('complaints.index', compact('complaints'));
     }
 
+    public function destroy(\App\Models\Complaint $complaint)
+{
+    $complaint->delete();
+
+    return redirect()->route('complaints.index')
+                     ->with('success', 'Pengaduan berhasil dihapus.');
+}
+
+
     /**
      * Menampilkan halaman untuk memilih kategori pengaduan.
      */

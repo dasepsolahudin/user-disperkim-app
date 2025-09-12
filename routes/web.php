@@ -50,17 +50,24 @@ Route::middleware('auth')->group(function () {
 Route::get('/complaints/{complaint}', [ComplaintController::class, 'show'])->name('complaints.show');
 Route::get('/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])->name('complaints.edit');
     Route::put('/complaints/{complaint}', [ComplaintController::class, 'update'])->name('complaints.update');
+    Route::resource('complaints', \App\Http\Controllers\ComplaintController::class);
+
+    
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update');
+    
 
     // Pengaduan (menu sidebar)
     Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
     Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
     Route::get('/pengaduan/{id}/edit', [PengaduanController::class, 'edit'])->name('pengaduan.edit');
 Route::put('/pengaduan/{id}', [PengaduanController::class, 'update'])->name('pengaduan.update');
+Route::resource('pengaduan', \App\Http\Controllers\PengaduanController::class);
+
 
 });
 

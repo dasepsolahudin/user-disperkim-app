@@ -28,8 +28,7 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            if ($user->photo && Storage::disk('public')->exists($user->photo)) {
-                Storage::disk('public')->delete($user->photo);
+            $path = $request->file('photo')->store('photos', 'public');
             }
 
             $path = $request->file('photo')->store('profile-photos', 'public');
@@ -52,9 +51,13 @@ class ProfileController extends Controller
         }
         
 
-        $user->update($validated);
+        // Update user
+        $user->photo = $path;
+        $user->save();
 
-        return back()->with('status', 'profile-updated');
+        return response()->json([
+            'success' => true,
+            'photo_url' => asset('storage/'.$path),
+        ]);
     }
-}
 }

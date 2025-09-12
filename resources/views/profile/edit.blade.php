@@ -12,16 +12,34 @@
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="flex items-center gap-6 p-6 sm:p-8 border-b border-gray-200 dark:border-gray-700">
                     {{-- Foto Profil --}}
-                    <div class="shrink-0">
+                    <div class="relative shrink-0">
                         @if(Auth::user()->photo)
-                            <img class="h-20 w-20 rounded-full object-cover border-2 border-indigo-500 shadow" 
+                            <img id="preview-photo" class="h-20 w-20 rounded-full object-cover border-2 border-indigo-500 shadow" 
                                 src="{{ asset('storage/' . Auth::user()->photo) }}" 
                                 alt="Foto Profil">
                         @else
-                            <img class="h-20 w-20 rounded-full object-cover border-2 border-gray-400 shadow" 
+                            <img id="preview-photo" class="h-20 w-20 rounded-full object-cover border-2 border-gray-400 shadow" 
                                 src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=7F9CF5&background=EBF4FF" 
                                 alt="Foto Profil">
                         @endif
+
+                        {{-- Form Upload Foto --}}
+                        <form id="photo-form" action="{{ route('profile.photo.update') }}" method="POST" enctype="multipart/form-data" class="absolute bottom-0 right-0">
+                            @csrf
+                            <label for="photo" 
+                                   class="bg-indigo-600 text-white p-2 rounded-full shadow cursor-pointer hover:bg-indigo-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                     fill="none" viewBox="0 0 24 24" stroke="currentColor" 
+                                     class="w-4 h-4">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M3 7h2l2-3h10l2 3h2a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1z" />
+                                    <circle cx="12" cy="13" r="3" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </label>
+                            <input id="photo" type="file" name="photo" class="hidden"
+                                   accept="image/*" capture="user"
+                                   onchange="previewAndSubmit(event)">
+                        </form>
                     </div>
 
                     <div>
@@ -75,4 +93,17 @@
             </div>
         </div>
     </div>
+
+    <script>
+    function previewAndSubmit(event) {
+        const reader = new FileReader();
+        reader.onload = function(){
+            document.getElementById('preview-photo').src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+
+        // langsung submit form upload
+        document.getElementById('photo-form').submit();
+    }
+    </script>
 </x-app-layout>
