@@ -7,6 +7,26 @@ use App\Models\Complaint; // Tambahkan ini untuk mengambil data
 
 class PengaduanController extends Controller
 {
+
+    public function edit($id)
+{
+    $pengaduan = Pengaduan::findOrFail($id);
+    return view('pengaduan.edit', compact('pengaduan'));
+}
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'judul' => 'required|string|max:255',
+        'isi' => 'required|string',
+    ]);
+
+    $pengaduan = Pengaduan::findOrFail($id);
+    $pengaduan->update($request->all());
+
+    return redirect()->route('pengaduan.index')->with('success', 'Pengaduan berhasil diperbarui.');
+}
+
     public function index()
     {
         // Ambil data pengaduan milik pengguna yang sedang login

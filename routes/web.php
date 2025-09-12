@@ -59,6 +59,9 @@ Route::get('/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])
     // Pengaduan (menu sidebar)
     Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
     Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
+    Route::get('/pengaduan/{id}/edit', [PengaduanController::class, 'edit'])->name('pengaduan.edit');
+Route::put('/pengaduan/{id}', [PengaduanController::class, 'update'])->name('pengaduan.update');
+
 });
 
 // Admin Group
