@@ -38,16 +38,30 @@
                     <p class="text-gray-600 leading-relaxed">{{ $complaint->location_text ?: 'Tidak ada detail lokasi.' }}</p>
                 </div>
 
-                @if($complaint->photo)
-                    <div>
-                        <h4 class="font-semibold text-gray-700 mb-2">📷 Foto Lampiran</h4>
-                        <a href="{{ asset('storage/' . $complaint->photo) }}" target="_blank">
-                            <img src="{{ asset('storage/' . $complaint->photo) }}" 
-                                 alt="Foto Laporan" 
-                                 class="rounded-lg shadow-md max-h-96 w-auto border hover:opacity-90 transition-opacity">
-                        </a>
+                {{-- ========================================================== --}}
+                {{-- PERBAIKAN UTAMA ADA DI BAGIAN INI --}}
+                {{-- ========================================================== --}}
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-4">📷 Foto Lampiran</h4>
+                    {{-- Kita gunakan @forelse untuk loop foto, dan menangani jika tidak ada foto --}}
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        @forelse ($complaint->photos as $photo)
+                            <div class="relative group">
+                                <a href="{{ asset('storage/' . $photo->path) }}" target="_blank">
+                                    <img src="{{ asset('storage/' . $photo->path) }}" 
+                                         alt="Foto Aduan {{ $loop->iteration }}" 
+                                         class="rounded-lg shadow-md w-full h-40 object-cover border group-hover:opacity-80 transition-opacity duration-300">
+                                </a>
+                            </div>
+                        @empty
+                            {{-- Pesan ini akan muncul jika tidak ada foto sama sekali --}}
+                            <p class="text-gray-500 col-span-full">Tidak ada foto yang dilampirkan.</p>
+                        @endforelse
                     </div>
-                @endif
+                </div>
+                {{-- ========================================================== --}}
+                {{-- AKHIR DARI PERBAIKAN --}}
+                {{-- ========================================================== --}}
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t">
                     <div>

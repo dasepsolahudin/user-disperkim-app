@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/complaints/create/{category}', [ComplaintController::class, 'showForm'])->name('complaints.form');
     Route::post('/complaints', [ComplaintController::class, 'store'])->name('complaints.store');
 Route::get('/complaints/{complaint}', [ComplaintController::class, 'show'])->name('complaints.show');
+Route::get('/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])->name('complaints.edit');
+    Route::put('/complaints/{complaint}', [ComplaintController::class, 'update'])->name('complaints.update');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

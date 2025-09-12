@@ -9,7 +9,6 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 md:p-8 text-gray-900">
-                    {{-- Tambahkan enctype untuk upload file --}}
                     <form method="POST" action="{{ route('complaints.store') }}" enctype="multipart/form-data">
                         @csrf
 
@@ -52,12 +51,29 @@
                         <hr class="my-6">
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                             <div>
-                                <x-input-label for="photos" :value="__('Foto Aduan (Wajib, bisa lebih dari satu)')" />
-{{-- Tambahkan 'multiple' dan ubah name menjadi 'photos[]' --}}
-<input type="file" id="photos" name="photos[]" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200 mt-1" required multiple/>
-<x-input-error :messages="$errors->get('photos')" class="mt-2" />
-<x-input-error :messages="$errors->get('photos.*')" class="mt-2" />
+                             {{-- PERBAIKAN UNTUK UPLOAD BANYAK FILE --}}
+                             <div x-data="{ files: [] }">
+                                <x-input-label for="photos" :value="__('Foto Aduan (Wajib, minimal 3 foto)')" />
+                                <input 
+                                    type="file" 
+                                    id="photos" 
+                                    name="photos[]" 
+                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-700 hover:file:bg-green-200 mt-1" 
+                                    required 
+                                    multiple
+                                    @change="files = Array.from($event.target.files).map(f => f.name)"
+                                />
+                                {{-- Daftar file yang dipilih akan muncul di sini --}}
+                                <div x-show="files.length > 0" class="mt-2 text-sm text-gray-600">
+                                    <p class="font-semibold">File yang dipilih (<span x-text="files.length"></span>):</p>
+                                    <ul class="list-disc list-inside">
+                                        <template x-for="file in files" :key="file">
+                                            <li x-text="file"></li>
+                                        </template>
+                                    </ul>
+                                </div>
+                                <x-input-error :messages="$errors->get('photos')" class="mt-2" />
+                                <x-input-error :messages="$errors->get('photos.*')" class="mt-2" />
                             </div>
 
                             <div>
@@ -70,7 +86,12 @@
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-end mt-8">
+                        <div class="flex items-center justify-between mt-8 border-t pt-6">
+                            <a href="{{ route('complaints.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                                Kembali
+                            </a>
+
                             <x-primary-button>
                                 {{ __('Kirim Pengaduan') }}
                             </x-primary-button>
@@ -81,3 +102,4 @@
         </div>
     </div>
 </x-app-layout>
+
