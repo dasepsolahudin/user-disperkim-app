@@ -8,21 +8,14 @@ use Illuminate\Support\Facades\Session;
 
 class LanguageController extends Controller
 {
-    /**
-     * Mengganti bahasa aplikasi dan menyimpannya di session.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function switchLang(Request $request)
     {
         $request->validate([
-            'locale' => 'required|in:id,en', // Memastikan hanya bahasa yang didukung yang bisa dipilih
+            'lang' => 'required|in:id,en',
         ]);
 
-        Session::put('locale', $request->locale);
+        Session::put('locale', $request->lang);
 
         return redirect()->back();
     }
 }
-

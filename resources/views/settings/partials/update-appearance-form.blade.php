@@ -65,29 +65,35 @@
         </div>
 
         {{-- Pengaturan Bahasa Aplikasi --}}
-        <div class="bg-white p-4 rounded-xl border border-slate-200">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <div class="bg-blue-100 p-2 rounded-lg">
-                        <i class="fas fa-globe text-blue-600"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-medium text-slate-800">Bahasa Aplikasi</h3>
-                        <p class="text-sm text-slate-500">Pilih bahasa yang digunakan di seluruh aplikasi.</p>
-                    </div>
-                </div>
-                <div class="relative">
-                    <button @click="languageOpen = !languageOpen" class="flex items-center gap-2 text-sm font-medium text-slate-700">
-                        ID <span x-text="selectedLanguage"></span>
-                        <i class="fas fa-chevron-down transition-transform duration-200" :class="{ 'rotate-180': languageOpen }"></i>
-                    </button>
-                    <div x-show="languageOpen" @click.away="languageOpen = false" x-transition
-                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border z-10">
-                        <a href="#" @click.prevent="selectedLanguage = 'Bahasa Indonesia'; languageOpen = false" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">Bahasa Indonesia</a>
-                        <a href="#" @click.prevent="selectedLanguage = 'English'; languageOpen = false" class="block px-4 py-2 text-sm text-slate-700 hover:bg-slate-100">English</a>
-                    </div>
-                </div>
+<div x-data="{ languageOpen: false }" class="bg-white p-4 rounded-xl border border-slate-200">
+    <div @click="languageOpen = !languageOpen" class="flex items-center justify-between cursor-pointer">
+        <div class="flex items-center space-x-4">
+            <div class="bg-blue-100 p-2 rounded-lg">
+                <i class="fas fa-globe text-blue-600"></i>
             </div>
+            <div>
+                <h3 class="font-medium text-slate-800">Bahasa Aplikasi</h3>
+                {{-- Menampilkan bahasa yang sedang aktif --}}
+                <p class="text-sm text-slate-500">{{ app()->getLocale() == 'id' ? 'ID Bahasa Indonesia' : 'EN English' }}</p>
+            </div>
+        </div>
+        <i class="fas fa-chevron-down transition-transform duration-200" :class="{ 'rotate-180': languageOpen }"></i>
+    </div>
+
+    {{-- Pilihan Link Bahasa --}}
+    <div x-show="languageOpen" x-transition class="mt-4 pt-4 border-t">
+        <div class="space-y-2">
+            {{-- Link untuk mengubah ke Bahasa Indonesia --}}
+            <a href="?lang=id" class="block px-3 py-2 text-sm rounded-md hover:bg-slate-100">
+                Bahasa Indonesia
+            </a>
+            {{-- Link untuk mengubah ke Bahasa Inggris --}}
+            <a href="?lang=en" class="block px-3 py-2 text-sm rounded-md hover:bg-slate-100">
+                English
+            </a>
+        </div>
+    </div>
+</div>
         </div>
     </div>
 </section>

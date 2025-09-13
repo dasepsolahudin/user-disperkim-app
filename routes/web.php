@@ -44,7 +44,7 @@ Route::get('/dashboard', function () {
 
 // GRUP UNTUK PENGGUNA YANG SUDAH LOGIN
 // ...
-Route::middleware('auth', 'verified')->group(function () {
+Route::middleware('auth')->group(function () {
     // Rute-rute untuk Complaints / Pengaduan
     Route::get('/complaints', [ComplaintController::class, 'index'])->name('complaints.index');
     Route::get('/complaints/create', [ComplaintController::class, 'create'])->name('complaints.create');
