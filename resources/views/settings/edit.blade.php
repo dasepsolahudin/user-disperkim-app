@@ -43,6 +43,14 @@
                             <i class="fas fa-paint-brush fa-fw"></i>
                             <span>Tampilan</span>
                         </a>
+                        
+                        {{-- Menu Hapus Akun (dipindahkan ke dalam nav) --}}
+                        <a href="{{ route('settings.edit', 'delete') }}"
+                           class="flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-lg transition
+                                  {{ $section == 'delete' ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
+                            <i class="fas fa-trash-alt fa-fw"></i>
+                            <span>Hapus Akun</span>
+                        </a>
                     </nav>
                 </aside>
 
@@ -50,19 +58,38 @@
                 <main class="flex-1">
                     @if ($section == 'profile')
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                            @include('settings.partials.update-profile-information-form')
+                            <div class="max-w-xl">
+                                @include('settings.partials.update-profile-information-form')
+                            </div>
                         </div>
                     
                     @elseif ($section == 'security')
-                        @include('settings.partials.security-layout')
+                        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                             <div class="max-w-xl">
+                                @include('settings.partials.update-password-form')
+                            </div>
+                        </div>
 
                     @elseif ($section == 'notifications')
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                            @include('settings.partials.update-notification-preferences-form')
+                            <div class="max-w-xl">
+                                @include('settings.partials.update-notification-preferences-form')
+                            </div>
                         </div>
+
                     @elseif ($section == 'appearance')
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                            @include('settings.partials.update-appearance-form')
+                            <div class="max-w-xl">
+                                @include('settings.partials.update-appearance-form')
+                            </div>
+                        </div>
+                        
+                    {{-- Kondisi untuk Hapus Akun (ditambahkan ke rantai if-elseif yang benar) --}}
+                    @elseif ($section == 'delete')
+                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                            <div class="max-w-xl">
+                                @include('settings.partials.delete-account-section')
+                            </div>
                         </div>
                     @endif
                 </main>

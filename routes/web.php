@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Complaint;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\LanguageController; 
 
 // Rute untuk Halaman Utama
 Route::get('/', [HomepageController::class, 'index']);
@@ -21,10 +22,17 @@ Route::get('/users', [UserController::class, 'index']);
 Route::get('/users/{user}/edit', [UserController::class, 'edit']);
 Route::put('/users/{user}', [UserController::class, 'update']);
 Route::delete('/users/{user}', [UserController::class, 'destroy']);
-Route::get('/', [HomepageController::class, 'index'])->name('homepage');
+Route::get('/', [HomepageController::class, 'index'])->name('homepage');    
+Route::post('/language', [LanguageController::class, 'switchLang'])->name('language.switch'); // <-- Rute baru untuk bahasa
 Route::get('/pengaduan/{complaint}', [PengaduanController::class, 'show'])->name('pengaduan.show');
 
 
+Route::get('lang/{locale}', function ($locale) {
+    if (in_array($locale, ['id', 'en'])) {
+        session(['locale' => $locale]);
+    }
+    return back();
+})->name('setLanguage');
 
 // Rute untuk Dashboard (Setelah Login)
 Route::get('/dashboard', function () {
@@ -102,6 +110,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 Route::prefix('pengaturan')->group(function () {
     Route::get('/profil', [SettingController::class, 'profile'])->name('settings.profile');
     Route::get('/keamanan', [SettingController::class, 'security'])->name('settings.security');
+    Route::patch('/settings/notification-preferences', [SettingsController::class, 'updateNotificationPreferences'])->name('settings.updateNotificationPreferences');
     });
 // Rute autentikasi bawaan Laravel
 require __DIR__.'/auth.php';

@@ -11,21 +11,38 @@ use Illuminate\Http\RedirectResponse;
 
 class SettingsController extends Controller
 {
+
+
+     public function updateNotificationPreferences(Request $request)
+    {
+        $user = Auth::user();
+
+        $notificationPreferences = [
+            'new_complaint' => $request->has('notification_preferences.new_complaint'),
+            'complaint_approved' => $request->has('notification_preferences.complaint_approved'),
+            'complaint_rejected' => $request->has('notification_preferences.complaint_rejected'),
+        ];
+
+        $user->notification_preferences = $notificationPreferences;
+        $user->save();
+
+        return back()->with('status', 'notification-preferences-updated');
+    }
     /**
      * Menampilkan halaman pengaturan dengan section yang aktif.
      */
     public function edit(Request $request, $section = 'profile'): View
     {
-        // PERBAIKAN: Menambahkan 'appearance' ke dalam daftar halaman yang valid.
-        $validPages = ['profile', 'security', 'notifications', 'appearance'];
-        if (!in_array($section, $validPages)) {
-            $section = 'profile'; // Default ke halaman profil jika tidak valid
-        }
+       // PERBAIKAN: Tambahkan 'delete' ke halaman yang valid
+    $validPages = ['profile', 'security', 'notifications', 'appearance', 'delete'];
+    if (!in_array($section, $validPages)) {
+        $section = 'profile'; 
+    }
 
-        return view('settings.edit', [
-            'user' => $request->user(),
-            'section' => $section, 
-        ]);
+    return view('settings.edit', [
+        'user' => $request->user(),
+        'section' => $section, 
+    ]);
     }
 
     /**

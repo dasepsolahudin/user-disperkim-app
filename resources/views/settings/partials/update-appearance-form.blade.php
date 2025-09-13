@@ -74,7 +74,7 @@
             <div>
                 <h3 class="font-medium text-slate-800">Bahasa Aplikasi</h3>
                 {{-- Menampilkan bahasa yang sedang aktif --}}
-                <p class="text-sm text-slate-500">{{ app()->getLocale() == 'id' ? 'ID Bahasa Indonesia' : 'EN English' }}</p>
+                <p class="text-sm text-slate-500">{{ app()->getLocale() == 'id' ? 'ID Bahasa Indonesia' : '' }}</p>
             </div>
         </div>
         <i class="fas fa-chevron-down transition-transform duration-200" :class="{ 'rotate-180': languageOpen }"></i>
@@ -87,10 +87,7 @@
             <a href="?lang=id" class="block px-3 py-2 text-sm rounded-md hover:bg-slate-100">
                 Bahasa Indonesia
             </a>
-            {{-- Link untuk mengubah ke Bahasa Inggris --}}
-            <a href="?lang=en" class="block px-3 py-2 text-sm rounded-md hover:bg-slate-100">
-                English
-            </a>
+            
         </div>
     </div>
 </div>
