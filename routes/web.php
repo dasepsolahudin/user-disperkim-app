@@ -41,21 +41,24 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // GRUP UNTUK PENGGUNA YANG SUDAH LOGIN
+// ...
 Route::middleware('auth')->group(function () {
-    // Complaints
+    // Rute-rute untuk Complaints / Pengaduan
     Route::get('/complaints', [ComplaintController::class, 'index'])->name('complaints.index');
     Route::get('/complaints/create', [ComplaintController::class, 'create'])->name('complaints.create');
     Route::get('/complaints/create/{category}', [ComplaintController::class, 'showForm'])->name('complaints.form');
     Route::post('/complaints', [ComplaintController::class, 'store'])->name('complaints.store');
-Route::get('/complaints/{complaint}', [ComplaintController::class, 'show'])->name('complaints.show');
-Route::get('/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])->name('complaints.edit');
+    Route::get('/complaints/{complaint}', [ComplaintController::class, 'show'])->name('complaints.show');
+    Route::get('/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])->name('complaints.edit');
     Route::put('/complaints/{complaint}', [ComplaintController::class, 'update'])->name('complaints.update');
-    Route::resource('complaints', \App\Http\Controllers\ComplaintController::class);
+    Route::delete('/complaints/{complaint}', [ComplaintController::class, 'destroy'])->name('complaints.destroy'); // Tambahkan rute ini
+
+    // ... rute lainnya
+// ...
 
     
 
     // Rute Pengaturan (Sebelumnya Profil)
-    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::get('/settings/{section?}', [App\Http\Controllers\SettingsController::class, 'edit'])->name('settings.edit');
     Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
@@ -63,7 +66,17 @@ Route::get('/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])
     ->middleware('auth')
     ->name('profile.updatePhoto');
+
+    // --- RUTE PENGATURAN (SETTINGS) ---
+    // Semua rute pengaturan dikonsolidasikan di sini agar rapi.
+    Route::get('/settings/{section?}', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::patch('/settings/profile', [SettingsController::class, 'update'])->name('settings.profile.update');
+    Route::post('/settings/photo', [SettingsController::class, 'updatePhoto'])->name('settings.photo.update');
     
+    // PERBAIKAN: Nama rute ini diubah agar sesuai dengan yang dipanggil oleh form.
+    Route::patch('/settings/notifications', [SettingsController::class, 'updateNotifications'])->name('settings.notifications.update');
+    
+    Route::delete('/settings/delete-account', [SettingsController::class, 'destroy'])->name('settings.account.destroy');
 
     // Pengaduan (menu sidebar)
     Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');

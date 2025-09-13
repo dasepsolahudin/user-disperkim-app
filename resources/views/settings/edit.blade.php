@@ -20,7 +20,7 @@
                             <span>Edit Profil</span>
                         </a>
 
-                        {{-- Menu Keamanan (Sekarang Aktif) --}}
+                        {{-- Menu Keamanan --}}
                         <a href="{{ route('settings.edit', 'security') }}"
                            class="flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-lg transition
                                   {{ $section == 'security' ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
@@ -28,32 +28,41 @@
                             <span>Keamanan</span>
                         </a>
 
-                        {{-- Menu Notifikasi (Belum Aktif) --}}
-                        <a href="#"
-                           class="flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-lg transition text-gray-400 cursor-not-allowed">
+                        {{-- Menu Notifikasi --}}
+                        <a href="{{ route('settings.edit', 'notifications') }}"
+                           class="flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-lg transition
+                                  {{ $section == 'notifications' ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
                             <i class="fas fa-bell fa-fw"></i>
                             <span>Notifikasi</span>
+                        </a>
+                        
+                        {{-- Menu Tampilan --}}
+                        <a href="{{ route('settings.edit', 'appearance') }}"
+                           class="flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-lg transition
+                                  {{ $section == 'appearance' ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200' }}">
+                            <i class="fas fa-paint-brush fa-fw"></i>
+                            <span>Tampilan</span>
                         </a>
                     </nav>
                 </aside>
 
                 {{-- Konten Utama --}}
                 <main class="flex-1">
-                    {{-- Konten untuk Section PROFIL --}}
                     @if ($section == 'profile')
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                             @include('settings.partials.update-profile-information-form')
                         </div>
                     
-                    {{-- Konten untuk Section KEAMANAN (DIPERBAIKI) --}}
                     @elseif ($section == 'security')
-                        {{-- Cukup panggil layout keamanan. File ini sudah menangani semuanya. --}}
                         @include('settings.partials.security-layout')
 
-                        {{-- Konten untuk Section NOTIFIKASI --}}
                     @elseif ($section == 'notifications')
                         <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                             @include('settings.partials.update-notification-preferences-form')
+                        </div>
+                    @elseif ($section == 'appearance')
+                        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                            @include('settings.partials.update-appearance-form')
                         </div>
                     @endif
                 </main>

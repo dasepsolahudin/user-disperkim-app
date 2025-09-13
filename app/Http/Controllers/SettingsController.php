@@ -16,14 +16,12 @@ class SettingsController extends Controller
      */
     public function edit(Request $request, $section = 'profile'): View
     {
-        // Daftar section yang diizinkan untuk keamanan
-        $validSections = ['profile', 'security', 'notifications'];
-        if (!in_array($section, $validSections)) {
-            abort(404);
+        // PERBAIKAN: Menambahkan 'appearance' ke dalam daftar halaman yang valid.
+        $validPages = ['profile', 'security', 'notifications', 'appearance'];
+        if (!in_array($section, $validPages)) {
+            $section = 'profile'; // Default ke halaman profil jika tidak valid
         }
 
-        // Ini adalah baris kunci yang memperbaiki error.
-        // Kita mengirimkan 'section' ke view.
         return view('settings.edit', [
             'user' => $request->user(),
             'section' => $section, 
@@ -67,23 +65,29 @@ class SettingsController extends Controller
         return back()->with('status', 'photo-updated');
     }
 
-    
-
-     /**
+    /**
      * Memperbarui preferensi notifikasi pengguna.
      */
-    public function updateNotifications(Request $request): JsonResponse
+    public function updateNotifications(Request $request): RedirectResponse // PERBAIKAN: Mengubah return type menjadi RedirectResponse
     {
-        $validated = $request->validate([
-            'notification_push' => 'required|boolean',
-            'notification_email' => 'required|boolean',
-            'notification_sms' => 'required|boolean',
-            'auto_save' => 'required|boolean',
+        $request->validate([
+            'notifications_new_complaint' => 'sometimes|boolean',
+            'notifications_complaint_updated' => 'sometimes|boolean',
+            'notifications_via_email' => 'sometimes|boolean',
         ]);
 
-        $request->user()->forceFill($validated)->save();
+        $user = $request->user();
 
-        return response()->json(['status' => 'success']);
+        $preferences = $user->notification_preferences ?? [];
+        $preferences['new_complaint'] = $request->has('notifications_new_complaint');
+        $preferences['complaint_updated'] = $request->has('notifications_complaint_updated');
+        $preferences['via_email'] = $request->has('notifications_via_email');
+
+        $user->notification_preferences = $preferences;
+        $user->save();
+
+        // PERBAIKAN: Menghapus kode berlebihan dan hanya mengembalikan redirect
+        return back()->with('status', 'notification-preferences-updated');
     }
 
     /**
@@ -107,61 +111,7 @@ class SettingsController extends Controller
         return redirect()->to('/');
     }
 
-    /**
-     * Menyimpan pengaduan yang baru dibuat.
-     */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category' => 'required|string|in:rutilahu,infrastruktur,tata-kota,air-bersih-sanitasi',
-            'location_text' => 'required|string',
-            'photos' => 'required|array|min:3',
-            'photos.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'ktp_photo' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-
-        $complaint = Complaint::create([
-            'user_id' => Auth::id(),
-            'title' => $request->title,
-            'description' => $request->description,
-            'category' => $request->category,
-            'location_text' => $request->location_text,
-            'status' => 'pending',
-        ]);
-
-        if ($request->hasFile('photos')) {
-            foreach ($request->file('photos') as $photo) {
-                $path = $photo->store('complaint-photos', 'public');
-                ComplaintPhoto::create([
-                    'complaint_id' => $complaint->id,
-                    'photo_path' => $path,
-                ]);
-            }
-        }
-
-        if ($request->hasFile('ktp_photo')) {
-            $path = $request->file('ktp_photo')->store('ktp-photos', 'public');
-            $user = Auth::user();
-            $user->ktp_photo_path = $path;
-            $user->save();
-        }
-
-        return redirect()->route('complaints.index')->with('success', 'Pengaduan berhasil dikirim.');
-    }
-
-    /**
-     * Menampilkan daftar pengaduan.
-     */
-    public function index()
-    {
-        $complaints = Complaint::where('user_id', Auth::id())->latest()->paginate(10);
-        return view('complaints.index', compact('complaints'));
-    }
-
+    // CATATAN: Metode 'store' dan 'index' untuk pengaduan telah dihapus 
+    // karena tidak relevan di controller ini dan sudah ditangani oleh ComplaintController.
+    // Ini membuat kode lebih bersih dan terorganisir.
 }
