@@ -24,6 +24,8 @@ Route::delete('/users/{user}', [UserController::class, 'destroy']);
 Route::get('/', [HomepageController::class, 'index'])->name('homepage');
 Route::get('/pengaduan/{complaint}', [PengaduanController::class, 'show'])->name('pengaduan.show');
 
+
+
 // Rute untuk Dashboard (Setelah Login)
 Route::get('/dashboard', function () {
     $user = Auth::user();
@@ -42,7 +44,7 @@ Route::get('/dashboard', function () {
 
 // GRUP UNTUK PENGGUNA YANG SUDAH LOGIN
 // ...
-Route::middleware('auth')->group(function () {
+Route::middleware('auth', 'verified')->group(function () {
     // Rute-rute untuk Complaints / Pengaduan
     Route::get('/complaints', [ComplaintController::class, 'index'])->name('complaints.index');
     Route::get('/complaints/create', [ComplaintController::class, 'create'])->name('complaints.create');

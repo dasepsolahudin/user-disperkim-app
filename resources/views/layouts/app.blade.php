@@ -27,7 +27,6 @@
     </script>
 </head>
 <body class="font-sans antialiased" x-data="{ sidebarOpen: true }">
-    {{-- PERBAIKAN: Latar belakang mode gelap diubah menjadi hitam pekat --}}
     <div class="flex h-screen bg-slate-50 dark:bg-black">
         
         {{-- Sidebar --}}
@@ -51,26 +50,26 @@
             
             {{-- Navigasi Menu --}}
             <nav class="flex-1 mt-4 px-3 space-y-2">
-                {{-- PERBAIKAN: Warna menu disesuaikan untuk latar belakang hitam --}}
+                {{-- PERBAIKAN: Semua teks diubah menggunakan fungsi terjemahan __() --}}
                 <a href="{{ route('dashboard') }}" 
                    class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
                           {{ request()->routeIs('dashboard') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-900 hover:text-white' }}">
                     <i class="fas fa-home fa-fw w-6 text-center"></i>
-                    <span class="ml-3" x-show="sidebarOpen">Dashboard</span>
+                    <span class="ml-3" x-show="sidebarOpen">{{ __('Dashboard') }}</span>
                 </a>
 
                 <a href="{{ route('complaints.create') }}" 
                    class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
                           {{ request()->routeIs('complaints.create') || request()->routeIs('complaints.form') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-900 hover:text-white' }}">
                     <i class="fas fa-plus-circle fa-fw w-6 text-center"></i>
-                    <span class="ml-3" x-show="sidebarOpen">Buat Laporan Baru</span>
+                    <span class="ml-3" x-show="sidebarOpen">{{ __('Buat Laporan Baru') }}</span>
                 </a>
 
                 <a href="{{ route('complaints.index') }}" 
                    class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
                           {{ request()->routeIs('complaints.index') || request()->routeIs('complaints.show') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-900 hover:text-white' }}">
                     <i class="fas fa-folder-open fa-fw w-6 text-center"></i>
-                    <span class="ml-3" x-show="sidebarOpen">Pengaduan Saya</span>
+                    <span class="ml-3" x-show="sidebarOpen">{{ __('Pengaduan Saya') }}</span>
                 </a>
 
                 <div class="pt-2"><hr class="border-t border-slate-200 dark:border-gray-800"></div>
@@ -79,7 +78,7 @@
                    class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
                           {{ request()->routeIs('settings.edit') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-900 hover:text-white' }}">
                     <i class="fas fa-cog fa-fw w-6 text-center"></i>
-                    <span class="ml-3" x-show="sidebarOpen">Pengaturan</span>
+                    <span class="ml-3" x-show="sidebarOpen">{{ __('Pengaturan') }}</span>
                 </a>
 
                 <form method="POST" action="{{ route('logout') }}">
@@ -88,7 +87,7 @@
                        onclick="event.preventDefault(); this.closest('form').submit();"
                        class="flex items-center p-3 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-900 hover:text-white transition-colors">
                         <i class="fas fa-sign-out-alt fa-fw w-6 text-center"></i>
-                        <span class="ml-3" x-show="sidebarOpen">Logout</span>
+                        <span class="ml-3" x-show="sidebarOpen">{{ __('Logout') }}</span>
                     </a>
                 </form>
             </nav>
@@ -108,7 +107,7 @@
                     {{ $header }}
                 @else
                     <div class="flex items-center">
-                        <h1 class="text-lg font-semibold text-slate-800 dark:text-gray-200">Sistem Informasi Pengaduan</h1>
+                        <h1 class="text-lg font-semibold text-slate-800 dark:text-gray-200">{{ __('Sistem Informasi Pengaduan') }}</h1>
                     </div>
                 @endif
                 
@@ -122,10 +121,10 @@
                         @endif
                     </button>
                     <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white dark:bg-black border dark:border-gray-800 rounded-md shadow-xl z-20" x-cloak>
-                        <a href="{{ route('settings.edit', 'profile') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-900">Pengaturan Akun</a>
+                        <a href="{{ route('settings.edit', 'profile') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-900">{{ __('Pengaturan Akun') }}</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="block px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-900">Logout</a>
+                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="block px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-900">{{ __('Logout') }}</a>
                         </form>
                     </div>
                 </div>
