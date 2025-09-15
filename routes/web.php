@@ -64,6 +64,7 @@ Route::get('/dashboard', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Ini adalah komentar untuk testing git
 // GRUP UNTUK PENGGUNA YANG SUDAH LOGIN
 // ...
 Route::middleware('auth')->group(function () {
