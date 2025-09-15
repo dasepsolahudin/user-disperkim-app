@@ -37,18 +37,30 @@ Route::get('lang/{locale}', function ($locale) {
 })->name('setLanguage');
 
 // Rute untuk Dashboard (Setelah Login)
+// routes/web.php
+
+// GANTI DENGAN BLOK INI:
 Route::get('/dashboard', function () {
     $user = Auth::user();
 
+    // Mengambil data statistik pengaduan
     $stats = [
         'total'       => Complaint::where('user_id', $user->id)->count(),
-        'in_progress' => Complaint::where('user_id', $user->id)->where('status', 'pending')->count(),
-        'completed'   => Complaint::where('user_id', $user->id)->whereIn('status', ['approved', 'rejected'])->count(),
+        'in_progress' => Complaint::where('user_id', $user->id)->where('status', 'Pengerjaan')->count(),
+        'completed'   => Complaint::where('user_id', $user->id)->where('status', 'Selesai')->count(),
     ];
 
+    // MENGAMBIL 5 PENGADUAN TERBARU (INI YANG BARU)
+    $latest_complaints = Complaint::where('user_id', $user->id)
+                                  ->latest() // Mengurutkan dari yang terbaru
+                                  ->take(5)    // Mengambil 5 data
+                                  ->get();
+
+    // Mengirim semua data yang dibutuhkan ke view
     return view('dashboard', [
         'stats' => $stats,
         'user'  => $user,
+        'latest_complaints' => $latest_complaints, // Kirim data pengaduan terbaru
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -94,7 +106,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings/{section?}', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::patch('/settings/profile', [SettingsController::class, 'update'])->name('settings.profile.update');
     Route::post('/settings/photo', [SettingsController::class, 'updatePhoto'])->name('settings.photo.update');
-    
+    Route::patch('/settings/2fa', [SettingsController::class, 'updateTwoFactorAuthentication'])->name('settings.2fa.update');
+
+    Route::delete('/settings/delete-account', [SettingsController::class, 'destroy'])->name('settings.account.destroy');
     // PERBAIKAN: Nama rute ini diubah agar sesuai dengan yang dipanggil oleh form.
     Route::patch('/settings/notifications', [SettingsController::class, 'updateNotifications'])->name('settings.notifications.update');
     

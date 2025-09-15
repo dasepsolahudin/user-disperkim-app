@@ -177,5 +177,27 @@ class SettingsController extends Controller
 
         return redirect()->route('settings.edit', 'trash')->with('status', 'trash-emptied');
     }
+
+    public function updateTwoFactorAuthentication(Request $request): JsonResponse
+    {
+        $request->validate([
+            'sms' => 'sometimes|boolean',
+            'email' => 'sometimes|boolean',
+        ]);
+
+        $user = $request->user();
+
+        if ($request->has('sms')) {
+            $user->two_factor_sms_enabled = $request->sms;
+        }
+
+        if ($request->has('email')) {
+            $user->two_factor_email_enabled = $request->email;
+        }
+
+        $user->save();
+
+        return response()->json(['status' => 'success', 'message' => 'Pengaturan 2FA diperbarui.']);
+    }
 }
 

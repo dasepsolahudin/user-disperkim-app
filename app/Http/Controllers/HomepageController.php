@@ -2,39 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\News;
-use App\Models\User; // <-- TAMBAHKAN INI
 use App\Models\Complaint;
-use App\Models\Announcement;
+use App\Models\News;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class HomepageController extends Controller
 {
-    public function index()
+    /**
+     * Menampilkan halaman utama (landing page).
+     */
+    public function index(): View
     {
-        // Ambil 4 berita terbaru yang sudah 'published'
-        $latestNews = News::where('status', 'published')
-                            ->latest('published_at')
-                            ->take(4)
-                            ->get();
-
-        // Ambil pengumuman yang sedang aktif
-        $activeAnnouncement = Announcement::where('starts_at', '<=', now())
-                                            ->where('ends_at', '>=', now())
-                                            ->first();
-
-        // Ambil data statistik pengaduan
-        $complaintStats = [
-            'total' => Complaint::count(),
+        // Mengambil data statistik
+        $stats = [
+            'total'       => Complaint::count(),
             'in_progress' => Complaint::where('status', 'Pengerjaan')->count(),
-            'completed' => Complaint::where('status', 'Selesai')->count(),
-            'active_users' => User::count(), // <-- TAMBAHKAN DATA PENGGUNA AKTIF
+            'completed'   => Complaint::where('status', 'Selesai')->count(),
+            'users'       => User::count(),
         ];
-        // Kirim semua data ke view 'welcome'
+
+        // Mengambil 4 berita terbaru
+        $latestNews = News::where('status', 'published')
+                           ->orderBy('published_at', 'desc')
+                           ->limit(4)
+                           ->get();
+
+        // Mengirim data ke view
         return view('welcome', [
-            'latestNews' => $latestNews,
-            'activeAnnouncement' => $activeAnnouncement,
-            'complaintStats' => $complaintStats,
+            'stats' => $stats,
+            'news' => $latestNews,
         ]);
     }
 }
