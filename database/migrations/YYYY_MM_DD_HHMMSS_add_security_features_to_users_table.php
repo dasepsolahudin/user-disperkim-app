@@ -12,8 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Menambahkan kolom 'role' dengan nilai default 'user'
-            $table->string('role')->after('password')->default('user');
+            // Kolom untuk Autentikasi Dua Faktor (2FA)
+            $table->string('two_factor_method')->default('none')->after('password');
+            $table->string('phone_number')->nullable()->unique()->after('email');
+            
+            // Kolom untuk Notifikasi Keamanan
+            $table->json('security_notifications')->nullable()->after('notification_preferences');
         });
     }
 
@@ -23,7 +27,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
+            $table->dropColumn(['two_factor_method', 'phone_number', 'security_notifications']);
         });
     }
 };

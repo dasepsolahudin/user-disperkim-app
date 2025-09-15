@@ -11,6 +11,7 @@ use App\Models\Complaint;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\LanguageController; 
+use App\Http\Controllers\TrashController;
 
 // Rute untuk Halaman Utama
 Route::get('/', [HomepageController::class, 'index']);
@@ -25,6 +26,7 @@ Route::delete('/users/{user}', [UserController::class, 'destroy']);
 Route::get('/', [HomepageController::class, 'index'])->name('homepage');    
 Route::post('/language', [LanguageController::class, 'switchLang'])->name('language.switch'); // <-- Rute baru untuk bahasa
 Route::get('/pengaduan/{complaint}', [PengaduanController::class, 'show'])->name('pengaduan.show');
+Route::resource('pengaduan', PengaduanController::class)->parameters(['pengaduan' => 'complaint']);
 
 
 Route::get('lang/{locale}', function ($locale) {
@@ -65,6 +67,16 @@ Route::middleware('auth')->group(function () {
 
     // ... rute lainnya
 // ...
+   Route::middleware('auth')->group(function () {
+    // ... rute-rute Anda yang lain ...
+
+     // === PERBAIKAN: SEMUA RUTE SAMPAH DILETAKKAN DI SINI DENGAN NAMA YANG BENAR ===
+    // Rute-rute ini akan menunjuk ke SettingsController dan menggunakan nama 'settings.trash.*'
+    Route::get('/settings/trash/{id}/show', [SettingsController::class, 'showTrashed'])->name('settings.trash.show');
+    Route::put('/settings/trash/{id}/restore', [SettingsController::class, 'restore'])->name('settings.trash.restore');
+    Route::delete('/settings/trash/{id}/delete', [SettingsController::class, 'forceDelete'])->name('settings.trash.forceDelete');
+    Route::delete('/settings/trash/empty', [SettingsController::class, 'emptyTrash'])->name('settings.trash.empty');
+});
 
     
 
@@ -111,6 +123,7 @@ Route::prefix('pengaturan')->group(function () {
     Route::get('/profil', [SettingController::class, 'profile'])->name('settings.profile');
     Route::get('/keamanan', [SettingController::class, 'security'])->name('settings.security');
     Route::patch('/settings/notification-preferences', [SettingsController::class, 'updateNotificationPreferences'])->name('settings.updateNotificationPreferences');
+    Route::get('/settings/{section?}', [SettingsController::class, 'edit'])->name('settings.edit');
     });
 // Rute autentikasi bawaan Laravel
 require __DIR__.'/auth.php';

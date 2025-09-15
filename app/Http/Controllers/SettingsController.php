@@ -8,47 +8,43 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use App\Models\Complaint;
+use Illuminate\Support\Facades\Redirect; // Pastikan Redirect di-import
 
 class SettingsController extends Controller
 {
-
-
-     public function updateNotificationPreferences(Request $request)
-    {
-        $user = Auth::user();
-
-        $notificationPreferences = [
-            'new_complaint' => $request->has('notification_preferences.new_complaint'),
-            'complaint_approved' => $request->has('notification_preferences.complaint_approved'),
-            'complaint_rejected' => $request->has('notification_preferences.complaint_rejected'),
-        ];
-
-        $user->notification_preferences = $notificationPreferences;
-        $user->save();
-
-        return back()->with('status', 'notification-preferences-updated');
-    }
     /**
      * Menampilkan halaman pengaturan dengan section yang aktif.
      */
     public function edit(Request $request, $section = 'profile'): View
     {
-       // PERBAIKAN: Tambahkan 'delete' ke halaman yang valid
-    $validPages = ['profile', 'security', 'notifications', 'appearance', 'delete'];
-    if (!in_array($section, $validPages)) {
-        $section = 'profile'; 
-    }
+        // PERBAIKAN: Tambahkan 'trash' ke daftar halaman yang valid
+        $validPages = ['profile', 'security', 'notifications', 'appearance', 'delete', 'trash'];
+        if (!in_array($section, $validPages)) {
+            $section = 'profile';
+        }
 
-    return view('settings.edit', [
-        'user' => $request->user(),
-        'section' => $section, 
-    ]);
+        $data = [
+            'user' => $request->user(),
+            'section' => $section,
+        ];
+
+        // PERBAIKAN: Jika section adalah 'trash', ambil data pengaduan dari sampah
+        if ($section === 'trash') {
+            $data['trashedComplaints'] = Complaint::onlyTrashed()
+                ->where('user_id', $request->user()->id)
+                ->latest('deleted_at')
+                ->paginate(10, ['*'], 'trash_page');
+        }
+
+        return view('settings.edit', $data);
     }
 
     /**
      * Memperbarui informasi profil pengguna.
+     * CATATAN: Mengubah nama fungsi 'update' menjadi 'updateProfile' agar lebih jelas
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function updateProfile(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
 
@@ -85,7 +81,7 @@ class SettingsController extends Controller
     /**
      * Memperbarui preferensi notifikasi pengguna.
      */
-    public function updateNotifications(Request $request): RedirectResponse // PERBAIKAN: Mengubah return type menjadi RedirectResponse
+    public function updateNotifications(Request $request): RedirectResponse
     {
         $request->validate([
             'notifications_new_complaint' => 'sometimes|boolean',
@@ -102,8 +98,7 @@ class SettingsController extends Controller
 
         $user->notification_preferences = $preferences;
         $user->save();
-
-        // PERBAIKAN: Menghapus kode berlebihan dan hanya mengembalikan redirect
+        
         return back()->with('status', 'notification-preferences-updated');
     }
 
@@ -128,7 +123,59 @@ class SettingsController extends Controller
         return redirect()->to('/');
     }
 
-    // CATATAN: Metode 'store' dan 'index' untuk pengaduan telah dihapus 
-    // karena tidak relevan di controller ini dan sudah ditangani oleh ComplaintController.
-    // Ini membuat kode lebih bersih dan terorganisir.
+    // ==========================================================
+    // FUNGSI-FUNGSI BARU UNTUK FITUR SAMPAH
+    // ==========================================================
+
+    /**
+     * Menampilkan detail pengaduan yang ada di sampah.
+     */
+    public function showTrashed(string $id): View
+    {
+        $complaint = Complaint::onlyTrashed()->where('user_id', Auth::id())->findOrFail($id);
+        return view('complaints.show', compact('complaint'));
+    }
+
+    /**
+     * Memulihkan pengaduan dari sampah.
+     */
+    public function restore(string $id): RedirectResponse
+    {
+        $complaint = Complaint::onlyTrashed()->where('user_id', Auth::id())->findOrFail($id);
+        $complaint->restore();
+        return redirect()->route('settings.edit', 'trash')->with('status', 'complaint-restored');
+    }
+
+    /**
+     * Menghapus pengaduan secara permanen dari sampah.
+     */
+    public function forceDelete(string $id): RedirectResponse
+    {
+        $complaint = Complaint::onlyTrashed()->where('user_id', Auth::id())->findOrFail($id);
+        
+        foreach ($complaint->photos as $photo) {
+            Storage::disk('public')->delete($photo->path);
+        }
+        $complaint->forceDelete();
+
+        return redirect()->route('settings.edit', 'trash')->with('status', 'complaint-deleted-permanently');
+    }
+
+    /**
+     * Mengosongkan sampah dengan menghapus semua pengaduan yang di-soft-delete.
+     */
+    public function emptyTrash(): RedirectResponse
+    {
+        $trashedComplaints = Complaint::onlyTrashed()->where('user_id', Auth::id())->get();
+
+        foreach ($trashedComplaints as $complaint) {
+            foreach ($complaint->photos as $photo) {
+                Storage::disk('public')->delete($photo->path);
+            }
+            $complaint->forceDelete();
+        }
+
+        return redirect()->route('settings.edit', 'trash')->with('status', 'trash-emptied');
+    }
 }
+

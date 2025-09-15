@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 
-class ComplaintController extends Controller
+class PengaduanController extends Controller
 {
     /**
      * Menampilkan daftar pengaduan milik pengguna.
@@ -17,39 +17,16 @@ class ComplaintController extends Controller
     public function index(): View
     {
         $complaints = Complaint::where('user_id', auth()->id())->latest()->paginate(10);
+        // Menggunakan view yang sudah ada untuk complaints
         return view('complaints.index', compact('complaints'));
     }
-
-    /**
-     * Menghapus pengaduan (memindahkannya ke Sampah).
-     */
-    public function destroy(Complaint $complaint): RedirectResponse
-    {
-        // 1. Pastikan hanya pemilik yang bisa menghapus
-        if ($complaint->user_id !== auth()->id()) {
-            abort(403, 'Anda tidak diizinkan untuk menghapus laporan ini.');
-        }
-
-        // 2. Hapus foto-foto terkait dari storage (opsional tapi direkomendasikan)
-        // foreach ($complaint->photos as $photo) {
-        //     Storage::disk('public')->delete($photo->path);
-        // }
-        // $complaint->photos()->delete();
-
-
-        // 3. Jalankan soft delete untuk memindahkan ke Sampah
-        $complaint->delete();
-
-        return redirect()->route('complaints.index')
-                         ->with('success', 'Pengaduan berhasil dipindahkan ke Sampah.');
-    }
-
 
     /**
      * Menampilkan halaman untuk memilih kategori pengaduan.
      */
     public function create(): View
     {
+        // Menggunakan view yang sudah ada untuk complaints
         return view('complaints.create');
     }
 
@@ -62,7 +39,7 @@ class ComplaintController extends Controller
         if (!in_array($category, $allowedCategories)) {
             abort(404);
         }
-
+        // Menggunakan view yang sudah ada untuk complaints
         return view('complaints.form', compact('category'));
     }
 
@@ -71,10 +48,6 @@ class ComplaintController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        // --- PERBAIKAN DIMULAI DI SINI ---
-        // Blok kode yang salah telah dihapus dari bagian ini.
-
-        // 1. Validasi Input
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -89,7 +62,6 @@ class ComplaintController extends Controller
             'photos.*.mimes' => 'Format gambar yang diizinkan adalah jpeg, png, jpg, atau gif.',
         ]);
 
-        // 2. Buat data pengaduan utama
         $complaint = Complaint::create([
             'user_id' => Auth::id(),
             'title' => $validated['title'],
@@ -99,7 +71,6 @@ class ComplaintController extends Controller
             'status' => 'Baru',
         ]);
 
-        // 3. Proses dan simpan setiap foto yang diunggah
         if ($request->hasFile('photos')) {
             foreach ($request->file('photos') as $photoFile) {
                 $path = $photoFile->store('complaint-photos', 'public');
@@ -107,7 +78,6 @@ class ComplaintController extends Controller
             }
         }
 
-        // 4. Proses foto KTP jika ada
         if ($request->hasFile('ktp_photo')) {
             $user = Auth::user();
             if ($user->ktp_photo) {
@@ -117,8 +87,7 @@ class ComplaintController extends Controller
             $user->update(['ktp_photo' => $ktpPath]);
         }
 
-        // 5. Arahkan kembali pengguna dengan pesan sukses
-        return redirect()->route('complaints.index')->with('success', 'Laporan Anda berhasil dikirim!');
+        return redirect()->route('pengaduan.index')->with('success', 'Laporan Anda berhasil dikirim!');
     }
 
     /**
@@ -126,8 +95,7 @@ class ComplaintController extends Controller
      */
     public function show(Complaint $complaint): View
     {
-        // Memastikan pengguna hanya bisa melihat pengaduannya sendiri
-        if ($complaint->user_id !== auth()->id()) {
+        if ($complaint->user_id !== auth()->id() && !Auth::user()->is_admin) {
             abort(403);
         }
         return view('complaints.show', compact('complaint'));
@@ -138,11 +106,9 @@ class ComplaintController extends Controller
      */
     public function edit(Complaint $complaint): View
     {
-        // Memastikan hanya pemilik yang bisa mengakses halaman edit
         if ($complaint->user_id !== auth()->id()) {
             abort(403, 'Anda tidak diizinkan untuk mengedit laporan ini.');
         }
-
         return view('complaints.edit', compact('complaint'));
     }
 
@@ -151,7 +117,6 @@ class ComplaintController extends Controller
      */
     public function update(Request $request, Complaint $complaint): RedirectResponse
     {
-        // Memastikan hanya pemilik yang bisa memperbarui laporan
         if ($complaint->user_id !== auth()->id()) {
             abort(403, 'Anda tidak diizinkan untuk mengedit laporan ini.');
         }
@@ -160,36 +125,38 @@ class ComplaintController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'location_text' => 'nullable|string|max:255',
-            // Foto tidak wajib saat update, tapi jika ada harus array
             'photos' => 'nullable|array|min:3',
             'photos.*' => 'image|max:2048',
-        ], [
-            'photos.min' => 'Jika ingin mengganti foto, unggah minimal 3 foto baru.',
-        ]);
+        ], ['photos.min' => 'Jika ingin mengganti foto, unggah minimal 3 foto baru.']);
 
-        // Update data teks pada pengaduan
-        $complaint->update([
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'location_text' => $validated['location_text'],
-        ]);
+        $complaint->update($validated);
 
-        // Cek jika ada foto baru yang diunggah
         if ($request->hasFile('photos')) {
-            // 1. Hapus semua foto lama dari storage
             foreach ($complaint->photos as $photo) {
                 Storage::disk('public')->delete($photo->path);
             }
-            // 2. Hapus relasi foto lama dari database
             $complaint->photos()->delete();
 
-            // 3. Unggah dan simpan foto yang baru
             foreach ($request->file('photos') as $photoFile) {
                 $path = $photoFile->store('complaint-photos', 'public');
                 $complaint->photos()->create(['path' => $path]);
             }
         }
 
-        return redirect()->route('complaints.index')->with('success', 'Laporan berhasil diperbarui!');
+        return redirect()->route('pengaduan.index')->with('success', 'Laporan berhasil diperbarui!');
+    }
+
+    /**
+     * Menghapus pengaduan (memindahkannya ke Sampah).
+     */
+    public function destroy(Complaint $complaint): RedirectResponse
+    {
+        if ($complaint->user_id !== auth()->id()) {
+            abort(403, 'Anda tidak diizinkan untuk menghapus laporan ini.');
+        }
+        
+        $complaint->delete();
+
+        return redirect()->route('pengaduan.index')->with('success', 'Pengaduan berhasil dipindahkan ke Sampah.');
     }
 }

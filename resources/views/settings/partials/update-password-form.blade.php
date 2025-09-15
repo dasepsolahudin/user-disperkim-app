@@ -1,39 +1,69 @@
-<section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-            {{ __('Update Password') }}
-        </h2>
+<section class="max-w-xl" x-data="{ showCurrent: false, showNew: false, showConfirmation: false }">
+    {{-- HEADER --}}
+    <div class="flex items-start gap-4">
+        <div class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/50 rounded-lg flex items-center justify-center">
+            <i class="fas fa-lock fa-lg text-red-500 dark:text-red-400"></i>
+        </div>
+        <div>
+            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
+                {{ __('Ubah Password') }}
+            </h2>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                {{ __('Perbarui password Anda untuk menjaga keamanan akun.') }}
+            </p>
+        </div>
+    </div>
 
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __('Pastikan akun Anda menggunakan kata sandi yang panjang dan acak agar tetap aman.') }}
-        </p>
-    </header>
-
-    {{-- KODE YANG DIPERBAIKI ADA DI BARIS INI --}}
-    <form method="post" action="{{ route('password.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('password.update') }}" class="mt-8 space-y-6">
         @csrf
         @method('put')
 
-        <div>
-            <x-input-label for="current_password" value="{{ __('Current Password') }}" />
-            <x-text-input id="current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
+        {{-- Password Saat Ini --}}
+        <div class="relative">
+            <x-input-label for="current_password" :value="__('Password Saat Ini')" />
+            <x-text-input id="current_password" name="current_password" x-bind:type="showCurrent ? 'text' : 'password'" class="mt-1 block w-full pr-10" autocomplete="current-password" placeholder="Masukkan password saat ini" />
+            <button type="button" @click="showCurrent = !showCurrent" class="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-sm leading-5 text-gray-500 dark:text-gray-400">
+                <i class="fas" x-bind:class="{ 'fa-eye-slash': showCurrent, 'fa-eye': !showCurrent }"></i>
+            </button>
             <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
         </div>
 
-        <div>
-            <x-input-label for="password" value="{{ __('New Password') }}" />
-            <x-text-input id="password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+        {{-- Password Baru --}}
+        <div class="relative">
+            <x-input-label for="password" :value="__('Password Baru')" />
+            <x-text-input id="password" name="password" x-bind:type="showNew ? 'text' : 'password'" class="mt-1 block w-full pr-10" autocomplete="new-password" placeholder="Masukkan password baru"/>
+            <button type="button" @click="showNew = !showNew" class="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-sm leading-5 text-gray-500 dark:text-gray-400">
+                <i class="fas" x-bind:class="{ 'fa-eye-slash': showNew, 'fa-eye': !showNew }"></i>
+            </button>
             <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
         </div>
 
-        <div>
-            <x-input-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-            <x-text-input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" />
+        {{-- Konfirmasi Password Baru --}}
+        <div class="relative">
+            <x-input-label for="password_confirmation" :value="__('Konfirmasi Password Baru')" />
+            <x-text-input id="password_confirmation" name="password_confirmation" x-bind:type="showConfirmation ? 'text' : 'password'" class="mt-1 block w-full pr-10" autocomplete="new-password" placeholder="Konfirmasi password baru"/>
+            <button type="button" @click="showConfirmation = !showConfirmation" class="absolute inset-y-0 right-0 top-6 pr-3 flex items-center text-sm leading-5 text-gray-500 dark:text-gray-400">
+                <i class="fas" x-bind:class="{ 'fa-eye-slash': showConfirmation, 'fa-eye': !showConfirmation }"></i>
+            </button>
             <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
         </div>
 
+        {{-- Tips Password Aman --}}
+        <div class="p-4 border-l-4 border-blue-400 bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 rounded-r-lg">
+            <h4 class="font-bold">Tips Password Aman:</h4>
+            <ul class="mt-2 text-sm list-disc list-inside space-y-1">
+                <li>Minimal 8 karakter dengan kombinasi huruf, angka, dan simbol.</li>
+                <li>Hindari menggunakan informasi pribadi.</li>
+                <li>Gunakan password yang unik untuk setiap akun.</li>
+            </ul>
+        </div>
+
+
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Simpan') }}</x-primary-button>
+            <x-primary-button>
+                <i class="fas fa-save mr-2"></i>
+                {{ __('Ubah Password') }}
+            </x-primary-button>
 
             @if (session('status') === 'password-updated')
                 <p
@@ -42,7 +72,7 @@
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Tersimpan.') }}</p>
+                >{{ __('Berhasil disimpan.') }}</p>
             @endif
         </div>
     </form>

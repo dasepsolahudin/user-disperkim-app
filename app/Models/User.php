@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany; // Pastikan ini di-import
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -15,26 +15,23 @@ class User extends Authenticatable
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
-     * 
-     
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'notification_preferences' => 'array',
-    ];
     protected $fillable = [
         'name',
         'email',
         'password',
-        'photo', // Sudah ada
-        'kabupaten', // Tambahkan ini
-        'kecamatan', // Tambahkan ini
-        'desa',      // Tambahkan ini
+        'role',
+        'photo',
+        'ktp_photo',
+        'province',
+        'city', // <-- Ini adalah perbaikan utamanya
+        'district',
+        'village',
+        'rt',
+        'rw',
+        'full_address',
+        'notification_preferences',
     ];
-    
 
     /**
      * The attributes that should be hidden for serialization.
@@ -56,10 +53,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'notification_push' => 'boolean',
-            'notification_email' => 'boolean',
-            'notification_sms' => 'boolean',
-            'auto_save' => 'boolean',
+            'notification_preferences' => 'array', // Pastikan cast untuk JSON
         ];
     }
 
@@ -71,3 +65,4 @@ class User extends Authenticatable
         return $this->hasMany(Complaint::class);
     }
 }
+

@@ -17,6 +17,20 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('role')->default('user');
+            
+            // Kolom-kolom yang digabungkan dari file migrasi lain
+            $table->string('photo')->nullable();
+            $table->string('ktp_photo')->nullable();
+            $table->string('province')->nullable();
+            $table->string('city')->nullable();
+            $table->string('district')->nullable();
+            $table->string('village')->nullable();
+            $table->string('rt')->nullable();
+            $table->string('rw')->nullable();
+            $table->text('full_address')->nullable();
+            $table->json('notification_preferences')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });
@@ -47,3 +61,4 @@ return new class extends Migration
         Schema::dropIfExists('sessions');
     }
 };
+
