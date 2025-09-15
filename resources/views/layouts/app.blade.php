@@ -12,6 +12,10 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    {{-- Penambahan Pustaka Peta (LeafletJS) --}}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <script>
@@ -23,20 +27,14 @@
     </script>
 </head>
 <body class="font-sans antialiased bg-slate-50 dark:bg-black">
-    {{-- 
-        PENYESUAIAN UTAMA ADA DI SINI. 
-        x-data diubah untuk mengelola sidebar di desktop (sidebarOpen) 
-        dan di mobile (mobileSidebarOpen) secara terpisah.
-    --}}
     <div x-data="{ sidebarOpen: true, mobileSidebarOpen: false }">
         
         {{-- START: Mobile Sidebar Overlay --}}
         <div x-show="mobileSidebarOpen" class="fixed inset-0 flex z-40 lg:hidden" x-cloak>
-            {{-- Backdrop --}}
-            <div @click="mobileSidebarOpen = false" class="fixed inset-0 bg-black opacity-30" aria-hidden="true"></div>
+            <div @click="mobileSidebarOpen = false" class="fixed inset-0 bg-black bg-opacity-50" aria-hidden="true"></div>
             
-            {{-- Mobile Sidebar Panel --}}
             <aside class="relative w-64 flex-shrink-0 bg-white dark:bg-black border-r border-slate-200 dark:border-gray-800 flex flex-col">
+                {{-- Menggunakan @include untuk menghindari duplikasi kode sidebar --}}
                 @include('layouts.sidebar-content')
             </aside>
         </div>
@@ -44,7 +42,7 @@
 
         {{-- START: Desktop Sidebar --}}
         <aside
-            class="hidden lg:flex fixed top-0 left-0 h-full z-10 w-64 flex-shrink-0 flex-col transition-all duration-300"
+            class="hidden lg:flex fixed top-0 left-0 h-full z-30 w-64 flex-shrink-0 flex-col transition-all duration-300"
             :class="{ 'w-64': sidebarOpen, 'w-20': !sidebarOpen }"
         >
             @include('layouts.sidebar-content')
@@ -52,21 +50,24 @@
         {{-- END: Desktop Sidebar --}}
 
         {{-- Main Content Area --}}
-        <div class="flex-1 flex flex-col transition-all duration-300" 
-             :class="{ 'lg:ml-64': sidebarOpen, 'lg:ml-20': !sidebarOpen }">
+        <div class="lg:pl-64 flex flex-col flex-1 transition-all duration-300" 
+             :class="{ 'lg:pl-64': sidebarOpen, 'lg:pl-20': !sidebarOpen }">
             
             <header class="flex items-center justify-between h-16 px-4 sm:px-6 bg-white dark:bg-black border-b border-slate-200 dark:border-gray-800 sticky top-0 z-20">
-                {{-- Tombol Hamburger untuk Mobile --}}
-                <button @click.stop="mobileSidebarOpen = !mobileSidebarOpen" class="lg:hidden p-2 rounded-md text-slate-500 hover:bg-slate-100 dark:text-gray-400 dark:hover:bg-gray-900 focus:outline-none">
-                    <i class="fas fa-bars"></i>
-                </button>
-
-                {{-- Header Slot atau Judul Default (diberi div agar tidak terpengaruh tombol hamburger) --}}
-                <div>
+                {{-- Tombol untuk membuka sidebar di mobile dan menutup di desktop --}}
+                <div class="flex items-center">
+                    <button @click.stop="mobileSidebarOpen = !mobileSidebarOpen" class="lg:hidden p-2 rounded-md text-slate-500 hover:bg-slate-100 dark:text-gray-400 dark:hover:bg-gray-900 focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <button @click="sidebarOpen = !sidebarOpen" class="hidden lg:block p-2 rounded-md text-slate-500 hover:bg-slate-100 dark:text-gray-400 dark:hover:bg-gray-900 focus:outline-none">
+                        <i class="fas" :class="{ 'fa-chevron-left': sidebarOpen, 'fa-chevron-right': !sidebarOpen }"></i>
+                    </button>
+                </div>
+                
+                {{-- Slot Header untuk Judul Halaman --}}
+                <div class="flex-1 text-center lg:text-left lg:ml-4">
                     @if (isset($header))
                         {{ $header }}
-                    @else
-                        <h1 class="text-lg font-semibold text-slate-800 dark:text-gray-200">{{ __('Sistem Informasi Pengaduan') }}</h1>
                     @endif
                 </div>
                 
@@ -98,5 +99,6 @@
             </main>
         </div>
     </div>
+    @stack('scripts')
 </body>
 </html>

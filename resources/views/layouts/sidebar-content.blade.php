@@ -33,6 +33,14 @@
         <i class="fas fa-folder-open fa-fw w-6 text-center"></i>
         <span class="ml-3" x-show="sidebarOpen">{{ __('Pengaduan Saya') }}</span>
     </a>
+    
+    {{-- PENAMBAHAN MENU PETA --}}
+    <a href="{{ route('map') }}"
+       class="flex items-center p-3 rounded-lg text-sm font-medium transition-colors
+              {{ request()->routeIs('map') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-900 hover:text-white' }}">
+        <i class="fas fa-map-marked-alt fa-fw w-6 text-center"></i>
+        <span class="ml-3" x-show="sidebarOpen">{{ __('Peta') }}</span>
+    </a>
 
     <div class="pt-2"><hr class="border-t border-slate-200 dark:border-gray-800"></div>
 

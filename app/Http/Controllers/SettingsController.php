@@ -18,32 +18,38 @@ class SettingsController extends Controller
      */
     public function edit(Request $request, $section = 'profile'): View
     {
-        // PERBAIKAN: Tambahkan 'trash' ke daftar halaman yang valid
         $validPages = ['profile', 'security', 'notifications', 'appearance', 'delete', 'trash'];
         if (!in_array($section, $validPages)) {
             $section = 'profile';
         }
 
+        // ============================================================
+        // PERBAIKAN UTAMA ADA DI SINI
+        // ============================================================
+        
+        // Data dasar yang selalu dikirim ke view
         $data = [
             'user' => $request->user(),
             'section' => $section,
+            // Inisialisasi 'trashedComplaints' dengan koleksi kosong.
+            // Ini memastikan variabelnya selalu ada.
+            'trashedComplaints' => collect(), 
         ];
 
-        // PERBAIKAN: Jika section adalah 'trash', ambil data pengaduan dari sampah
+        // Jika section adalah 'trash', baru kita isi dengan data dari database
         if ($section === 'trash') {
             $data['trashedComplaints'] = Complaint::onlyTrashed()
                 ->where('user_id', $request->user()->id)
                 ->latest('deleted_at')
                 ->paginate(10, ['*'], 'trash_page');
         }
-
+        
+        // Kirim array $data yang sudah lengkap ke view
         return view('settings.edit', $data);
     }
 
-    /**
-     * Memperbarui informasi profil pengguna.
-     * CATATAN: Mengubah nama fungsi 'update' menjadi 'updateProfile' agar lebih jelas
-     */
+    // ... sisa method di controller Anda tidak perlu diubah ...
+
     public function updateProfile(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
@@ -57,9 +63,6 @@ class SettingsController extends Controller
         return redirect()->route('settings.edit', 'profile')->with('status', 'profile-updated');
     }
 
-    /**
-     * Memperbarui foto profil pengguna.
-     */
     public function updatePhoto(Request $request): RedirectResponse
     {
         $request->validate([
@@ -78,9 +81,6 @@ class SettingsController extends Controller
         return back()->with('status', 'photo-updated');
     }
 
-    /**
-     * Memperbarui preferensi notifikasi pengguna.
-     */
     public function updateNotifications(Request $request): RedirectResponse
     {
         $request->validate([
@@ -102,9 +102,6 @@ class SettingsController extends Controller
         return back()->with('status', 'notification-preferences-updated');
     }
 
-    /**
-     * Menghapus akun pengguna.
-     */
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [
@@ -122,23 +119,15 @@ class SettingsController extends Controller
 
         return redirect()->to('/');
     }
+    
+    // ... sisa fungsi untuk fitur sampah ...
 
-    // ==========================================================
-    // FUNGSI-FUNGSI BARU UNTUK FITUR SAMPAH
-    // ==========================================================
-
-    /**
-     * Menampilkan detail pengaduan yang ada di sampah.
-     */
     public function showTrashed(string $id): View
     {
         $complaint = Complaint::onlyTrashed()->where('user_id', Auth::id())->findOrFail($id);
         return view('complaints.show', compact('complaint'));
     }
 
-    /**
-     * Memulihkan pengaduan dari sampah.
-     */
     public function restore(string $id): RedirectResponse
     {
         $complaint = Complaint::onlyTrashed()->where('user_id', Auth::id())->findOrFail($id);
@@ -146,9 +135,6 @@ class SettingsController extends Controller
         return redirect()->route('settings.edit', 'trash')->with('status', 'complaint-restored');
     }
 
-    /**
-     * Menghapus pengaduan secara permanen dari sampah.
-     */
     public function forceDelete(string $id): RedirectResponse
     {
         $complaint = Complaint::onlyTrashed()->where('user_id', Auth::id())->findOrFail($id);
@@ -161,9 +147,6 @@ class SettingsController extends Controller
         return redirect()->route('settings.edit', 'trash')->with('status', 'complaint-deleted-permanently');
     }
 
-    /**
-     * Mengosongkan sampah dengan menghapus semua pengaduan yang di-soft-delete.
-     */
     public function emptyTrash(): RedirectResponse
     {
         $trashedComplaints = Complaint::onlyTrashed()->where('user_id', Auth::id())->get();
@@ -200,4 +183,3 @@ class SettingsController extends Controller
         return response()->json(['status' => 'success', 'message' => 'Pengaturan 2FA diperbarui.']);
     }
 }
-

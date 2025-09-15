@@ -12,6 +12,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\LanguageController; 
 use App\Http\Controllers\TrashController;
+use App\Http\Controllers\MapController;
 
 // Rute untuk Halaman Utama
 Route::get('/', [HomepageController::class, 'index']);
@@ -63,6 +64,8 @@ Route::get('/dashboard', function () {
         'latest_complaints' => $latest_complaints, // Kirim data pengaduan terbaru
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/map', [MapController::class, 'index'])->middleware(['auth', 'verified'])->name('map');
 
 // Ini adalah komentar untuk testing git
 // GRUP UNTUK PENGGUNA YANG SUDAH LOGIN
