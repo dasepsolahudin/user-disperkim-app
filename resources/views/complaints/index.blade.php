@@ -1,97 +1,124 @@
+{{-- resources/views/complaints/index.blade.php --}}
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Daftar Pengaduan Saya') }}
-        </h2>
-    </x-slot>
+    <div class="space-y-6">
+        {{-- START: HEADER KUSTOM --}}
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Pengaduan Masyarakat</h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Kelola dan submit pengaduan untuk perbaikan layanan
+            </p>
+        </div>
+        {{-- END: HEADER KUSTOM --}}
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+        {{-- START: NAVIGASI TAB --}}
+        <div class="bg-white dark:bg-gray-800 p-1.5 rounded-lg shadow-sm flex items-center space-x-2">
+            {{-- Tombol Aktif --}}
+            <span class="w-1/2 text-center py-2 px-4 bg-indigo-600 text-white rounded-md font-semibold text-sm cursor-default">
+                <i class="fas fa-list-ul mr-2"></i>
+                Daftar Pengaduan
+            </span>
+            {{-- Tombol Inaktif (Gaya diperbaiki agar sama persis) --}}
+            <a href="{{ route('complaints.create') }}" class="w-1/2 text-center py-2 px-4 text-indigo-600 bg-white dark:bg-gray-800 border border-indigo-600 rounded-md font-semibold text-sm hover:bg-indigo-50 dark:hover:bg-gray-700 transition">
+                <i class="fas fa-plus mr-2"></i>
+                Buat Pengaduan
+            </a>
+        </div>
+        {{-- END: NAVIGASI TAB --}}
 
-                    {{-- Tombol navigasi --}}
-                    <div class="flex justify-between mb-4">
-                        {{-- Tombol Kembali --}}
-                        <a href="{{ url()->previous() }}" 
-                           class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150">
-                             Kembali
-                        </a>
-
-                        {{-- Tombol Buat Pengaduan Baru --}}
-                        <a href="{{ route('complaints.create') }}" 
-                           class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150">
-                            Buat Pengaduan Baru
-                        </a>
+        {{-- START: FILTER DAN PENCARIAN --}}
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="md:col-span-2">
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </span>
+                        <input type="text" placeholder="Cari pengaduan..." class="block w-full pl-10 pr-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm">
                     </div>
-
-                    {{-- Tabel untuk menampilkan data --}}
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul Pengaduan</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Lapor</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse ($complaints as $complaint)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $complaint->title }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $complaint->category }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $complaint->created_at->format('d F Y') }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                @if($complaint->status == 'Baru') bg-blue-100 text-blue-800 
-                                                @elseif($complaint->status == 'Verifikasi') bg-yellow-100 text-yellow-800
-                                                @elseif($complaint->status == 'Pengerjaan') bg-orange-100 text-orange-800
-                                                @else bg-green-100 text-green-800 @endif">
-                                                {{ $complaint->status }}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <div class="flex space-x-2">
-                                                <a href="{{ route('complaints.show', $complaint->id) }}" 
-                                                   class="px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold hover:bg-blue-200 transition">
-                                                    Detail
-                                                </a>
-                                                <a href="{{ route('complaints.edit', $complaint->id) }}" 
-                                                   class="px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-semibold hover:bg-green-200 transition">
-                                                    Edit
-                                                </a>
-                                                <form action="{{ route('complaints.destroy', $complaint->id) }}" method="POST" onsubmit="return confirm('Yakin mau hapus pengaduan ini?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" 
-                                                        class="px-3 py-1 rounded-full bg-red-100 text-red-800 text-xs font-semibold hover:bg-red-200 transition">
-                                                        Hapus
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                            Anda belum membuat pengaduan.
-                                        </td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
+                </div>
+                <div>
+                    <select class="block w-full pl-3 pr-10 py-2 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm">
+                        <option>Semua Status</option>
+                        <option>Baru</option>
+                        <option>Verifikasi</option>
+                        <option>Pengerjaan</option>
+                        <option>Selesai</option>
+                        <option>Ditolak</option>
+                    </select>
                 </div>
             </div>
+        </div>
+        {{-- END: FILTER DAN PENCARIAN --}}
+
+        {{-- START: DAFTAR PENGADUAN --}}
+        <div class="space-y-4">
+            @forelse ($complaints as $complaint)
+                @php
+                    // Logika untuk menentukan warna badge status
+                    $statusClass = '';
+                    switch ($complaint->status) {
+                        case 'Baru':
+                            $statusClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+                            break;
+                        case 'Verifikasi':
+                            $statusClass = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+                            break;
+                        case 'Pengerjaan':
+                            $statusClass = 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300';
+                            break;
+                        case 'Selesai':
+                            $statusClass = 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+                            break;
+                        case 'Ditolak':
+                            $statusClass = 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+                            break;
+                        default:
+                            $statusClass = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+                            break;
+                    }
+                @endphp
+                <a href="{{ route('complaints.show', $complaint->id) }}" class="block">
+                    <div class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm transition hover:shadow-md hover:border-indigo-500 border border-transparent">
+                        <div class="flex items-start space-x-4">
+                            <div class="text-gray-400 dark:text-gray-500 mt-1">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-bold text-gray-800 dark:text-gray-100">
+                                        {{ $complaint->title }}
+                                    </h3>
+                                    <span class="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-md">Tinggi</span>
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                    {{ Str::limit($complaint->description, 150) }}
+                                </p>
+                                <div class="mt-4 flex items-center flex-wrap gap-x-4 gap-y-2 text-xs text-gray-500 dark:text-gray-400">
+                                    <span>Kategori: <strong>{{ str_replace('_', ' ', $complaint->category) }}</strong></span>
+                                    <span>•</span>
+                                    <span>{{ $complaint->created_at->format('d M Y') }}</span>
+                                    <span>•</span>
+                                    <span class="px-2 py-0.5 text-xs font-semibold rounded-md {{ $statusClass }}">
+                                        {{ $complaint->status }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            @empty
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-sm text-center">
+                    <i class="fas fa-folder-open fa-3x text-gray-300 dark:text-gray-600"></i>
+                    <p class="mt-4 text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Anda belum memiliki pengaduan.
+                    </p>
+                </div>
+            @endforelse
+        </div>
+        {{-- END: DAFTAR PENGADUAN --}}
+        
+        <div class="mt-6">
+            {{ $complaints->links() }}
         </div>
     </div>
 </x-app-layout>

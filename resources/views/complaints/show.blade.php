@@ -1,124 +1,155 @@
 <x-app-layout>
-    {{-- Mengosongkan header bawaan agar kita bisa membuat header kustom di bawah --}}
-    <x-slot name="header">
-    </x-slot>
+    {{-- Hapus header default untuk header kustom --}}
+    <x-slot name="header"></x-slot>
 
-    <div class="py-8 md:py-12 bg-gray-50 dark:bg-gray-900/50 min-h-screen">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="space-y-6">
+        {{-- START: HEADER KUSTOM DENGAN TOMBOL KEMBALI --}}
+        <div class="flex items-center justify-between">
+            <a href="{{ route('complaints.index') }}" class="flex items-center gap-2 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition">
+                <i class="fas fa-arrow-left"></i>
+                Kembali ke Daftar Pengaduan
+            </a>
+        </div>
+        {{-- END: HEADER KUSTOM --}}
 
-            {{-- HEADER KUSTOM: Hanya menampilkan kategori --}}
-            <div class="flex justify-end items-center px-4 sm:px-0">
-                <span class="px-4 py-2 bg-gray-900 dark:bg-gray-700 text-white text-xs font-semibold rounded-full capitalize">
-                    {{ str_replace('_', ' ', $complaint->category) }}
-                </span>
-            </div>
-
-            {{-- KARTU KONTEN UTAMA --}}
-            <div class="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-lg space-y-8">
-                
-                {{-- Judul dan Status --}}
-                <div>
-                     <h1 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
-                        {{ $complaint->title }}
-                    </h1>
-                     <div class="flex items-center mt-4 text-sm text-gray-500 border-t dark:border-gray-700 pt-4">
-                        <span class="px-3 py-1 text-xs font-semibold rounded-full capitalize
-                            @switch($complaint->status)
-                                @case('Baru')
-                                @case('pending') 
-                                    bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 @break
-                                @case('Diproses') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 @break
-                                @case('Selesai') 
-                                @case('approved')
-                                    bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 @break
-                                @case('Ditolak')
-                                @case('rejected')
-                                    bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 @break
-                                @default bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300
-                            @endswitch">
-                            Status: {{ $complaint->status }}
-                        </span>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {{-- START: KOLOM UTAMA (KIRI) --}}
+            <div class="lg:col-span-2 space-y-6">
+                {{-- KARTU DETAIL PENGADUAN --}}
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
+                        <div>
+                            <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs font-semibold rounded-full capitalize">
+                                {{ str_replace('_', ' ', $complaint->category) }}
+                            </span>
+                            <h1 class="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
+                                {{ $complaint->title }}
+                            </h1>
+                        </div>
+                        <div class="mt-3 sm:mt-0 sm:text-right flex-shrink-0">
+                             @php
+                                $statusClass = '';
+                                switch ($complaint->status) {
+                                    case 'Baru': $statusClass = 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300 border border-blue-200 dark:border-blue-500/30'; break;
+                                    case 'Verifikasi': $statusClass = 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-500/30'; break;
+                                    case 'Pengerjaan': $statusClass = 'bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-300 border border-orange-200 dark:border-orange-500/30'; break;
+                                    case 'Selesai': $statusClass = 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300 border border-green-200 dark:border-green-500/30'; break;
+                                    case 'Ditolak': $statusClass = 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300 border border-red-200 dark:border-red-500/30'; break;
+                                    default: $statusClass = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'; break;
+                                }
+                            @endphp
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Status Laporan</p>
+                            <span class="px-2.5 py-1 text-sm font-semibold rounded-md {{ $statusClass }}">
+                                {{ $complaint->status }}
+                            </span>
+                        </div>
                     </div>
-                </div>
-
-                {{-- Bagian Rincian Laporan --}}
-                <div class="flex items-start space-x-4">
-                    <div class="flex-shrink-0 pt-1">
-                        <span class="w-2 h-2 inline-block bg-blue-500 rounded-full"></span>
-                    </div>
-                    <div class="w-full">
-                        <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200">Rincian Laporan</h3>
-                        <div class="mt-2 p-4 bg-gray-50/70 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg">
-                            <p class="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">{{ $complaint->description }}</p>
+                    <div class="mt-6 space-y-6">
+                        <div>
+                            <h3 class="font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                                <i class="fas fa-file-alt text-gray-400"></i> Rincian Laporan
+                            </h3>
+                            <p class="mt-2 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                {{ $complaint->description }}
+                            </p>
+                        </div>
+                         <div>
+                            <h3 class="font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                                <i class="fas fa-map-marker-alt text-gray-400"></i> Lokasi Spesifik
+                            </h3>
+                            <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                                {{ $complaint->location_text }}
+                            </p>
+                            <p class="text-xs text-gray-500 mt-1">{{ $complaint->sub_district }}, {{ $complaint->village }}, {{ $complaint->district }}, {{ $complaint->city }}</p>
                         </div>
                     </div>
                 </div>
 
-                {{-- Bagian Lokasi Spesifik --}}
-                <div class="flex items-start space-x-4">
-                     <div class="flex-shrink-0 pt-1">
-                        <span class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
-                    </div>
-                    <div class="w-full">
-                        <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200">Lokasi Spesifik</h3>
-                        <div class="mt-2 p-4 bg-gray-50/70 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg">
-                            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">{{ $complaint->location_text ?: 'Tidak ada detail lokasi.' }}</p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Bagian Foto Lampiran --}}
-                <div class="flex items-start space-x-4">
-                     <div class="flex-shrink-0 pt-1">
-                        <span class="w-2 h-2 inline-block bg-purple-500 rounded-full"></span>
-                    </div>
-                    <div class="w-full">
-                        <h3 class="font-semibold text-lg text-gray-800 dark:text-gray-200">Foto Lampiran</h3>
-                        <div class="mt-2 p-4 bg-gray-50/70 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-lg">
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                @forelse ($complaint->photos as $photo)
-                                    <a href="{{ asset('storage/' . $photo->path) }}" target="_blank" class="block relative group">
-                                        <img src="{{ asset('storage/' . $photo->path) }}" 
-                                             alt="Foto Aduan {{ $loop->iteration }}" 
-                                             class="rounded-lg w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105">
-                                    </a>
-                                @empty
-                                    <p class="text-gray-500 dark:text-gray-400 col-span-full">Tidak ada foto yang dilampirkan.</p>
-                                @endforelse
+                {{-- KARTU TANGGAPAN DARI PETUGAS --}}
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
+                    <h3 class="font-bold text-lg text-gray-800 dark:text-gray-200 mb-4">Tanggapan dari Petugas</h3>
+                    <div class="space-y-4">
+                        @forelse ($complaint->responses as $response)
+                            <div class="flex items-start gap-4">
+                                <img class="h-10 w-10 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode($response->user->name) }}&background=0D8ABC&color=fff" alt="{{ $response->user->name }}">
+                                <div class="flex-1 bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg border dark:border-gray-700">
+                                    <div class="flex items-center justify-between">
+                                        <p class="font-semibold text-sm text-gray-800 dark:text-gray-200">{{ $response->user->name }}</p>
+                                        <p class="text-xs text-gray-500">{{ $response->created_at->diffForHumans() }}</p>
+                                    </div>
+                                    <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                                        {{ $response->message }}
+                                    </p>
+                                </div>
                             </div>
+                        @empty
+                             <div class="text-center py-8">
+                                <i class="fas fa-comment-slash fa-2x text-gray-300 dark:text-gray-600"></i>
+                                <p class="mt-3 text-sm text-gray-500">Belum ada tanggapan dari petugas.</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+            {{-- END: KOLOM UTAMA (KIRI) --}}
+
+            {{-- START: KOLOM SISI (KANAN) --}}
+            <div class="space-y-6">
+                {{-- KARTU INFORMASI PELAPOR --}}
+                <div class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm">
+                    <h3 class="font-bold text-gray-800 dark:text-gray-200 mb-4 border-b dark:border-gray-700 pb-3">Informasi Pelapor</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Nama:</span>
+                            <span class="font-medium text-gray-800 dark:text-gray-200 text-right">{{ $complaint->user->name }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Email:</span>
+                            <span class="font-medium text-gray-800 dark:text-gray-200 text-right">{{ $complaint->user->email }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Asal Desa:</span>
+                            <span class="font-medium text-gray-800 dark:text-gray-200 text-right">{{ $complaint->user->village ?? '-' }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Kecamatan:</span>
+                            <span class="font-medium text-gray-800 dark:text-gray-200 text-right">{{ $complaint->user->district ?? '-' }}</span>
                         </div>
                     </div>
                 </div>
 
-                {{-- Informasi Waktu Pembuatan & Update --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400">
-                    <div class="flex items-center">
-                        <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                        <span>Dibuat: {{ $complaint->created_at->format('d F Y, H:i') }}</span>
-                    </div>
-                    <div class="flex items-center">
-                         <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 20h5v-5M20 4h-5v5"></path></svg>
-                        <span>Diperbarui: {{ $complaint->updated_at->format('d F Y, H:i') }}</span>
+                {{-- KARTU LAMPIRAN --}}
+                <div class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm">
+                    <h3 class="font-bold text-gray-800 dark:text-gray-200 mb-4 border-b dark:border-gray-700 pb-3">Lampiran</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2">Foto Bukti</h4>
+                            @if($complaint->photos->isNotEmpty())
+                                <div class="grid grid-cols-2 gap-2">
+                                    @foreach ($complaint->photos as $photo)
+                                        <a href="{{ asset('storage/' . $photo->path) }}" target="_blank" class="block relative group">
+                                            <img src="{{ asset('storage/' . $photo->path) }}" alt="Foto Aduan" class="rounded-md w-full h-20 object-cover transition transform group-hover:scale-105">
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-xs text-gray-500">Tidak ada foto bukti.</p>
+                            @endif
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-2">Foto KTP</h4>
+                            @if ($complaint->user->ktp_photo)
+                                <a href="{{ asset('storage/' . $complaint->user->ktp_photo) }}" target="_blank">
+                                    <img src="{{ asset('storage/' . $complaint->user->ktp_photo) }}" alt="Foto KTP" class="rounded-md w-full object-contain transition transform hover:scale-105">
+                                </a>
+                            @else
+                                <p class="text-xs text-gray-500">Tidak ada KTP dilampirkan.</p>
+                            @endif
+                        </div>
                     </div>
                 </div>
-
-                {{-- PERBAIKAN: Tombol Aksi dipindahkan ke bagian bawah kartu --}}
-                <div class="flex items-center justify-between mt-8 border-t dark:border-gray-700 pt-6">
-                    <a href="{{ url()->previous() }}"
-                       class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-700 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-200 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-gray-600 transition">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                        Kembali
-                    </a>
-                    
-                    @if(!$complaint->trashed())
-                        <a href="{{ route('pengaduan.edit', $complaint) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 transition">
-                            Edit Pengaduan
-                        </a>
-                    @endif
-                </div>
-
             </div>
+            {{-- END: KOLOM SISI (KANAN) --}}
         </div>
     </div>
 </x-app-layout>
-

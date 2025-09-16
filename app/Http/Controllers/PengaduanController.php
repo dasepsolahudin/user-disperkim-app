@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\ComplaintResponded;
 
 class PengaduanController extends Controller
 {
@@ -156,6 +157,8 @@ class PengaduanController extends Controller
         }
         
         $complaint->delete();
+
+        $complaint->user->notify(new ComplaintResponded($complaint));
 
         return redirect()->route('pengaduan.index')->with('success', 'Pengaduan berhasil dipindahkan ke Sampah.');
     }

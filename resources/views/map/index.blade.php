@@ -30,7 +30,7 @@
         
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                // Koordinat paling presisi untuk Dinas Perumahan dan Permukiman
+                // Koordinat akurat untuk Jl. Raya Samarang No.115
                 const dinasLocation = [-7.21551, 107.90358];
 
                 // --- Base Layers ---
@@ -47,23 +47,23 @@
                 // --- Inisialisasi Peta ---
                 var map = L.map('map', {
                     center: dinasLocation,
-                    zoom: 19, // Zoom diatur ke level 19 untuk presisi maksimal
-                    layers: [satelliteMap] // Layer default diatur ke satelit untuk detail
+                    zoom: 18, // Zoom lebih dekat untuk presisi
+                    layers: [streetMap]
                 });
 
                 // --- Kontrol Layer ---
                 var baseMaps = {
-                    "Satelit": satelliteMap,
-                    "Peta Jalan": streetMap
+                    "Peta Jalan": streetMap,
+                    "Satelit": satelliteMap
                 };
                 L.control.layers(baseMaps).addTo(map);
 
                 // --- Marker Kantor Dinas ---
                 L.marker(dinasLocation).addTo(map)
-                    .bindPopup('<b>Dinas Perumahan dan Permukiman</b><br>Jl. Raya Samarang No.115, Garut.')
+                    .bindPopup('<b>Dinas Perumahan dan Permukiman</b><br>Jl. Raya Samarang No.115, Sukagalih, Kec. Tarogong Kidul, Kabupaten Garut.')
                     .openPopup();
 
-                // --- Marker Pengaduan (jika ada) ---
+                // --- Marker Pengaduan ---
                 var complaints = @json($complaints);
                 complaints.forEach(function(complaint) {
                     if (complaint.latitude && complaint.longitude) {

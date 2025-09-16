@@ -26,8 +26,8 @@
         }
     </script>
 </head>
-<body class="font-sans antialiased bg-slate-50 dark:bg-black">
-    <div x-data="{ sidebarOpen: true, mobileSidebarOpen: false }">
+<body class="font-sans antialiased bg-slate-100 dark:bg-gray-900">
+        <div x-data="{ sidebarOpen: true, mobileSidebarOpen: false }">
         
         {{-- START: Mobile Sidebar Overlay --}}
         <div x-show="mobileSidebarOpen" class="fixed inset-0 flex z-40 lg:hidden" x-cloak>
@@ -54,14 +54,12 @@
              :class="{ 'lg:pl-64': sidebarOpen, 'lg:pl-20': !sidebarOpen }">
             
             <header class="flex items-center justify-between h-16 px-4 sm:px-6 bg-white dark:bg-black border-b border-slate-200 dark:border-gray-800 sticky top-0 z-20">
-                {{-- Tombol untuk membuka sidebar di mobile dan menutup di desktop --}}
+                {{-- Tombol untuk membuka sidebar di mobile --}}
                 <div class="flex items-center">
                     <button @click.stop="mobileSidebarOpen = !mobileSidebarOpen" class="lg:hidden p-2 rounded-md text-slate-500 hover:bg-slate-100 dark:text-gray-400 dark:hover:bg-gray-900 focus:outline-none">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <button @click="sidebarOpen = !sidebarOpen" class="hidden lg:block p-2 rounded-md text-slate-500 hover:bg-slate-100 dark:text-gray-400 dark:hover:bg-gray-900 focus:outline-none">
-                        <i class="fas" :class="{ 'fa-chevron-left': sidebarOpen, 'fa-chevron-right': !sidebarOpen }"></i>
-                    </button>
+                    {{-- Tombol sidebar desktop di header telah dihapus sesuai permintaan --}}
                 </div>
                 
                 {{-- Slot Header untuk Judul Halaman --}}
@@ -71,24 +69,63 @@
                     @endif
                 </div>
                 
-                {{-- Menu Dropdown User --}}
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-900">
-                        <span class="font-semibold text-sm text-slate-700 dark:text-gray-300 hidden sm:block">{{ Auth::user()->name }}</span>
-                        @if(Auth::user()->photo)
-                            <img class="h-8 w-8 rounded-full object-cover" src="{{ asset('storage/' . Auth::user()->photo) }}" alt="{{ Auth::user()->name }}">
-                        @else
-                            <img class="h-8 w-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=4f46e5&color=ffffff" alt="{{ Auth::user()->name }}">
-                        @endif
-                    </button>
-                    <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white dark:bg-black border dark:border-gray-800 rounded-md shadow-xl z-30" x-cloak>
-                        <a href="{{ route('settings.edit', 'profile') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-900">{{ __('Pengaturan Akun') }}</a>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="block px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-900">{{ __('Logout') }}</a>
-                        </form>
+                {{-- START: Grup Item Sebelah Kanan (Pencarian, Notifikasi, Profil) --}}
+                <div class="flex items-center space-x-4">
+
+                    <form action="{{ route('search') }}" method="GET" class="relative hidden md:block">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <i class="fas fa-search text-slate-400"></i>
+                        </span>
+                        <input type="text" name="q" placeholder="Cari..." required value="{{ request('q') }}" class="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-gray-700 rounded-lg bg-slate-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </form>
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="p-2 rounded-full text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-900 relative">
+                            <i class="fas fa-bell"></i>
+                            @if(isset($unreadNotifications) && $unreadNotifications->isNotEmpty())
+                                <span class="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-black"></span>
+                            @endif
+                        </button>
+                        <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-80 bg-white dark:bg-black border dark:border-gray-800 rounded-md shadow-xl z-30" x-cloak>
+                            <div class="p-4 font-semibold text-sm border-b dark:border-gray-700">Notifikasi</div>
+                            <div class="divide-y dark:divide-gray-700 max-h-96 overflow-y-auto">
+                                @if(isset($unreadNotifications))
+                                    @forelse ($unreadNotifications as $notification)
+                                        <a href="{{ route('pengaduan.show', $notification->data['complaint_id']) }}" class="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-gray-900">
+                                            <p class="text-sm font-medium text-slate-800 dark:text-gray-200">{{ $notification->data['message'] }}</p>
+                                            <p class="text-xs text-slate-500 dark:text-gray-400 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
+                                        </a>
+                                    @empty
+                                        <div class="px-4 py-3 text-center">
+                                            <p class="text-sm text-slate-500 dark:text-gray-400">Tidak ada notifikasi baru.</p>
+                                        </div>
+                                    @endforelse
+                                @endif
+                            </div>
+                            <div class="p-2 text-center border-t dark:border-gray-700">
+                                <a href="#" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline">Lihat semua notifikasi</a>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- Menu Dropdown User (Kode Asli Anda) --}}
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-900">
+                            <span class="font-semibold text-sm text-slate-700 dark:text-gray-300 hidden sm:block">{{ Auth::user()->name }}</span>
+                            @if(Auth::user()->photo)
+                                <img class="h-8 w-8 rounded-full object-cover" src="{{ asset('storage/' . Auth::user()->photo) }}" alt="{{ Auth::user()->name }}">
+                            @else
+                                <img class="h-8 w-8 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=4f46e5&color=ffffff" alt="{{ Auth::user()->name }}">
+                            @endif
+                        </button>
+                        <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white dark:bg-black border dark:border-gray-800 rounded-md shadow-xl z-30" x-cloak>
+                            <a href="{{ route('settings.edit', 'profile') }}" class="block px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-900">{{ __('Pengaturan Akun') }}</a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="block px-4 py-2 text-sm text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-900">{{ __('Logout') }}</a>
+                            </form>
+                        </div>
                     </div>
                 </div>
+                {{-- END: Grup Item Sebelah Kanan --}}
             </header>
 
             {{-- Page Content --}}
