@@ -30,23 +30,24 @@
         <div x-data="{ sidebarOpen: true, mobileSidebarOpen: false }">
         
         {{-- START: Mobile Sidebar Overlay --}}
-        <div x-show="mobileSidebarOpen" class="fixed inset-0 flex z-40 lg:hidden" x-cloak>
-            <div @click="mobileSidebarOpen = false" class="fixed inset-0 bg-black bg-opacity-50" aria-hidden="true"></div>
-            
-            <aside class="relative w-64 flex-shrink-0 bg-white dark:bg-black border-r border-slate-200 dark:border-gray-800 flex flex-col">
-                {{-- Menggunakan @include untuk menghindari duplikasi kode sidebar --}}
-                @include('layouts.sidebar-content')
-            </aside>
-        </div>
+       <div x-show="mobileSidebarOpen" class="fixed inset-0 flex z-40 lg:hidden" x-cloak>
+    <div @click="mobileSidebarOpen = false" class="fixed inset-0 bg-black bg-opacity-50" aria-hidden="true"></div>
+    
+    {{-- UBAH WARNA LATAR BELAKANG DI SINI --}}
+    <aside class="relative w-64 flex-shrink-0 bg-blue-700 flex flex-col">
+        {{-- Menggunakan @include untuk menghindari duplikasi kode sidebar --}}
+        @include('layouts.sidebar-content')
+    </aside>
+</div>
         {{-- END: Mobile Sidebar Overlay --}}
 
         {{-- START: Desktop Sidebar --}}
         <aside
-            class="hidden lg:flex fixed top-0 left-0 h-full z-30 w-64 flex-shrink-0 flex-col transition-all duration-300"
-            :class="{ 'w-64': sidebarOpen, 'w-20': !sidebarOpen }"
-        >
-            @include('layouts.sidebar-content')
-        </aside>
+    class="hidden lg:flex fixed top-0 left-0 h-full z-30 w-64 flex-shrink-0 flex-col transition-all duration-300 bg-blue-700"
+    :class="{ 'w-64': sidebarOpen, 'w-20': !sidebarOpen }"
+>
+    @include('layouts.sidebar-content')
+</aside>
         {{-- END: Desktop Sidebar --}}
 
         {{-- Main Content Area --}}
