@@ -49,6 +49,8 @@ Route::get('/map', [MapController::class, 'index'])->middleware(['auth', 'verifi
 // GRUP UNTUK PENGGUNA YANG SUDAH LOGIN
 Route::middleware('auth')->group(function () {
     // Rute-rute untuk Complaints / Pengaduan
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+
     Route::get('/complaints', [ComplaintController::class, 'index'])->name('complaints.index');
     Route::get('/complaints/create', [ComplaintController::class, 'create'])->name('complaints.create');
     Route::get('/complaints/create/{category}', [ComplaintController::class, 'showForm'])->name('complaints.form');
@@ -57,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])->name('complaints.edit');
     Route::put('/complaints/{complaint}', [ComplaintController::class, 'update'])->name('complaints.update');
     Route::delete('/complaints/{complaint}', [ComplaintController::class, 'destroy'])->name('complaints.destroy');
+    
 
     // Rute untuk Fitur Sampah (Trash)
     Route::get('/settings/trash/{id}/show', [SettingsController::class, 'showTrashed'])->name('settings.trash.show');
@@ -66,7 +69,6 @@ Route::middleware('auth')->group(function () {
 
     // Rute Pengaturan (Settings)
     Route::get('/settings/{section?}', [App\Http\Controllers\SettingsController::class, 'edit'])->name('settings.edit');
-    Route::patch('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
     Route::post('/settings/photo', [SettingsController::class, 'updatePhoto'])->name('settings.photo.update');
     Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->middleware('auth')->name('profile.updatePhoto');

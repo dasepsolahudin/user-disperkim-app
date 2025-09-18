@@ -11,9 +11,12 @@ use Illuminate\Http\Request; // Tetap digunakan untuk metode 'update' jika ada
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ComplaintController extends Controller
 {
+
+    use AuthorizesRequests;
     /**
      * Menampilkan daftar pengaduan milik pengguna yang sedang login.
      */
@@ -85,8 +88,7 @@ class ComplaintController extends Controller
      */
     public function show(Complaint $complaint): View
     {
-        // ---- PERBAIKAN UTAMA #1: MENGGUNAKAN POLICY ----
-        // Pengecekan `if` diganti dengan satu baris ini.
+        // Pengecekan otorisasi menggunakan trait yang baru ditambahkan
         $this->authorize('view', $complaint);
 
         return view('complaints.show', compact('complaint'));

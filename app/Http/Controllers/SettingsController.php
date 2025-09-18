@@ -46,66 +46,75 @@ class SettingsController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-        
-        // Ambil semua data yang sudah lolos validasi (termasuk 'kabupaten', 'kecamatan', 'desa')
+
+        // Ambil semua data yang sudah divalidasi
         $validatedData = $request->validated();
 
-        // Lakukan pemetaan dari nama form ke nama kolom database
-        $updateData = [
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'nik' => $validatedData['nik'] ?? null,
-            'phone' => $validatedData['phone'] ?? null,
-            'gender' => $validatedData['gender'] ?? null,
-            'province' => $validatedData['province'] ?? null,
-            'rt' => $validatedData['rt'] ?? null,
-            'rw' => $validatedData['rw'] ?? null,
-            'city' => $validatedData['kabupaten'] ?? null,       // Peta: kabupaten -> city
-            'district' => $validatedData['kecamatan'] ?? null, // Peta: kecamatan -> district
-            'village' => $validatedData['desa'] ?? null,      // Peta: desa -> village
-            'full_address' => $validatedData['address'] ?? null, // Peta: address -> full_address
-        ];
+        // Update nama dan email
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
+        
+        // PERBAIKAN: Mapping data alamat dari form ke database
+        $user->city = $validatedData['kabupaten'] ?? null;
+        $user->district = $validatedData['kecamatan'] ?? null;
+        $user->village = $validatedData['desa'] ?? null;
 
-        // Isi model User dengan data yang sudah dipetakan
-        $user->fill($updateData);
-
-        // Jika email diubah, perlu verifikasi ulang
+        // Cek jika email diubah untuk verifikasi ulang
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
 
-        // Simpan semua perubahan
         $user->save();
 
-        return Redirect::route('settings.edit', ['section' => 'profile'])->with('status', 'profile-updated');
+        return Redirect::route('settings.edit')->with('status', 'profile-updated');
     }
 
     public function updatePhoto(Request $request): RedirectResponse
     {
-        $request->validate(['photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048']);
+        $request->validate([
+            'photo' => ['required', 'image', 'max:2048'],
+        ]);
+
         $user = $request->user();
 
-        if ($user->photo && Storage::disk('public')->exists($user->photo)) {
+        // Hapus foto lama jika ada
+        if ($user->photo) {
             Storage::disk('public')->delete($user->photo);
         }
 
-        $path = $request->file('photo')->store('profile-photos', 'public');
+        $path = $request->file('photo')->store('photos', 'public');
         $user->forceFill(['photo' => $path])->save();
 
-        return back()->with('status', 'photo-updated');
+        return Redirect::route('settings.edit')->with('status', 'photo-updated');
     }
+
 
     public function updateNotifications(Request $request): RedirectResponse
     {
         $user = $request->user();
+
+        // Validasi input
+        $request->validate([
+            'push_notification' => 'nullable|boolean',
+            'email_notification' => 'nullable|boolean',
+            'sms_notification' => 'nullable|boolean',
+            'auto_save' => 'nullable|boolean',
+        ]);
+
+        // Mengambil preferensi yang sudah ada atau membuat array kosong
         $preferences = $user->notification_preferences ?? [];
-        $preferences['new_complaint'] = $request->has('notifications_new_complaint');
-        $preferences['complaint_updated'] = $request->has('notifications_complaint_updated');
-        $preferences['via_email'] = $request->has('notifications_via_email');
+
+        // Memperbarui preferensi dengan nilai dari request
+        $preferences['push_notification'] = $request->boolean('push_notification');
+        $preferences['email_notification'] = $request->boolean('email_notification');
+        $preferences['sms_notification'] = $request->boolean('sms_notification');
+        $preferences['auto_save'] = $request->boolean('auto_save');
+
+        // Simpan preferensi yang diperbarui ke database
         $user->notification_preferences = $preferences;
         $user->save();
-        
-        return back()->with('status', 'notification-preferences-updated');
+
+        return Redirect::route('settings.edit', ['section' => 'notifications'])->with('status', 'notification-preferences-updated');
     }
 
     public function destroy(Request $request): RedirectResponse
