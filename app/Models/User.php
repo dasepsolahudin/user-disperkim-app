@@ -23,14 +23,25 @@ class User extends Authenticatable
         'role',
         'photo',
         'ktp_photo',
+        
+        // --- PERBAIKAN: MENAMBAHKAN SEMUA KOLOM DARI FORM ---
+        'nik',
+        'phone',
+        'gender',
+        'address',
         'province',
-        'city', // <-- Ini adalah perbaikan utamanya
+        'city',
         'district',
         'village',
         'rt',
         'rw',
         'full_address',
         'notification_preferences',
+        
+        // Kolom dari form yang namanya berbeda dengan di database
+        'kabupaten', 
+        'kecamatan',
+        'desa',
     ];
 
     /**
@@ -53,7 +64,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'notification_preferences' => 'array', // Pastikan cast untuk JSON
+            'notification_preferences' => 'array',
         ];
     }
 
@@ -65,4 +76,3 @@ class User extends Authenticatable
         return $this->hasMany(Complaint::class);
     }
 }
-

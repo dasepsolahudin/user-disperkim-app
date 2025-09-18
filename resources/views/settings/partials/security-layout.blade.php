@@ -1,4 +1,5 @@
-<div class.blade.php" x-data="{
+{{-- PERBAIKAN: Kesalahan penulisan pada div pembuka di bawah ini telah diperbaiki --}}
+<div x-data="{
     // === STATES ===
     smsAuth: {{ auth()->user()->two_factor_sms_enabled ? 'true' : 'false' }},
     emailAuth: {{ auth()->user()->two_factor_email_enabled ? 'true' : 'false' }},

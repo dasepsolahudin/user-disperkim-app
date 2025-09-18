@@ -1,20 +1,7 @@
 <section class="max-w-xl" x-data="{ showCurrent: false, showNew: false, showConfirmation: false }">
-    {{-- HEADER --}}
-    <div class="flex items-start gap-4">
-        <div class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/50 rounded-lg flex items-center justify-center">
-            <i class="fas fa-lock fa-lg text-red-500 dark:text-red-400"></i>
-        </div>
-        <div>
-            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">
-                {{ __('Ubah Password') }}
-            </h2>
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {{ __('Perbarui password Anda untuk menjaga keamanan akun.') }}
-            </p>
-        </div>
-    </div>
+    {{-- BAGIAN HEADER YANG MENYEBABKAN DUPLIKASI TELAH DIHAPUS DARI SINI --}}
 
-    <form method="post" action="{{ route('password.update') }}" class="mt-8 space-y-6">
+    <form method="post" action="{{ route('password.update') }}" class="space-y-6">
         @csrf
         @method('put')
 
@@ -77,4 +64,3 @@
         </div>
     </form>
 </section>
-

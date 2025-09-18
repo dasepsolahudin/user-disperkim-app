@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+// ---- PERUBAHAN DI SINI ----
+// Menggunakan Form Request khusus untuk validasi saat menyimpan data.
+use App\Http\Requests\StoreComplaintRequest; 
 use App\Models\Complaint;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request; // Tetap digunakan untuk metode 'update' jika ada
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class ComplaintController extends Controller
 {
@@ -33,7 +36,7 @@ class ComplaintController extends Controller
      */
     public function showForm(string $category): View
     {
-        // Pastikan kategori valid sebelum menampilkan form
+        // Logika ini tetap sama
         if (!in_array($category, ['rutilahu', 'infrastruktur', 'tata_kota', 'air_bersih_sanitasi'])) {
             abort(404);
         }
@@ -43,40 +46,20 @@ class ComplaintController extends Controller
     /**
      * Menyimpan pengaduan baru yang disubmit dari formulir.
      */
-    public function store(Request $request): RedirectResponse
+    // ---- PERBAIKAN UTAMA #2: MENGGUNAKAN FORM REQUEST ----
+    public function store(StoreComplaintRequest $request): RedirectResponse
     {
-        // 1. Validasi semua input dari formulir baru
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'category' => 'required|string|in:rutilahu,infrastruktur,tata_kota,air_bersih_sanitasi',
-            'priority' => 'required|string|in:Rendah,Sedang,Tinggi',
-            'city' => 'required|string|max:255',
-            'district' => 'required|string|max:255',
-            'village' => 'required|string|max:255',
-            'sub_district' => 'nullable|string|max:255', // Untuk Kampung/RW
-            'location_text' => 'required|string', // Untuk Alamat Detail
-            'description' => 'required|string',
-            'photos' => 'nullable|array',
-            'photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120', // Maksimal 5MB per foto
-            'ktp_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // Maksimal 5MB
-        ]);
+        // Blok validasi yang panjang sudah dipindahkan ke StoreComplaintRequest.
+        // Controller menjadi jauh lebih bersih.
+        $validated = $request->validated();
 
-        // 2. Membuat data pengaduan utama di database
-        $complaint = Complaint::create([
+        // Membuat data pengaduan utama di database
+        $complaint = Complaint::create(array_merge($validated, [
             'user_id' => Auth::id(),
-            'title' => $validated['title'],
-            'category' => $validated['category'],
-            'priority' => $validated['priority'],
-            'city' => $validated['city'],
-            'district' => $validated['district'],
-            'village' => $validated['village'],
-            'sub_district' => $validated['sub_district'],
-            'location_text' => $validated['location_text'],
-            'description' => $validated['description'],
-            'status' => 'Baru', // Status default saat pengaduan dibuat
-        ]);
+            'status' => 'Baru',
+        ]));
 
-        // 3. Memproses dan menyimpan foto bukti jika ada yang di-upload
+        // Memproses dan menyimpan foto bukti jika ada yang di-upload
         if ($request->hasFile('photos')) {
             foreach ($request->file('photos') as $photoFile) {
                 $path = $photoFile->store('complaint-photos', 'public');
@@ -84,10 +67,9 @@ class ComplaintController extends Controller
             }
         }
 
-        // 4. Memproses foto KTP jika ada yang di-upload
+        // Memproses foto KTP jika ada yang di-upload
         if ($request->hasFile('ktp_photo')) {
             $user = Auth::user();
-            // Hapus foto KTP lama jika ada untuk menghemat penyimpanan
             if ($user->ktp_photo) {
                 Storage::disk('public')->delete($user->ktp_photo);
             }
@@ -95,7 +77,6 @@ class ComplaintController extends Controller
             $user->update(['ktp_photo' => $ktpPath]);
         }
 
-        // 5. Mengarahkan pengguna kembali ke daftar pengaduan dengan pesan sukses
         return redirect()->route('complaints.index')->with('success', 'Laporan Anda berhasil dikirim dan akan segera diproses!');
     }
 
@@ -104,46 +85,51 @@ class ComplaintController extends Controller
      */
     public function show(Complaint $complaint): View
     {
-        // Otorisasi: Pastikan pengguna hanya bisa melihat pengaduannya sendiri
-        if ($complaint->user_id !== Auth::id()) {
-            abort(403, 'ANDA TIDAK DIIZINKAN MENGAKSES HALAMAN INI');
-        }
+        // ---- PERBAIKAN UTAMA #1: MENGGUNAKAN POLICY ----
+        // Pengecekan `if` diganti dengan satu baris ini.
+        $this->authorize('view', $complaint);
+
         return view('complaints.show', compact('complaint'));
     }
 
     /**
      * Show the form for editing the specified resource.
-     * (Jika Anda memerlukan fungsionalitas edit di masa depan)
      */
-    public function edit(Complaint $complaint)
+    public function edit(Complaint $complaint): View
     {
-        // Otorisasi
-        if ($complaint->user_id !== Auth::id()) {
-            abort(403);
-        }
-        // return view('complaints.edit', compact('complaint'));
+        // ---- PERBAIKAN UTAMA #1: MENGGUNAKAN POLICY ----
+        $this->authorize('update', $complaint);
+
+        // Anda perlu membuat view 'complaints.edit' jika ingin menggunakan ini.
+        return view('complaints.edit', compact('complaint'));
     }
 
     /**
      * Update the specified resource in storage.
-     * (Jika Anda memerlukan fungsionalitas update di masa depan)
      */
-    public function update(Request $request, Complaint $complaint)
+    public function update(Request $request, Complaint $complaint): RedirectResponse
     {
-        // Otorisasi dan logika update
+        // ---- PERBAIKAN UTAMA #1: MENGGUNAKAN POLICY ----
+        $this->authorize('update', $complaint);
+        
+        // (Tambahkan validasi dan logika update Anda di sini jika diperlukan)
+        // Contoh:
+        // $validated = $request->validate([...]);
+        // $complaint->update($validated);
+
+        return redirect()->route('complaints.show', $complaint)->with('success', 'Pengaduan berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
-     * (Jika Anda memerlukan fungsionalitas hapus di masa depan)
      */
-    public function destroy(Complaint $complaint)
+    public function destroy(Complaint $complaint): RedirectResponse
     {
-        // Otorisasi dan logika hapus
-        if ($complaint->user_id !== Auth::id()) {
-            abort(403);
-        }
+        // ---- PERBAIKAN UTAMA #1: MENGGUNAKAN POLICY ----
+        $this->authorize('delete', $complaint);
+        
         $complaint->delete();
+        
         return redirect()->route('complaints.index')->with('success', 'Pengaduan berhasil dihapus.');
     }
 }
