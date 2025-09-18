@@ -2,29 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Complaint;
+use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Menampilkan hasil pencarian berdasarkan query.
+     */
+    public function results(Request $request)
     {
-        // 1. Ambil kata kunci pencarian dari input form
+        // Validasi input, pastikan query tidak kosong
+        $request->validate([
+            'q' => 'required|string|min:3',
+        ]);
+
         $query = $request->input('q');
 
-        // 2. Lakukan pencarian jika ada query
-        $complaints = collect(); // Buat koleksi kosong sebagai default
-        if ($query) {
-            $complaints = Complaint::where('title', 'LIKE', "%{$query}%")
-                                   ->orWhere('description', 'LIKE', "%{$query}%")
-                                   ->latest() // Urutkan dari yang terbaru
-                                   ->paginate(10); // Gunakan paginasi
-        }
+        // Lakukan pencarian pada model Complaint di beberapa kolom yang relevan
+        $complaints = Complaint::where(function ($dbQuery) use ($query) {
+            $dbQuery->where('title', 'LIKE', "%{$query}%")
+                ->orWhere('description', 'LIKE', "%{$query}%")
+                ->orWhere('category', 'LIKE', "%{$query}%")
+                ->orWhere('location_text', 'LIKE', "%{$query}%")
+                ->orWhere('address', 'LIKE', "%{$query}%");
+        })
+        ->latest() // Urutkan dari yang terbaru
+        ->paginate(10); // Gunakan pagination untuk performa
 
-        // 3. Kembalikan view dengan hasil pencarian
+        // Kembalikan view dengan data hasil pencarian
         return view('search.results', [
-            'query' => $query,
-            'complaints' => $complaints
+            'complaints' => $complaints,
+            'query'      => $query,
         ]);
     }
 }

@@ -1,44 +1,58 @@
 <x-app-layout>
     <x-slot name="header">
-        {{-- Header dengan tambahan tombol kembali --}}
-        <div class="flex items-center space-x-4">
-            <a href="{{ url()->previous() }}" class="p-2 rounded-md text-slate-500 hover:bg-slate-100 dark:text-gray-400 dark:hover:bg-gray-900 focus:outline-none">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Hasil Pencarian') }}
-            </h2>
-        </div>
+        <h2 class="font-semibold text-xl text-slate-800 dark:text-gray-200 leading-tight">
+            {{ __('Hasil Pencarian untuk:') }} <span class="italic">"{{ $query }}"</span>
+        </h2>
     </x-slot>
 
-    <div class="bg-white dark:bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg p-6">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
-            Menampilkan hasil untuk: "<span class="font-bold">{{ $query }}</span>"
-        </h3>
-
-        @if($complaints->count() > 0)
-            <div class="space-y-4">
-                @foreach ($complaints as $complaint)
-                    <div class="p-4 border dark:border-gray-700 rounded-lg">
-                        <a href="{{ route('pengaduan.show', $complaint->id) }}" class="text-indigo-600 dark:text-indigo-400 hover:underline">
-                            <h4 class="font-bold text-md">{{ $complaint->title }}</h4>
-                        </a>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                            {{ Str::limit($complaint->description, 150) }}
-                        </p>
-                        <p class="text-xs text-gray-500 mt-2">
-                            Dilaporkan pada: {{ $complaint->created_at->format('d M Y') }}
-                        </p>
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="space-y-6">
+                @if ($complaints->isEmpty())
+                    <div class="bg-white dark:bg-black overflow-hidden shadow-sm rounded-lg">
+                        <div class="p-6 text-center text-slate-600 dark:text-gray-400">
+                            <i class="fas fa-search fa-2x mb-4"></i>
+                            <p class="font-semibold">Tidak ada laporan yang ditemukan.</p>
+                            <p class="text-sm mt-1">Coba gunakan kata kunci lain yang lebih umum.</p>
+                        </div>
                     </div>
-                @endforeach
-            </div>
+                @else
+                    @foreach ($complaints as $complaint)
+                        <a href="{{ route('pengaduan.show', $complaint) }}" class="block bg-white dark:bg-black overflow-hidden shadow-sm rounded-lg hover:shadow-lg transition-shadow duration-300">
+                            <div class="p-6">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <p class="text-sm font-medium text-indigo-600 dark:text-indigo-400">{{ Str::title(str_replace('_', ' ', $complaint->category)) }}</p>
+                                        <h3 class="text-lg font-bold text-slate-900 dark:text-gray-100 mt-1">{{ $complaint->title }}</h3>
+                                    </div>
+                                    <span class="text-xs font-semibold px-2 py-1 rounded-full
+                                        @switch($complaint->status)
+                                            @case('dikirim') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 @break
+                                            @case('diproses') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 @break
+                                            @case('selesai') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 @break
+                                            @default bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
+                                        @endswitch
+                                    ">
+                                        {{ Str::title($complaint->status) }}
+                                    </span>
+                                </div>
+                                <p class="text-sm text-slate-600 dark:text-gray-400 mt-2">
+                                    {{ Str::limit($complaint->description, 150) }}
+                                </p>
+                                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-gray-500 mt-4 pt-4 border-t border-slate-200 dark:border-gray-700">
+                                    <span><i class="fas fa-user-circle mr-1"></i> Dilaporkan oleh {{ $complaint->user->name }}</span>
+                                    <span><i class="fas fa-clock mr-1"></i> {{ $complaint->created_at->diffForHumans() }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    @endforeach
 
-            {{-- Link Paginasi yang sudah diperbaiki --}}
-            <div class="mt-6">
-                {{ $complaints->appends(['q' => $query])->links() }}
+                    <!-- Pagination Links -->
+                    <div class="mt-8">
+                        {{ $complaints->appends(['q' => $query])->links() }}
+                    </div>
+                @endif
             </div>
-        @else
-            <p class="text-gray-500 dark:text-gray-400">Tidak ada hasil yang ditemukan.</p>
-        @endif
+        </div>
     </div>
 </x-app-layout>

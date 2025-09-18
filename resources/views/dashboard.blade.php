@@ -14,7 +14,9 @@
     </div>
     <div class="space-y-6">
         {{-- ... (kode statistik dan navigasi lainnya tetap sama) ... --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"> 
+    {{-- Mengubah md:grid-cols-3 menjadi lg:grid-cols-3 agar di tablet (medium) bisa 2 kolom --}}
+    </div>
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex items-start justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Laporan</p>
@@ -46,7 +48,14 @@
                 </div>
             </div>
         </div>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="flex items-start space-x-4">
+    <div class="flex-shrink-0 w-24 h-16 rounded-md overflow-hidden">
+        {{-- Gambar --}}
+    </div>
+    <div class="flex-1">
+        {{-- Judul dan detail berita --}}
+    </div>
+</div>
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
                 <div class="flex items-center justify-between">
                     <div>

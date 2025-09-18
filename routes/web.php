@@ -6,31 +6,21 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PengaduanController;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Complaint;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\TrashController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\NotificationController;
 
-// Rute untuk Halaman Utama
-Route::get('/', [HomepageController::class, 'index']);
+/*
+|--------------------------------------------------------------------------
+| Rute Publik (Dapat Diakses Siapa Saja)
+|--------------------------------------------------------------------------
+*/
 
-// Rute-rute yang berhubungan dengan UserController
-Route::get('/register', [UserController::class, 'create']);
-Route::post('/register', [UserController::class, 'store']);
-Route::get('/users', [UserController::class, 'index']);
-Route::get('/users/{user}/edit', [UserController::class, 'edit']);
-Route::put('/users/{user}', [UserController::class, 'update']);
-Route::delete('/users/{user}', [UserController::class, 'destroy']);
 Route::get('/', [HomepageController::class, 'index'])->name('homepage');
-Route::post('/language', [LanguageController::class, 'switchLang'])->name('language.switch');
-Route::get('/pengaduan/{complaint}', [PengaduanController::class, 'show'])->name('pengaduan.show');
-Route::resource('pengaduan', PengaduanController::class)->parameters(['pengaduan' => 'complaint']);
-Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search');
 
+// Rute untuk mengganti bahasa
 Route::get('lang/{locale}', function ($locale) {
     if (in_array($locale, ['id', 'en'])) {
         session(['locale' => $locale]);
@@ -38,70 +28,61 @@ Route::get('lang/{locale}', function ($locale) {
     return back();
 })->name('setLanguage');
 
-// Rute untuk Dashboard (Setelah Login)
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
 
-// Rute untuk Peta
-Route::get('/map', [MapController::class, 'index'])->middleware(['auth', 'verified'])->name('map');
+/*
+|--------------------------------------------------------------------------
+| Rute Autentikasi (Login, Register, dll.)
+|--------------------------------------------------------------------------
+*/
 
-// GRUP UNTUK PENGGUNA YANG SUDAH LOGIN
-Route::middleware('auth')->group(function () {
-    // Rute-rute untuk Complaints / Pengaduan
-        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-
-    Route::get('/complaints', [ComplaintController::class, 'index'])->name('complaints.index');
-    Route::get('/complaints/create', [ComplaintController::class, 'create'])->name('complaints.create');
-    Route::get('/complaints/create/{category}', [ComplaintController::class, 'showForm'])->name('complaints.form');
-    Route::post('/complaints', [ComplaintController::class, 'store'])->name('complaints.store');
-    Route::get('/complaints/{complaint}', [ComplaintController::class, 'show'])->name('complaints.show');
-    Route::get('/complaints/{complaint}/edit', [ComplaintController::class, 'edit'])->name('complaints.edit');
-    Route::put('/complaints/{complaint}', [ComplaintController::class, 'update'])->name('complaints.update');
-    Route::delete('/complaints/{complaint}', [ComplaintController::class, 'destroy'])->name('complaints.destroy');
-    
-
-    // Rute untuk Fitur Sampah (Trash)
-    Route::get('/settings/trash/{id}/show', [SettingsController::class, 'showTrashed'])->name('settings.trash.show');
-    Route::put('/settings/trash/{id}/restore', [SettingsController::class, 'restore'])->name('settings.trash.restore');
-    Route::delete('/settings/trash/{id}/delete', [SettingsController::class, 'forceDelete'])->name('settings.trash.forceDelete');
-    Route::delete('/settings/trash/empty', [SettingsController::class, 'emptyTrash'])->name('settings.trash.empty');
-
-    // Rute Pengaturan (Settings)
-    Route::get('/settings/{section?}', [App\Http\Controllers\SettingsController::class, 'edit'])->name('settings.edit');
-    Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
-    Route::post('/settings/photo', [SettingsController::class, 'updatePhoto'])->name('settings.photo.update');
-    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->middleware('auth')->name('profile.updatePhoto');
-    Route::patch('/settings/profile', [SettingsController::class, 'update'])->name('settings.profile.update');
-    Route::patch('/settings/2fa', [SettingsController::class, 'updateTwoFactorAuthentication'])->name('settings.2fa.update');
-    Route::delete('/settings/delete-account', [SettingsController::class, 'destroy'])->name('settings.account.destroy');
-    Route::patch('/settings/notifications', [SettingsController::class, 'updateNotifications'])->name('settings.notifications.update');
-
-    // Rute Pengaduan dari Sidebar
-    Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
-    Route::get('/pengaduan/create', [PengaduanController::class, 'create'])->name('pengaduan.create');
-    Route::get('/pengaduan/{id}/edit', [PengaduanController::class, 'edit'])->name('pengaduan.edit');
-    Route::put('/pengaduan/{id}', [PengaduanController::class, 'update'])->name('pengaduan.update');
-    Route::resource('pengaduan', \App\Http\Controllers\PengaduanController::class);
-});
-
-// Admin Group
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-    Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
-    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
-    Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-});
-
-Route::prefix('pengaturan')->group(function () {
-    Route::get('/profil', [SettingController::class, 'profile'])->name('settings.profile');
-    Route::get('/keamanan', [SettingController::class, 'security'])->name('settings.security');
-    Route::patch('/settings/notification-preferences', [SettingsController::class, 'updateNotificationPreferences'])->name('settings.updateNotificationPreferences');
-});
-
-// Rute autentikasi bawaan Laravel
 require __DIR__.'/auth.php';
 
-Route::get('/maps', function () {
-    return view('maps');
+
+/*
+|--------------------------------------------------------------------------
+| Rute yang Memerlukan Login
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Dashboard & Peta
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/map', [MapController::class, 'index'])->name('map');
+
+    // Pencarian
+    Route::get('/search', [SearchController::class, 'results'])->name('search');
+
+    // Notifikasi
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+
+    // Halaman Daftar & Detail Pengaduan (Menggunakan Controller yang berbeda)
+    Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
+    Route::get('/pengaduan/{complaint}', [PengaduanController::class, 'show'])->name('pengaduan.show');
+
+    // CRUD untuk Laporan/Pengaduan (Complaints)
+    Route::resource('complaints', ComplaintController::class);
+    Route::get('/complaints/create/{category}', [ComplaintController::class, 'showForm'])->name('complaints.form');
+
+    // Pengaturan Akun (Profile & Settings)
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/{section?}', [SettingsController::class, 'edit'])->name('edit');
+        Route::patch('/profile', [SettingsController::class, 'update'])->name('profile.update');
+        Route::post('/photo', [SettingsController::class, 'updatePhoto'])->name('photo.update');
+        Route::patch('/notifications', [SettingsController::class, 'updateNotifications'])->name('notifications.update');
+        Route::delete('/delete-account', [SettingsController::class, 'destroy'])->name('account.destroy');
+
+        // Fitur Sampah (Trash)
+        Route::get('/trash/{id}/show', [TrashController::class, 'show'])->name('trash.show');
+        Route::put('/trash/{id}/restore', [TrashController::class, 'restore'])->name('trash.restore');
+        Route::delete('/trash/{id}/delete', [TrashController::class, 'forceDelete'])->name('trash.forceDelete');
+        Route::delete('/trash/empty', [TrashController::class, 'emptyTrash'])->name('trash.empty');
+    });
+
+    // Rute Khusus Admin
+    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::resource('users', AdminUserController::class)->except(['create', 'store', 'show']);
+    });
+
 });
+
