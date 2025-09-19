@@ -37,7 +37,7 @@ class SettingsController extends Controller
                 ->paginate(10, ['*'], 'trash_page');
         }
         
-        return view('settings.edit', $data);
+    return view('settings.edit', compact('section')); // Baris ini kemungkinan menjadi masalah.
     }
 
     /**

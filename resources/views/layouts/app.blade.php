@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Inter:400,500,600,700&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     {{-- Penambahan Pustaka Peta (LeafletJS) --}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -27,8 +27,7 @@
     </script>
 </head>
 <body class="font-sans antialiased bg-slate-100 dark:bg-gray-900">
-        {{-- KODE DIPERBARUI: Menambahkan state 'searchOpen' --}}
-        <div x-data="{ sidebarOpen: true, mobileSidebarOpen: false, searchOpen: false }">
+        <div x-data="{ sidebarOpen: true, mobileSidebarOpen: false }">
         
         {{-- START: Mobile Sidebar Overlay --}}
        <div x-show="mobileSidebarOpen" class="fixed inset-0 flex z-40 lg:hidden" x-cloak>
@@ -74,11 +73,12 @@
                 {{-- START: Grup Item Sebelah Kanan (Pencarian, Notifikasi, Profil) --}}
                 <div class="flex items-center space-x-4">
 
-                    {{-- KODE DIPERBARUI: Form pencarian diganti dengan tombol ikon --}}
-                    <button @click="searchOpen = true" class="p-2 rounded-full text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-900 focus:outline-none">
-                        <i class="fas fa-search"></i>
-                    </button>
-
+                    <form action="{{ route('search') }}" method="GET" class="relative hidden md:block">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <i class="fas fa-search text-slate-400"></i>
+                        </span>
+                        <input type="text" name="q" placeholder="Cari..." required value="{{ request('q') }}" class="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-gray-700 rounded-lg bg-slate-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </form>
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="p-2 rounded-full text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-900 relative">
                             <i class="fas fa-bell"></i>
@@ -136,26 +136,6 @@
                 </div>
             </main>
         </div>
-
-        {{-- KODE BARU: Modal/Panel Pencarian --}}
-        <div x-show="searchOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 overflow-hidden" style="display: none;">
-            <!-- Background overlay -->
-            <div @click="searchOpen = false" class="absolute inset-0 bg-black bg-opacity-50"></div>
-            <!-- Search panel -->
-            <div class="absolute inset-x-0 top-0 p-4">
-                <div class="relative w-full max-w-xl mx-auto">
-                    <form action="{{ route('search') }}" method="GET">
-                        <x-text-input id="search_modal" name="q" class="block w-full pl-10 pr-4 py-2" placeholder="Cari laporan..." autofocus />
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                            </svg>
-                        </span>
-                    </form>
-                </div>
-            </div>
-        </div>
-
     </div>
     @stack('scripts')
 </body>
