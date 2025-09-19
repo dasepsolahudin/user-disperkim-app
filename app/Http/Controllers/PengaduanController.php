@@ -114,40 +114,6 @@ return view('pengaduan.index', compact('complaints'));
     }
 
     /**
-     * Memperbarui pengaduan di database.
-     */
-    public function update(Request $request, Complaint $complaint): RedirectResponse
-    {
-        if ($complaint->user_id !== auth()->id()) {
-            abort(403, 'Anda tidak diizinkan untuk mengedit laporan ini.');
-        }
-
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'location_text' => 'nullable|string|max:255',
-            'photos' => 'nullable|array|min:3',
-            'photos.*' => 'image|max:2048',
-        ], ['photos.min' => 'Jika ingin mengganti foto, unggah minimal 3 foto baru.']);
-
-        $complaint->update($validated);
-
-        if ($request->hasFile('photos')) {
-            foreach ($complaint->photos as $photo) {
-                Storage::disk('public')->delete($photo->path);
-            }
-            $complaint->photos()->delete();
-
-            foreach ($request->file('photos') as $photoFile) {
-                $path = $photoFile->store('complaint-photos', 'public');
-                $complaint->photos()->create(['path' => $path]);
-            }
-        }
-
-        return redirect()->route('pengaduan.index')->with('success', 'Laporan berhasil diperbarui!');
-    }
-
-    /**
      * Menghapus pengaduan (memindahkannya ke Sampah).
      */
     public function destroy(Complaint $complaint): RedirectResponse

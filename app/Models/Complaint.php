@@ -18,17 +18,20 @@ class Complaint extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-       'user_id',
-        'category',
-        'priority', // <-- TAMBAHKAN
+        'user_id',
         'title',
+        'category', // Ditambahkan
         'description',
-        'location_text', // Ini untuk Alamat Detail
-        'city',          // <-- TAMBAHKAN
-        'district',      // <-- TAMBAHKAN
-        'village',       // <-- TAMBAHKAN
-        'sub_district',  // <-- TAMBAHKAN (untuk Kampung/RW)
+        'latitude',
+        'longitude',
+        'location_text',
         'status',
+        'priority',
+        'address',
+        'sub_district',
+        'village',
+        'district',
+        'city',
     ];
 
     /**

@@ -83,13 +83,12 @@
                                 <x-input-error :messages="$errors->get('village')" class="mt-2" />
                             </div>
                              <div>
-                                <x-input-label for="sub_district" value="Kampung/RW" class="text-xs"/>
+                                <x-input-label for="sub_district" value="Kampung/RT/RW" class="text-xs"/>
                                 <x-text-input id="sub_district" class="block mt-1 w-full" type="text" name="sub_district" :value="old('sub_district')" placeholder="Cth: Kp. Sindangheula RW 01"/>
                             </div>
                              <div>
-                                <x-input-label for="location_text" value="Alamat Detail" class="text-xs"/>
-                                <textarea id="location_text" name="location_text" rows="2" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required placeholder="Cth: Jl. Pahlawan No. 25, RT 02/RW 01 (depan masjid)">{{ old('location_text') }}</textarea>
-                                <x-input-error :messages="$errors->get('location_text')" class="mt-2" />
+                                <x-input-label for="sub_district" value="nomor telpon" class="text-xs"/>
+                                <x-text-input id="sub_district" class="block mt-1 w-full" type="text" name="sub_district" :value="old('sub_district')" placeholder="Cth: 08"/>
                             </div>
                         </div>
 
