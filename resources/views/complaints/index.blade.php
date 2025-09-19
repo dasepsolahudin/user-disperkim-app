@@ -36,48 +36,68 @@
                         default: $statusClass = 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'; break;
                     }
                 @endphp
-                <div class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm border border-transparent hover:shadow-md hover:border-indigo-500 transition">
+                <div class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm">
                     <div class="flex items-start space-x-4">
                         <div class="text-gray-400 dark:text-gray-500 mt-1">
-                            <i class="fas fa-info-circle"></i>
+                            <i class="fas fa-file-alt text-blue-500"></i>
                         </div>
                         <div class="flex-1">
                             <div class="flex items-center justify-between">
                                 <h3 class="font-bold text-gray-800 dark:text-gray-100">
-                                    {{ Str::limit($complaint->title, 50) }}
+                                    {{ $complaint->title }}
                                 </h3>
-                                <span class="px-2 py-0.5 text-xs font-semibold text-red-800 bg-red-100 rounded-md">
-                                    {{ $complaint->priority ?? 'Sedang' }}
+                                @if($complaint->category)
+                                <span class="px-2 py-0.5 text-xs font-semibold capitalize rounded-md bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                    {{ str_replace('_', ' ', $complaint->category) }}
                                 </span>
+                                @endif
                             </div>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                            
+                            <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500 dark:text-gray-400">
+                                <span class="flex items-center gap-1.5"><i class="fas fa-user"></i> {{ $complaint->user->name }}</span>
+                                <span class="flex items-center gap-1.5"><i class="fas fa-calendar-alt"></i> {{ $complaint->created_at->format('d M Y') }}</span>
+                            </div>
+
+                            <p class="text-sm text-gray-600 dark:text-gray-400 mt-3">
                                 {{ Str::limit($complaint->description, 150) }}
                             </p>
-                            <div class="mt-4 flex items-center flex-wrap gap-x-4 gap-y-2 text-xs text-gray-500 dark:text-gray-400">
-                                <span>Kategori: <strong>{{ str_replace('_', ' ', $complaint->category) }}</strong></span>
-                                <span>•</span>
-                                <span>{{ $complaint->created_at->format('d M Y') }}</span>
-                                <span>•</span>
-                                <span class="px-2 py-0.5 text-xs font-semibold rounded-md {{ $statusClass }}">
-                                    {{ $complaint->status }}
-                                </span>
+
+                            {{-- 
+                            =======================================
+                            PENAMBAHAN ALAMAT DETAIL DI SINI
+                            =======================================
+                            --}}
+                            
+                            <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400 space-y-1">
+                                <p class="flex items-center gap-2">
+                                    <i class="fas fa-map-marker-alt w-3 text-center"></i>
+                                    <span>
+                                        {{ $complaint->village ?? '' }}, {{ $complaint->sub_district ?? '' }}, {{ $complaint->district ?? '' }}
+                                    </span>
+                                </p>
                             </div>
-                            <div class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-3">
-                                <div class="flex items-center space-x-2">
-                                    {{-- Tombol Lihat Detail --}}
-                                    <a href="{{ route('pengaduan.show', $complaint->id) }}" 
-                                       class="px-3 py-1 rounded-full text-blue-800 bg-blue-100 text-xs font-semibold hover:bg-blue-200 transition">
-                                        Lihat Detail
-                                    </a>
-                                    {{-- Tombol Hapus --}}
-                                    <form action="{{ route('complaints.destroy', $complaint->id) }}" method="POST" onsubmit="return confirm('Yakin mau hapus pengaduan ini?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" 
-                                            class="px-3 py-1 rounded-full text-red-800 bg-red-100 text-xs font-semibold hover:bg-red-200 transition">
-                                            Hapus
-                                        </button>
-                                    </form>
+
+                            <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center justify-between">
+                                    {{-- Tombol Aksi --}}
+                                    <div class="flex items-center space-x-2">
+                                        <a href="{{ route('pengaduan.show', $complaint->id) }}" 
+                                           class="px-4 py-2 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 text-xs font-semibold rounded-lg hover:bg-gray-700 dark:hover:bg-white transition">
+                                            Lihat Detail
+                                        </a>
+                                        <form action="{{ route('complaints.destroy', $complaint->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengaduan ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                class="px-4 py-2 bg-red-600 text-white text-xs font-semibold rounded-lg hover:bg-red-700 transition">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                    {{-- Badge Status --}}
+                                    <span class="px-2 py-0.5 text-xs font-semibold rounded-md {{ $statusClass }}">
+                                        {{ $complaint->status }}
+                                    </span>
                                 </div>
                             </div>
                         </div>

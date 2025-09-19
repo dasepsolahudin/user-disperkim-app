@@ -23,23 +23,19 @@ class StoreComplaintRequest extends FormRequest
      */
      public function rules(): array
     {
-        return [
-            'title' => ['required', 'string', 'max:255'],
-            'category' => ['required', 'string', 'in:jalan_rusak,penerangan_jalan,saluran_air,taman_kota,fasilitas_umum,lainnya'],
-            'description' => ['required', 'string'],
-            'latitude' => ['required', 'numeric'],
-            'longitude' => ['required', 'numeric'],
-            
-            /* ================================================
-            PERUBAHAN DI SINI: Aturan untuk 'location_text' diubah
-            ================================================
-            - 'required' dihapus, dan diganti dengan 'nullable'.
-            - Ini berarti kolom ini sekarang boleh kosong.
-            */
-            'location_text' => ['nullable', 'string', 'max:255'], 
-            
-            'photos' => ['nullable', 'array', 'max:5'],
-            'photos.*' => ['image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+         return [
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|in:rutilahu,infrastruktur,tata_kota,air_bersih_sanitasi',
+            'priority' => 'nullable|string|in:Rendah,Sedang,Tinggi', // Diubah menjadi nullable
+            'city' => 'nullable|string|max:255', // Diubah menjadi nullable
+            'district' => 'nullable|string|max:255', // Diubah menjadi nullable
+            'village' => 'nullable|string|max:255', // Diubah menjadi nullable
+            'sub_district' => 'nullable|string|max:255',
+            'location_text' => 'nullable|string', // Diubah menjadi nullable
+            'description' => 'required|string',
+            'photos' => 'nullable|array',
+            'photos.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
+            'ktp_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ];
     }
 }

@@ -5,30 +5,21 @@
     <div class="bg-gray-100 dark:bg-gray-900 min-h-screen">
         <div class="container mx-auto max-w-3xl">
 
-            {{-- Menghapus header yang terpisah --}}
-
             <div class="p-4">
-                {{-- 
-                ================================================
-                PERUBAHAN DI SINI: SEMUA ELEMEN DISATUKAN
-                ================================================
-                --}}
-                <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm space-y-6">
+                {{-- KOTAK KONTEN UTAMA --}}
+                <div class="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm">
 
-                    {{-- BAGIAN 1: HEADER YANG SUDAH DISATUKAN --}}
-                    <div class="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
-                        {{-- Tombol Kembali --}}
+                    {{-- BAGIAN 1: HEADER --}}
+                    <div class="flex items-center justify-between pb-4">
                         <a href="{{ url()->previous() }}" class="flex items-center gap-2 px-4 py-2 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 text-sm font-semibold rounded-lg hover:bg-gray-700 dark:hover:bg-white transition">
-                        <i class="fas fa-arrow-left"></i>
-                        <span>Kembali</span>
-                    </a>
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Kembali</span>
+                        </a>
                         
-                        {{-- Judul Halaman --}}
                         <h1 class="text-lg font-bold text-gray-900 dark:text-gray-100">
                             Detail Pengaduan
                         </h1>
 
-                        {{-- Status Badge --}}
                         @php
                             $statusClass = match ($complaint->status) {
                                 'Selesai' => 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
@@ -42,66 +33,92 @@
                         </span>
                     </div>
 
-                    {{-- BAGIAN 2: INFORMASI UTAMA --}}
-                    <div>
-                        <div class="flex items-start gap-4">
-                            <div class="mt-1">
-                                <i class="fas fa-exclamation-triangle text-red-500 fa-lg"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $complaint->title }}</h2>
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ $complaint->location_text }}</p>
-                                
-                                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
-                                    <span class="flex items-center gap-2"><i class="fas fa-user"></i> {{ $complaint->user->name }}</span>
-                                    <span class="flex items-center gap-2"><i class="fas fa-calendar-alt"></i> {{ $complaint->created_at->format('d M Y') }}</span>
-                                    @if($complaint->category)
-                                    <span class="flex items-center gap-2 capitalize"><i class="fas fa-tags"></i> {{ str_replace('_', ' ', $complaint->category) }}</span>
-                                    @endif
-                                </div>
+                    {{-- BAGIAN 2: DETAIL PENGADUAN --}}
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-6">
+                        
+                        {{-- Judul dan Info Ringkas --}}
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100">{{ $complaint->title }}</h2>
+                            <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
+                                @if($complaint->category)
+                                <span class="flex items-center gap-2 capitalize"><i class="fas fa-tags"></i> {{ str_replace('_', ' ', $complaint->category) }}</span>
+                                @endif
+                                <span class="flex items-center gap-2"><i class="fas fa-calendar-alt"></i> {{ $complaint->created_at->format('d M Y') }}</span>
                             </div>
                         </div>
 
-                        <p class="mt-5 text-gray-700 dark:text-gray-300 leading-relaxed">
-                            {{ $complaint->description }}
-                        </p>
+                        {{-- Info Pengadu dan Lokasi --}}
+                        <div class="space-y-4">
+                            <div>
+                                 <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-user-circle text-gray-400"></i>
+                                    Pengadu
+                                </h3>
+                                <div class="text-sm text-gray-700 dark:text-gray-300 border-l-2 border-gray-200 dark:border-gray-700 ml-2 pl-4">
+                                   <p>{{ $complaint->user->name }}</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-map-marked-alt text-gray-400"></i>
+                                    Lokasi
+                                </h3>
+                                <div class="text-sm text-gray-700 dark:text-gray-300 space-y-1 border-l-2 border-gray-200 dark:border-gray-700 ml-2 pl-4">
+                                    @if($complaint->location_text)<p><strong>Patokan:</strong> {{ $complaint->location_text }}</p>@endif
+                                    @if($complaint->address)<p><strong>RT/RW:</strong> {{ $complaint->address }}</p>@endif
+                                    @if($complaint->village)<p><strong>Desa/Kel:</strong> {{ $complaint->village }}</p>@endif
+                                    @if($complaint->sub_district)<p><strong>Kecamatan:</strong> {{ $complaint->sub_district }}</p>@endif
+                                    @if($complaint->district)<p><strong>Kabupaten:</strong> {{ $complaint->district }}</p>@endif
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {{-- Deskripsi Pengaduan dengan Kotak Pemisah --}}
+                        <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+                             <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-2 flex items-center gap-2">
+                                <i class="fas fa-file-alt text-gray-400"></i>
+                                Deskripsi Laporan
+                            </h3>
+                            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                {{ $complaint->description }}
+                            </p>
+                        </div>
                     </div>
 
                     {{-- BAGIAN 3: LAMPIRAN FOTO --}}
-                    <div>
-                        {{-- FOTO ADUAN --}}
-                        <div>
-                            <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-3">Foto Aduan</h3>
+                    @if($complaint->photos->isNotEmpty() || $complaint->user->ktp_photo)
+                    <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+                        <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4">Lampiran</h3>
+                        <div class="space-y-6">
                             @if($complaint->photos->isNotEmpty())
-                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Foto Aduan</h4>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                                     @foreach ($complaint->photos as $photo)
-                                        <a href="{{ asset('storage/' . $photo->path) }}" target="_blank" class="block relative group aspect-w-1 aspect-h-1">
-                                            <img src="{{ asset('storage/'. $photo->path) }}" alt="Foto Aduan" class="rounded-lg w-full h-full object-cover transition transform group-hover:scale-105">
+                                        <a href="{{ asset('storage/' . $photo->path) }}" target="_blank" class="block group">
+                                            <img src="{{ asset('storage/'. $photo->path) }}" alt="Foto Aduan" class="rounded-lg w-full h-24 object-cover transition transform group-hover:scale-105">
                                         </a>
                                     @endforeach
                                 </div>
-                            @else
-                                <p class="text-sm text-gray-500">Tidak ada foto aduan yang dilampirkan.</p>
+                            </div>
                             @endif
-                        </div>
-                        
-                        {{-- FOTO KTP --}}
-                        <div class="mt-6">
-                            <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-3">Foto KTP</h3>
+                            
                             @if ($complaint->user->ktp_photo)
-                                <div class="max-w-[200px]">
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Foto KTP</h4>
+                                <div class="max-w-[150px]">
                                     <a href="{{ asset('storage/' . $complaint->user->ktp_photo) }}" target="_blank" class="block group">
                                         <img src="{{ asset('storage/' . $complaint->user->ktp_photo) }}" alt="Foto KTP" class="rounded-lg w-full object-contain transition transform group-hover:scale-105">
                                     </a>
                                 </div>
-                            @else
-                                 <p class="text-sm text-gray-500">Tidak ada foto KTP yang dilampirkan.</p>
+                            </div>
                             @endif
                         </div>
                     </div>
+                    @endif
 
                     {{-- BAGIAN 4: TANGGAPAN PETUGAS --}}
-                    <div>
+                    <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
                         <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4">Tanggapan Petugas</h3>
                         
                         @if ($complaint->responses->isEmpty())
@@ -111,7 +128,7 @@
                             </div>
                         @else
                             <div class="space-y-4">
-                                {{-- Loop untuk menampilkan tanggapan --}}
+                                {{-- Loop untuk menampilkan tanggapan akan muncul di sini --}}
                             </div>
                         @endif
                     </div>

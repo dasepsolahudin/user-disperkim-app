@@ -16,34 +16,18 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-        'photo',
-        'ktp_photo',
-        
-        // --- PERBAIKAN: MENAMBAHKAN SEMUA KOLOM DARI FORM ---
-        'nik',
-        'phone',
-        'gender',
-        'address',
-        'province',
-        'city',
-        'district',
-        'village',
-        'rt',
-        'rw',
-        'full_address',
-        'notification_preferences',
-        
-        // Kolom dari form yang namanya berbeda dengan di database
-        'kabupaten', 
-        'kecamatan',
-        'desa',
-    ];
-
+   protected $fillable = [
+    'name',
+    'email',
+    'password',
+    'address',
+    'rt',
+    'rw',
+    'village',
+    'district',
+    'ktp_photo',
+    'role',
+];
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -12,31 +12,20 @@ class Complaint extends Model
 {
     use HasFactory, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'user_id',
-        'title',
-        'category', // Ditambahkan
-        'description',
-        'latitude',
-        'longitude',
-        'location_text',
-        'status',
+        'category',
         'priority',
-        'address',
-        'sub_district',
-        'village',
-        'district',
+        'title',
+        'description',
+        'location_text',
         'city',
+        'district',
+        'village',
+        'sub_district',
+        'status',
     ];
 
-    /**
-     * Mendefinisikan relasi "belongs-to": Satu Complaint dimiliki oleh satu User.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -48,7 +37,7 @@ class Complaint extends Model
     }
 
     public function responses()
-{
-    return $this->hasMany(Response::class)->latest(); // Mengambil semua tanggapan, diurutkan dari yang terbaru
-}
+    {
+        return $this->hasMany(Response::class)->latest();
+    }
 }
