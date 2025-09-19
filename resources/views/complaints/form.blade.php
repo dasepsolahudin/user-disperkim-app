@@ -70,8 +70,7 @@
                             <h3 class="font-semibold text-gray-800 dark:text-gray-200">Alamat Lengkap</h3>
                             <div>
                                 <x-input-label for="city" value="Kabupaten" class="text-xs"/>
-                                <x-text-input id="city" class="block mt-1 w-full bg-gray-100 dark:bg-gray-800" type="text" name="city" value="Garut" readonly />
-                            </div>
+<x-text-input id="city" ... value="" />                            </div>
                              <div>
                                 <x-input-label for="district" value="Kecamatan *" class="text-xs"/>
                                 <x-text-input id="district" class="block mt-1 w-full" type="text" name="district" :value="old('district')" required placeholder="Cth: Garut Kota"/>

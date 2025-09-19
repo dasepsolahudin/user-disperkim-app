@@ -12,12 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('complaints', function (Blueprint $table) {
-            // Menambahkan kolom baru sesuai desain
-            $table->string('priority')->default('Sedang')->after('category');
-            $table->string('village')->nullable()->after('location_text');
-            $table->string('district')->nullable()->after('location_text');
-            $table->string('city')->nullable()->after('location_text');
-            $table->string('sub_district')->nullable()->after('location_text'); // Untuk Kampung/RW
+            $table->string('kampung')->nullable()->after('village');
+            $table->string('rt')->nullable()->after('kampung');
+            $table->string('rw')->nullable()->after('rt');
+            $table->string('phone_number')->nullable()->after('rw');
         });
     }
 
@@ -27,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('complaints', function (Blueprint $table) {
-            $table->dropColumn(['priority', 'village', 'district', 'city', 'sub_district']);
+            $table->dropColumn(['kampung', 'rt', 'rw', 'phone_number']);
         });
     }
 };
