@@ -27,7 +27,7 @@ class SettingsController extends Controller
         $data = [
             'user' => $request->user(),
             'section' => $section,
-            'trashedComplaints' => collect(), 
+            'trashedComplaints' => collect(),
         ];
 
         if ($section === 'trash') {
@@ -37,9 +37,8 @@ class SettingsController extends Controller
                 ->paginate(10, ['*'], 'trash_page');
         }
         
-    return view('settings.edit', compact('section')); // Baris ini kemungkinan menjadi masalah.
+        return view('search.settings.edit', $data); // Perbaikan: Teruskan array $data ke view.
     }
-
     /**
      * Update the user's profile information.
      */

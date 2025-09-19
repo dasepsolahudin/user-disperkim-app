@@ -19,7 +19,7 @@ class PengaduanController extends Controller
     {
         $complaints = Complaint::where('user_id', auth()->id())->latest()->paginate(10);
         // Menggunakan view yang sudah ada untuk complaints
-        return view('complaints.index', compact('complaints'));
+return view('pengaduan.index', compact('complaints'));
     }
 
     /**

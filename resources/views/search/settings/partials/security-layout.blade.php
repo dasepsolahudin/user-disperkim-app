@@ -94,8 +94,8 @@
                 </div>
             </div>
             <div class="p-6 sm:p-8">
-                @include('settings.partials.update-password-form')
-            </div>
+@include('search.settings.partials.update-password-form')       
+     </div>
         </div>
 
         {{-- KOTAK 2: AUTENTIKASI DUA FAKTOR (2FA) --}}

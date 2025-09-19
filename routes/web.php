@@ -11,6 +11,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\TrashController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Notifikasi
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    
 
     // Halaman Daftar & Detail Pengaduan (Menggunakan Controller yang berbeda)
     Route::get('/pengaduan', [PengaduanController::class, 'index'])->name('pengaduan.index');
@@ -69,6 +71,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{section?}', [SettingsController::class, 'edit'])->name('edit');
         Route::patch('/profile', [SettingsController::class, 'update'])->name('profile.update');
         Route::post('/photo', [SettingsController::class, 'updatePhoto'])->name('photo.update');
+        Route::patch('/2fa', [SettingsController::class, 'updateTwoFactorAuthentication'])->name('2fa.update');
+
         Route::patch('/notifications', [SettingsController::class, 'updateNotifications'])->name('notifications.update');
         Route::delete('/delete-account', [SettingsController::class, 'destroy'])->name('account.destroy');
 
@@ -85,4 +89,3 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
 });
-

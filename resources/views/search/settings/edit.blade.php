@@ -116,23 +116,23 @@
                     <div class="p-6 sm:p-8 bg-white dark:bg-gray-800 shadow-lg rounded-2xl">
                         @switch($section)
                             @case('profile')
-                                @include('settings.partials.update-profile-information-form')
-                                @break
+    @include('search.settings.partials.update-profile-information-form')
+    @break
                             @case('security')
-                                @include('settings.partials.security-layout')
+                                @include('search.settings.partials.security-layout')
                                 @break
                             @case('notifications')
-                                @include('settings.partials.update-notification-preferences-form')
-                                @break
+    @include('search.settings.partials.update-notification-preferences-form')
+    @break
                             @case('appearance')
-                                @include('settings.partials.update-appearance-form')
+                                @include('search.settings.partials.update-appearance-form')
                                 @break
                             @case('trash')
                                 {{-- Pastikan Anda memiliki view partial ini --}}
-                                @include('settings.partials.trash-section')
+                                @include('search.settings.partials.trash-section')
                                 @break
                             @case('delete')
-                                @include('settings.partials.delete-user-form')
+                                @include('search.settings.partials.delete-user-form')
                                 @break
                         @endswitch
                     </div>
