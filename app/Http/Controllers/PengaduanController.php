@@ -47,50 +47,79 @@ return view('pengaduan.index', compact('complaints'));
     /**
      * Menyimpan pengaduan baru ke database.
      */
-    public function store(Request $request): RedirectResponse
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'category' => 'required|string|in:rutilahu,infrastruktur,tata_kota,air_bersih_sanitasi',
-            'location_text' => 'nullable|string|max:255',
-            'photos' => 'required|array|min:3',
-            'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'ktp_photo' => 'nullable|image|max:2048',
-        ], [
-            'photos.min' => 'Anda harus mengunggah minimal 3 foto aduan.',
-            'photos.*.image' => 'Semua file yang diunggah harus berupa gambar.',
-            'photos.*.mimes' => 'Format gambar yang diizinkan adalah jpeg, png, jpg, atau gif.',
-        ]);
+    // app/Http/Controllers/PengaduanController.php
 
-        $complaint = Complaint::create([
-            'user_id' => Auth::id(),
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'category' => $validated['category'],
-            'location_text' => $validated['location_text'],
-            'status' => 'Baru',
-        ]);
+// ... (kode lain biarkan saja)
 
-        if ($request->hasFile('photos')) {
-            foreach ($request->file('photos') as $photoFile) {
-                $path = $photoFile->store('complaint-photos', 'public');
-                $complaint->photos()->create(['path' => $path]);
-            }
-        }
+public function store(Request $request): RedirectResponse
+{
+    // 1. TAMBAHKAN VALIDASI UNTUK ALAMAT DAN UBAH 'ktp_photo'
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'category' => 'required|string|in:rutilahu,infrastruktur,tata_kota,air_bersih_sanitasi',
+        
+        // Data Alamat Lengkap
+        'kabupaten' => 'required|string|max:100',
+        'kecamatan' => 'required|string|max:100',
+        'desa' => 'required|string|max:100',
+        'kampung' => 'required|string|max:100',
+        'rt_rw' => 'required|string|max:10',
 
-        if ($request->hasFile('ktp_photo')) {
-            $user = Auth::user();
-            if ($user->ktp_photo) {
-                Storage::disk('public')->delete($user->ktp_photo);
-            }
-            $ktpPath = $request->file('ktp_photo')->store('ktp-photos', 'public');
-            $user->update(['ktp_photo' => $ktpPath]);
-        }
+        'photos' => 'required|array|min:1', // Minimal 1 foto sudah cukup
+        'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'foto_ktp' => 'required|image|mimes:jpeg,png,jpg|max:2048', // KTP wajib diisi
+    ], [
+        'photos.min' => 'Anda harus mengunggah minimal 1 foto aduan.',
+        // ... pesan error lainnya ...
+        'foto_ktp.required' => 'Foto KTP wajib diunggah untuk verifikasi.',
+    ]);
 
-        return redirect()->route('pengaduan.index')->with('success', 'Laporan Anda berhasil dikirim!');
+    // 2. PROSES FOTO KTP TERLEBIH DAHULU
+    $ktpPath = null;
+    if ($request->hasFile('foto_ktp')) {
+        $ktpPath = $request->file('foto_ktp')->store('ktp-photos', 'public');
     }
 
+    // 3. SIMPAN SEMUA DATA KE DATABASE COMPLAINTS
+    $complaint = Complaint::create([
+        'user_id' => Auth::id(),
+        'title' => $validated['title'],
+        'description' => $validated['description'],
+        'category' => $validated['category'],
+        'status' => 'Baru',
+
+        // Data alamat yang disimpan
+        'kabupaten' => $validated['kabupaten'],
+        'kecamatan' => $validated['kecamatan'],
+        'desa' => $validated['desa'],
+        'kampung' => $validated['kampung'],
+        'rt_rw' => $validated['rt_rw'],
+
+        // Path foto KTP yang disimpan
+        'foto_ktp' => $ktpPath,
+    ]);
+
+    // 4. SIMPAN FOTO-FOTO PENGADUAN (ini sudah benar)
+    if ($request->hasFile('photos')) {
+        foreach ($request->file('photos') as $photoFile) {
+            $path = $photoFile->store('complaint-photos', 'public');
+            $complaint->photos()->create(['path' => $path]);
+        }
+    }
+    
+    // 5. HAPUS LOGIKA LAMA YANG MENYIMPAN KTP KE USER
+    // Bagian di bawah ini sudah tidak diperlukan lagi dan harus dihapus.
+    /*
+    if ($request->hasFile('ktp_photo')) {
+        ... (HAPUS BLOK INI) ...
+    }
+    */
+
+    return redirect()->route('pengaduan.index')->with('success', 'Laporan Anda berhasil dikirim!');
+}
+
+// ... (method show() dan lainnya biarkan seperti semula, sudah benar)
     /**
      * Menampilkan detail pengaduan.
      */

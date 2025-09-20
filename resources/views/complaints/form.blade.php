@@ -29,7 +29,7 @@
                 {{-- Grid Utama Dua Kolom --}}
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6">
                     
-                    {{-- START: KOLOM KIRI --}}
+                    {{-- START: KOLOM KIRI (Data Pengaduan) --}}
                     <div class="space-y-6">
                         <div>
                             <x-input-label for="title" value="Judul Pengaduan *" />
@@ -48,105 +48,67 @@
                             <x-input-error :messages="$errors->get('category')" class="mt-2" />
                         </div>
                         <div>
-                            <x-input-label for="priority" value="Prioritas" />
-                            <select id="priority" name="priority" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm">
-                                <option value="Rendah" @if(old('priority') == 'Rendah') selected @endif>Rendah</option>
-                                <option value="Sedang" @if(old('priority', 'Sedang') == 'Sedang') selected @endif>Sedang</option>
-                                <option value="Tinggi" @if(old('priority') == 'Tinggi') selected @endif>Tinggi</option>
-                            </select>
-                        </div>
-                        <div>
                             <x-input-label for="description" value="Deskripsi Pengaduan *" />
-                            <textarea id="description" name="description" rows="12" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required placeholder="Jelaskan detail pengaduan Anda selengkap mungkin...">{{ old('description') }}</textarea>
+                            <textarea id="description" name="description" rows="16" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required placeholder="Jelaskan detail pengaduan Anda selengkap mungkin...">{{ old('description') }}</textarea>
                             <x-input-error :messages="$errors->get('description')" class="mt-2" />
                         </div>
                     </div>
                     {{-- END: KOLOM KIRI --}}
 
-                    {{-- START: KOLOM KANAN --}}
+                    {{-- START: KOLOM KANAN (Alamat & Berkas) --}}
                     <div class="space-y-6">
                         {{-- Seksi Alamat --}}
+                        <div>
+                            <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4">Alamat Lengkap Sesuai KTP</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <x-input-label for="kabupaten" value="Kabupaten *" />
+                                    <x-text-input id="kabupaten" class="block mt-1 w-full bg-gray-100 dark:bg-gray-800 cursor-not-allowed" type="text" name="kabupaten" value="Garut" readonly />
+                                </div>
+                                <div>
+                                    <x-input-label for="kecamatan" value="Kecamatan *" />
+                                    <x-text-input id="kecamatan" class="block mt-1 w-full" type="text" name="kecamatan" :value="old('kecamatan')" required placeholder="Cth: Garut Kota" />
+                                    <x-input-error :messages="$errors->get('kecamatan')" class="mt-2" />
+                                </div>
+                                <div>
+                                    <x-input-label for="desa" value="Desa / Kelurahan *" />
+                                    <x-text-input id="desa" class="block mt-1 w-full" type="text" name="desa" :value="old('desa')" required placeholder="Cth: Sukagalih" />
+                                    <x-input-error :messages="$errors->get('desa')" class="mt-2" />
+                                </div>
+                                <div>
+                                    <x-input-label for="kampung" value="Kampung *" />
+                                    <x-text-input id="kampung" class="block mt-1 w-full" type="text" name="kampung" :value="old('kampung')" required placeholder="Cth: Kp. Sindangheula" />
+                                    <x-input-error :messages="$errors->get('kampung')" class="mt-2" />
+                                </div>
+                                <div>
+                                    <x-input-label for="rt_rw" value="RT/RW *" />
+                                    <x-text-input id="rt_rw" class="block mt-1 w-full" type="text" name="rt_rw" :value="old('rt_rw')" placeholder="Contoh: 001/005" required />
+                                    <x-input-error :messages="$errors->get('rt_rw')" class="mt-2" />
+                                </div>
+                            </div>
+                        </div>
 
-{{-- Pastikan bagian alamat di form.blade.php seperti ini --}}
-<div class="space-y-4">
-    <h3 class="font-semibold text-gray-800 dark:text-gray-200">Alamat Lengkap Kejadian</h3>
-    <div>
-        <x-input-label for="district" value="Kabupaten" class="text-xs"/>
-<x-text-input id="city" ... value="" />      </div>
-    <div>
-        <x-input-label for="sub_district" value="Kecamatan *" class="text-xs"/>
-        <x-text-input id="sub_district" class="block mt-1 w-full" type="text" name="sub_district" :value="old('sub_district')" required placeholder="Cth: Garut Kota"/>
-        <x-input-error :messages="$errors->get('sub_district')" class="mt-2" />
-    </div>
-    <div>
-        <x-input-label for="village" value="Desa/Kelurahan *" class="text-xs"/>
-        <x-text-input id="village" class="block mt-1 w-full" type="text" name="village" :value="old('village')" required placeholder="Cth: Sukamentri"/>
-        <x-input-error :messages="$errors->get('village')" class="mt-2" />
-    </div>
-    <div>
-        <x-input-label for="kampung" value="Kampung" class="text-xs"/>
-        <x-text-input id="kampung" class="block mt-1 w-full" type="text" name="kampung" :value="old('kampung')" placeholder="Cth: Kp. Sindangheula"/>
-    </div>
-    <div class="grid grid-cols-2 gap-4">
-        <div>
-            <x-input-label for="rt" value="RT" class="text-xs"/>
-            <x-text-input id="rt" class="block mt-1 w-full" type="text" name="rt" :value="old('rt')" placeholder="Cth: 001"/>
-        </div>
-        <div>
-            <x-input-label for="rw" value="RW" class="text-xs"/>
-            <x-text-input id="rw" class="block mt-1 w-full" type="text" name="rw" :value="old('rw')" placeholder="Cth: 002"/>
-        </div>
-    </div>
-    <div>
-        <x-input-label for="phone_number" value="Nomor Telepon Pelapor *" class="text-xs"/>
-        <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" :value="old('phone_number')" required placeholder="Cth: 081234567890"/>
-        <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
-    </div>
-</div>
-
-                        
-
-                        {{-- START: PERBAIKAN UPLOAD BERKAS DENGAN PREVIEW --}}
+                        {{-- Seksi Upload Berkas --}}
                         <div class="space-y-4">
                             <h3 class="font-semibold text-gray-800 dark:text-gray-200">Upload Berkas</h3>
                             
-                            {{-- UPLOAD FOTO BUKTI --}}
-                            <div x-data="{ files: null }">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Foto Bukti (Opsional)</label>
-                                <label for="photos" class="mt-1 flex justify-center w-full h-32 px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-md cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition bg-gray-50 dark:bg-gray-900/50">
-                                    <div class="space-y-1 text-center">
-                                        <i class="fas fa-camera fa-2x text-gray-400"></i>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Klik untuk upload (bisa lebih dari 1 foto)</p>
-                                        <p class="text-xs text-gray-500">JPG, PNG. maks 5MB</p>
-                                    </div>
-                                </label>
-                                <input type="file" id="photos" name="photos[]" class="hidden" multiple @change="files = $event.target.files">
-                                <div x-show="files && files.length > 0" class="mt-2 text-xs text-gray-500" x-cloak>
-                                    <p><span x-text="files.length"></span> file dipilih.</p>
-                                </div>
-                                <x-input-error :messages="$errors->get('photos.*')" class="mt-2" />
-                            </div>
-
                             {{-- UPLOAD FOTO KTP --}}
                             <div x-data="{ ktpPreview: null, ktpName: null }">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Foto KTP (Opsional)</label>
-                                <input type="file" id="ktp_photo" name="ktp_photo" class="hidden"
-                                       @change="
-                                            if ($event.target.files.length > 0) {
-                                                const reader = new FileReader();
-                                                reader.onload = (e) => { ktpPreview = e.target.result; };
-                                                reader.readAsDataURL($event.target.files[0]);
-                                                ktpName = $event.target.files[0].name;
-                                            } else {
-                                                ktpPreview = null;
-                                                ktpName = null;
-                                            }
-                                       ">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Foto KTP (Wajib)</label>
+                                <input type="file" id="ktp_photo" name="foto_ktp" class="hidden" required @change="
+                                    if ($event.target.files.length > 0) {
+                                        const reader = new FileReader();
+                                        reader.onload = (e) => { ktpPreview = e.target.result; };
+                                        reader.readAsDataURL($event.target.files[0]);
+                                        ktpName = $event.target.files[0].name;
+                                    } else {
+                                        ktpPreview = null; ktpName = null;
+                                    }">
                                 <label for="ktp_photo" class="mt-1 flex justify-center w-full h-32 px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-md cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition bg-gray-50 dark:bg-gray-900/50">
                                     <div class="space-y-1 text-center" x-show="!ktpPreview">
                                         <i class="fas fa-id-card fa-2x text-gray-400"></i>
                                         <p class="text-sm text-gray-600 dark:text-gray-400">Klik untuk upload</p>
-                                        <p class="text-xs text-gray-500">JPG, PNG. maks 5MB</p>
+                                        <p class="text-xs text-gray-500">JPG, PNG. maks 2MB</p>
                                     </div>
                                     <div x-show="ktpPreview" class="relative" x-cloak>
                                         <img :src="ktpPreview" class="h-24 object-contain rounded-md">
@@ -155,10 +117,26 @@
                                 <div x-show="ktpName" class="mt-2 text-xs text-gray-500" x-cloak>
                                     <p>File dipilih: <span x-text="ktpName"></span></p>
                                 </div>
-                                <x-input-error :messages="$errors->get('ktp_photo')" class="mt-2" />
+                                <x-input-error :messages="$errors->get('foto_ktp')" class="mt-2" />
+                            </div>
+                            
+                            {{-- UPLOAD FOTO BUKTI --}}
+                            <div x-data="{ files: [] }">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Foto Bukti (Wajib, bisa lebih dari 1)</label>
+                                <label for="photos" class="mt-1 flex justify-center w-full h-32 px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-md cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition bg-gray-50 dark:bg-gray-900/50">
+                                    <div class="space-y-1 text-center">
+                                        <i class="fas fa-camera fa-2x text-gray-400"></i>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Klik untuk upload</p>
+                                        <p class="text-xs text-gray-500">JPG, PNG. maks 2MB</p>
+                                    </div>
+                                </label>
+                                <input type="file" id="photos" name="photos[]" class="hidden" multiple required @change="files = $event.target.files">
+                                <div x-show="files && files.length > 0" class="mt-2 text-xs text-gray-500" x-cloak>
+                                    <p><span x-text="files.length"></span> file dipilih.</p>
+                                </div>
+                                <x-input-error :messages="$errors->get('photos.*')" class="mt-2" />
                             </div>
                         </div>
-                        {{-- END: PERBAIKAN UPLOAD BERKAS DENGAN PREVIEW --}}
                     </div>
                     {{-- END: KOLOM KANAN --}}
                 </div>

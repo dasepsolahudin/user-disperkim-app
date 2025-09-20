@@ -36,14 +36,16 @@
 
                 {{-- Lokasi --}}
                 <div class="mt-6">
-                    <h3 class="font-semibold mb-2">Lokasi Kejadian</h3>
-                    <div class="text-sm space-y-1">
-                        <p><strong>Desa/Kelurahan:</strong> {{ $complaint->village ?? '-' }}</p>
-                        <p><strong>Kecamatan:</strong> {{ $complaint->district ?? '-' }}</p>
-                        <p><strong>Kabupaten:</strong> {{ $complaint->city ?? '-' }}</p>
-                        <p><strong>Sub District:</strong> {{ $complaint->sub_district ?? '-' }}</p>
-                    </div>
-                </div>
+    <h3 class="font-semibold mb-2">Lokasi Kejadian</h3>
+    <div class="text-sm space-y-1">
+        {{-- Panggil dari kolom baru di tabel complaints --}}
+        <p><strong>Kampung:</strong> {{ $complaint->kampung ?? '-' }}</p>
+        <p><strong>RT/RW:</strong> {{ $complaint->rt_rw ?? '-' }}</p>
+        <p><strong>Desa/Kelurahan:</strong> {{ $complaint->desa ?? '-' }}</p>
+        <p><strong>Kecamatan:</strong> {{ $complaint->kecamatan ?? '-' }}</p>
+        <p><strong>Kabupaten:</strong> {{ $complaint->kabupaten ?? '-' }}</p>
+    </div>
+</div>
 
                 {{-- Deskripsi --}}
                 <div class="mt-6">
