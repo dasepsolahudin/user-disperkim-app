@@ -51,37 +51,37 @@
                             </div>
                         </div>
 
-                        {{-- Info Pengadu dan Lokasi --}}
-                        <div class="grid md:grid-cols-2 gap-8">
-                            {{-- KOLOM KIRI: INFO PENGADU --}}
-                            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                                 <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2 text-lg">
-                                    <i class="fas fa-user-circle text-gray-400"></i>
-                                    Data Pengadu
-                                </h3>
-                                <div class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+                        {{-- KOLOM KIRI: INFO PENGADU --}}
+<div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+    <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2 text-lg">
+        <i class="fas fa-user-circle text-gray-400"></i>
+        Data Pengadu
+    </h3>
+   <div class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
                                    <p><strong>Nama:</strong> {{ $complaint->user->name }}</p>
                                    <p><strong>No. Telp:</strong> {{ $complaint->user->phone_number ?? 'Tidak ada' }}</p>
-                                   <p><strong>Alamat KTP:</strong> {{ $complaint->user->address ?? 'Tidak ada' }}</p>
                                 </div>
-                            </div>
-                            {{-- KOLOM KANAN: LOKASI KEJADIAN --}}
-                            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-                                <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2 text-lg">
-                                    <i class="fas fa-map-marked-alt text-gray-400"></i>
-                                    Lokasi Kejadian
-                                </h3>
-                                <div class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
-                                    <p><strong>Alamat Lengkap:</strong> {{ $complaint->address }}</p>
-                                    <p><strong>RT/RW:</strong> {{ $complaint->rt }}/{{ $complaint->rw }}</p>
-                                    <p><strong>Kampung:</strong> {{ $complaint->kampung }}</p>
-                                    <p><strong>Desa/Kelurahan:</strong> {{ $complaint->village }}</p>
-                                    <p><strong>Kecamatan:</strong> {{ $complaint->sub_district }}</p>
-                                    <p><strong>Kabupaten:</strong> {{ $complaint->district }}</p>
-                                    @if($complaint->location_text)<p class="pt-2"><strong>Patokan:</strong> {{ $complaint->location_text }}</p>@endif
-                                </div>
-                            </div>
-                        </div>
+</div>
+
+{{-- KOLOM KANAN: LOKASI KEJADIAN --}}
+<div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
+    <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2 text-lg">
+        <i class="fas fa-map-marked-alt text-gray-400"></i>
+        Lokasi Kejadian
+    </h3>
+    <div class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+        <p><strong>Alamat Lengkap:</strong> {{ $complaint->address ?? '-' }}</p>
+        <p><strong>RT/RW:</strong> {{ $complaint->rt ?? '-' }}/{{ $complaint->rw ?? '-' }}</p>
+        <p><strong>Kampung:</strong> {{ $complaint->kampung ?? '-' }}</p>
+        <p><strong>Desa/Kelurahan:</strong> {{ $complaint->village ?? '-' }}</p>
+        <p><strong>Kecamatan:</strong> {{ $complaint->sub_district ?? '-' }}</p>
+        <p><strong>Kabupaten:</strong> {{ $complaint->district ?? '-' }}</p>
+        @if(!empty($complaint->location_text))
+            <p class="pt-2"><strong>Patokan:</strong> {{ $complaint->location_text }}</p>
+        @endif
+    </div>
+</div>
+
                         
                         {{-- Deskripsi Pengaduan --}}
                         <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">

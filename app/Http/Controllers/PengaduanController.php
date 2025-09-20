@@ -99,7 +99,7 @@ return view('pengaduan.index', compact('complaints'));
         if ($complaint->user_id !== auth()->id() && !Auth::user()->is_admin) {
             abort(403);
         }
-        return view('complaints.show', compact('complaint'));
+        return view('pengaduan.show', compact('complaint'));
     }
 
     /**

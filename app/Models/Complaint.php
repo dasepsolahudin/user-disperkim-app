@@ -14,18 +14,22 @@ class Complaint extends Model
 
     protected $fillable = [
         'user_id',
-        'category',
-        'priority',
         'title',
         'description',
-        'location_text',
-        'city',
-        'district',
-        'village',
-        'sub_district',
+        'category',
         'status',
+        'priority',
+        'district',
+        'sub_district',
+        'village',
+        'kampung',
+        'rt',
+        'rw',
+        'phone_number',
+        'location_text',
     ];
 
+    // ... sisa relasi ...
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -66,30 +66,45 @@
                     {{-- START: KOLOM KANAN --}}
                     <div class="space-y-6">
                         {{-- Seksi Alamat --}}
-                        <div class="space-y-4">
-                            <h3 class="font-semibold text-gray-800 dark:text-gray-200">Alamat Lengkap</h3>
-                            <div>
-                                <x-input-label for="city" value="Kabupaten" class="text-xs"/>
-<x-text-input id="city" ... value="" />                            </div>
-                             <div>
-                                <x-input-label for="district" value="Kecamatan *" class="text-xs"/>
-                                <x-text-input id="district" class="block mt-1 w-full" type="text" name="district" :value="old('district')" required placeholder="Cth: Garut Kota"/>
-                                <x-input-error :messages="$errors->get('district')" class="mt-2" />
-                            </div>
-                            <div>
-                                <x-input-label for="village" value="Desa/Kelurahan *" class="text-xs"/>
-                                <x-text-input id="village" class="block mt-1 w-full" type="text" name="village" :value="old('village')" required placeholder="Cth: Sukamentri"/>
-                                <x-input-error :messages="$errors->get('village')" class="mt-2" />
-                            </div>
-                             <div>
-                                <x-input-label for="sub_district" value="Kampung/RT/RW" class="text-xs"/>
-                                <x-text-input id="sub_district" class="block mt-1 w-full" type="text" name="sub_district" :value="old('sub_district')" placeholder="Cth: Kp. Sindangheula RW 01"/>
-                            </div>
-                             <div>
-                                <x-input-label for="sub_district" value="nomor telpon" class="text-xs"/>
-                                <x-text-input id="sub_district" class="block mt-1 w-full" type="text" name="sub_district" :value="old('sub_district')" placeholder="Cth: 08"/>
-                            </div>
-                        </div>
+
+{{-- Pastikan bagian alamat di form.blade.php seperti ini --}}
+<div class="space-y-4">
+    <h3 class="font-semibold text-gray-800 dark:text-gray-200">Alamat Lengkap Kejadian</h3>
+    <div>
+        <x-input-label for="district" value="Kabupaten" class="text-xs"/>
+<x-text-input id="city" ... value="" />      </div>
+    <div>
+        <x-input-label for="sub_district" value="Kecamatan *" class="text-xs"/>
+        <x-text-input id="sub_district" class="block mt-1 w-full" type="text" name="sub_district" :value="old('sub_district')" required placeholder="Cth: Garut Kota"/>
+        <x-input-error :messages="$errors->get('sub_district')" class="mt-2" />
+    </div>
+    <div>
+        <x-input-label for="village" value="Desa/Kelurahan *" class="text-xs"/>
+        <x-text-input id="village" class="block mt-1 w-full" type="text" name="village" :value="old('village')" required placeholder="Cth: Sukamentri"/>
+        <x-input-error :messages="$errors->get('village')" class="mt-2" />
+    </div>
+    <div>
+        <x-input-label for="kampung" value="Kampung" class="text-xs"/>
+        <x-text-input id="kampung" class="block mt-1 w-full" type="text" name="kampung" :value="old('kampung')" placeholder="Cth: Kp. Sindangheula"/>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+        <div>
+            <x-input-label for="rt" value="RT" class="text-xs"/>
+            <x-text-input id="rt" class="block mt-1 w-full" type="text" name="rt" :value="old('rt')" placeholder="Cth: 001"/>
+        </div>
+        <div>
+            <x-input-label for="rw" value="RW" class="text-xs"/>
+            <x-text-input id="rw" class="block mt-1 w-full" type="text" name="rw" :value="old('rw')" placeholder="Cth: 002"/>
+        </div>
+    </div>
+    <div>
+        <x-input-label for="phone_number" value="Nomor Telepon Pelapor *" class="text-xs"/>
+        <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" :value="old('phone_number')" required placeholder="Cth: 081234567890"/>
+        <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
+    </div>
+</div>
+
+                        
 
                         {{-- START: PERBAIKAN UPLOAD BERKAS DENGAN PREVIEW --}}
                         <div class="space-y-4">
