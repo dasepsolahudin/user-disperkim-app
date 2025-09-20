@@ -3,33 +3,61 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class StoreComplaintRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
     public function authorize(): bool
     {
-        return Auth::check();
+        // Izinkan semua pengguna yang sudah login untuk membuat pengaduan
+        return true;
     }
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
     public function rules(): array
     {
         return [
+            // ---- PERBAIKAN: LENGKAPI ATURAN VALIDASI ----
             'title' => 'required|string|max:255',
-            'category' => 'required|string|in:rutilahu,infrastruktur,tata_kota,air_bersih_sanitasi',
             'description' => 'required|string',
-            'priority' => 'nullable|string|in:Rendah,Sedang,Tinggi',
-            'district' => 'required|string|max:100',
-            'sub_district' => 'required|string|max:100',
-            'village' => 'required|string|max:100',
-            'kampung' => 'nullable|string|max:100',
-            'rt' => 'nullable|string|max:5',
-            'rw' => 'nullable|string|max:5',
-            'phone_number' => 'required|string|max:20',
-            'location_text' => 'nullable|string',
-            'photos' => 'nullable|array',
-            'photos.*' => 'image|mimes:jpeg,png,jpg|max:5120',
-            'ktp_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'category' => 'required|string|in:rutilahu,infrastruktur,tata_kota,air_bersih_sanitasi',
+            
+            // Aturan untuk alamat
+            'kabupaten' => 'required|string|max:100',
+            'kecamatan' => 'required|string|max:100',
+            'desa' => 'required|string|max:100',
+            'kampung' => 'required|string|max:100',
+            'rt_rw' => 'required|string|max:15',
+
+            // Aturan untuk file upload
+            // 'photos' harus berupa array dan minimal ada 1 file
+            'photos' => 'required|array|min:1', 
+            // Setiap item di dalam array 'photos' harus berupa gambar
+            'photos.*' => 'required|image|mimes:jpeg,png,jpg|max:2048', 
+            // 'foto_ktp' harus ada dan berupa gambar
+            'foto_ktp' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ];
+    }
+
+    /**
+     * Custom message for validation
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'photos.required' => 'Anda harus mengunggah setidaknya satu foto bukti.',
+            'photos.*.image' => 'Semua file bukti harus berupa gambar.',
+            'photos.*.mimes' => 'Format foto bukti harus JPG, PNG, atau JPEG.',
+            'foto_ktp.required' => 'Foto KTP wajib diunggah untuk verifikasi.',
+            'foto_ktp.image' => 'File KTP harus berupa gambar.',
         ];
     }
 }

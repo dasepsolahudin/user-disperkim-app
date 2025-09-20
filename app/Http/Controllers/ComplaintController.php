@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-// ---- PERUBAHAN DI SINI ----
-// Menggunakan Form Request khusus untuk validasi saat menyimpan data.
 use App\Http\Requests\StoreComplaintRequest; 
 use App\Models\Complaint;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request; // Tetap digunakan untuk metode 'update' jika ada
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -22,6 +20,8 @@ class ComplaintController extends Controller
      */
     public function index(): View
     {
+        // Mengambil data pengaduan yang dimiliki oleh user yang sedang login,
+        // diurutkan dari yang terbaru, dan ditampilkan dengan paginasi.
         $complaints = Auth::user()->complaints()->latest()->paginate(10);
         return view('complaints.index', compact('complaints'));
     }
@@ -39,7 +39,7 @@ class ComplaintController extends Controller
      */
     public function showForm(string $category): View
     {
-        // Logika ini tetap sama
+        // Memastikan kategori yang dipilih valid sebelum menampilkan formulir.
         if (!in_array($category, ['rutilahu', 'infrastruktur', 'tata_kota', 'air_bersih_sanitasi'])) {
             abort(404);
         }
@@ -49,38 +49,46 @@ class ComplaintController extends Controller
     /**
      * Menyimpan pengaduan baru yang disubmit dari formulir.
      */
-    // ---- PERBAIKAN UTAMA #2: MENGGUNAKAN FORM REQUEST ----
     public function store(StoreComplaintRequest $request): RedirectResponse
     {
-        // Blok validasi yang panjang sudah dipindahkan ke StoreComplaintRequest.
-        // Controller menjadi jauh lebih bersih.
+        // 1. Validasi sudah ditangani secara otomatis oleh 'StoreComplaintRequest'.
+        //    $validated() akan mengembalikan semua data yang lolos validasi.
         $validated = $request->validated();
 
-        // Membuat data pengaduan utama di database
-        $complaint = Complaint::create(array_merge($validated, [
-            'user_id' => Auth::id(),
-            'status' => 'Baru',
-        ]));
+        // ---- PERBAIKAN LOGIKA PENYIMPANAN FOTO KTP ----
+        // 2. Proses upload foto KTP terlebih dahulu untuk mendapatkan path filenya.
+        //    Ini dilakukan sebelum membuat record complaint agar path bisa ikut disimpan.
+        $ktpPath = null;
+        if ($request->hasFile('foto_ktp')) { // Pastikan nama input sesuai dengan form ('foto_ktp')
+            $ktpPath = $request->file('foto_ktp')->store('ktp-photos', 'public');
+        }
 
-        // Memproses dan menyimpan foto bukti jika ada yang di-upload
+        // 3. Gabungkan semua data yang akan disimpan ke database.
+        //    - $validated berisi semua data dari form (judul, deskripsi, alamat, dll).
+        //    - user_id, status, dan path foto KTP ditambahkan secara manual.
+        $dataToStore = array_merge($validated, [
+            'user_id' => Auth::id(),
+            'status' => 'Baru', // Status default untuk setiap pengaduan baru
+            'foto_ktp' => $ktpPath, // Menyimpan path foto KTP ke tabel 'complaints'
+        ]);
+        
+        // 4. Buat record pengaduan utama di database menggunakan data yang sudah digabung.
+        $complaint = Complaint::create($dataToStore);
+
+        // 5. Proses upload foto-foto bukti (logika ini sudah benar).
+        //    Looping untuk menyimpan setiap file foto bukti yang diunggah.
         if ($request->hasFile('photos')) {
             foreach ($request->file('photos') as $photoFile) {
                 $path = $photoFile->store('complaint-photos', 'public');
+                // Menyimpan path foto ke tabel 'complaint_photos' yang berelasi
+                // dengan pengaduan yang baru saja dibuat.
                 $complaint->photos()->create(['path' => $path]);
             }
         }
 
-        // Memproses foto KTP jika ada yang di-upload
-        if ($request->hasFile('ktp_photo')) {
-            $user = Auth::user();
-            if ($user->ktp_photo) {
-                Storage::disk('public')->delete($user->ktp_photo);
-            }
-            $ktpPath = $request->file('ktp_photo')->store('ktp-photos', 'public');
-            $user->update(['ktp_photo' => $ktpPath]);
-        }
-
-        return redirect()->route('complaints.index')->with('success', 'Laporan Anda berhasil dikirim dan akan segera diproses!');
+        // 6. Alihkan pengguna ke halaman daftar pengaduan dengan pesan sukses.
+        //    Menggunakan route 'pengaduan.index' agar konsisten.
+        return redirect()->route('pengaduan.index')->with('success', 'Laporan Anda berhasil dikirim dan akan segera kami proses!');
     }
 
     /**
@@ -88,30 +96,26 @@ class ComplaintController extends Controller
      */
     public function show(Complaint $complaint): View
     {
-        // Pengecekan otorisasi menggunakan trait yang baru ditambahkan
+        // Memastikan pengguna yang mengakses adalah pemilik pengaduan.
         $this->authorize('view', $complaint);
 
         return view('complaints.show', compact('complaint'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Menampilkan form untuk mengedit pengaduan.
      */
     public function edit(Complaint $complaint): View
     {
-        // ---- PERBAIKAN UTAMA #1: MENGGUNAKAN POLICY ----
         $this->authorize('update', $complaint);
-
-        // Anda perlu membuat view 'complaints.edit' jika ingin menggunakan ini.
         return view('complaints.edit', compact('complaint'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui data pengaduan di database.
      */
     public function update(Request $request, Complaint $complaint): RedirectResponse
     {
-        // ---- PERBAIKAN UTAMA #1: MENGGUNAKAN POLICY ----
         $this->authorize('update', $complaint);
         
         // (Tambahkan validasi dan logika update Anda di sini jika diperlukan)
@@ -123,11 +127,10 @@ class ComplaintController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus pengaduan dari database (soft delete).
      */
     public function destroy(Complaint $complaint): RedirectResponse
     {
-        // ---- PERBAIKAN UTAMA #1: MENGGUNAKAN POLICY ----
         $this->authorize('delete', $complaint);
         
         $complaint->delete();

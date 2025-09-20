@@ -86,6 +86,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Rute Khusus Admin
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', AdminUserController::class)->except(['create', 'store', 'show']);
+
+        Route::resource('complaints', App\Http\Controllers\ComplaintController::class);
+
     });
 
 });

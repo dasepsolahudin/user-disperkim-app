@@ -12,6 +12,12 @@ class Complaint extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    // ---- PERBAIKAN: LENGKAPI SEMUA FIELD FORM DI SINI ----
     protected $fillable = [
         'user_id',
         'title',
@@ -19,17 +25,17 @@ class Complaint extends Model
         'category',
         'status',
         'priority',
-        'district',
-        'sub_district',
-        'village',
-        'kampung',
-        'rt',
-        'rw',
-        'phone_number',
         'location_text',
+        // Tambahkan semua field alamat
+        'kabupaten',
+        'kecamatan',
+        'desa',
+        'kampung',
+        'rt_rw',
+        // Tambahkan field untuk foto KTP
+        'foto_ktp',
     ];
-
-    // ... sisa relasi ...
+    
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
