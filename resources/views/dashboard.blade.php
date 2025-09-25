@@ -1,94 +1,79 @@
 <x-app-layout>
-    {{-- Bagian Header dan Statistik (Tidak Berubah) --}}
-    <div class="flex justify-between items-center mb-6">
+    {{-- Slot header dikosongkan lagi --}}
+    <x-slot name="header">
+        <h1 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-3">
+            <i class="fas fa-tachometer-alt text-indigo-500"></i>
+            <span>Dashboard </span>
+        </h1>
+    </x-slot>
+
+    {{-- Tanggal dikembalikan ke sini --}}
+   <div class="flex justify-between items-start mb-6">
         <div>
-            <h2 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200">Dashboard</h2>
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Selamat datang di sistem Disperkim</p>
+            <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                <i class="fas fa-building text-gray-700 dark:text-gray-300"></i>
+                <span>Selamat Datang di Disperkim</span>
+            </h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Sistem Informasi Perumahan dan Kawasan Permukiman</p>
         </div>
-        <div>
-            <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
-                <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                Online
-            </span>
+        <div class="text-right">
+             <div class="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Hari ini</span>
+            </div>
+            <p class="text-blue-600 font-medium text-sm mt-1">{{ now()->format('d/m/Y') }}</p>
         </div>
     </div>
-    <div class="space-y-6">
-        {{-- ... (kode statistik dan navigasi lainnya tetap sama) ... --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"> 
-    {{-- Mengubah md:grid-cols-3 menjadi lg:grid-cols-3 agar di tablet (medium) bisa 2 kolom --}}
-    </div>
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex items-start justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Laporan</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-800 dark:text-gray-200">{{ $stats['total'] ?? 0 }}</p>
-                </div>
-                <div class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 p-3 rounded-full">
-                    <i class="fas fa-file-invoice fa-lg"></i>
-                </div>
+
+    {{-- Kartu Statistik (Tidak ada perubahan) --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 rounded-lg p-5 shadow-sm flex justify-between items-center">
+            <div>
+                <p class="text-gray-600 dark:text-gray-400">Total Pengaduan</p>
+                <p class="text-3xl font-bold text-gray-800 dark:text-gray-200">{{ $stats['total'] ?? 0 }}</p>
+                <p class="text-xs text-gray-500">Bulan ini</p>
             </div>
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex items-start justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Dalam Proses</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-800 dark:text-gray-200">{{ $stats['in_progress'] ?? 0 }}</p>
-                </div>
-                <div class="bg-yellow-100 text-yellow-600 p-3 rounded-full">
-                    <i class="fas fa-hourglass-half fa-lg"></i>
-                </div>
-            </div>
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex items-start justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Aksi Cepat</p>
-                    <a href="{{ route('complaints.create') }}"
-                       class="mt-2 inline-block bg-green-600 text-white font-semibold text-sm px-4 py-2 rounded-lg hover:bg-green-700 transition">
-                         Buat Laporan Baru
-                    </a>
-                </div>
-                <div class="bg-green-100 text-green-600 p-3 rounded-full">
-                    <i class="fas fa-bolt fa-lg"></i>
-                </div>
+            <div class="text-blue-400">
+                <i class="fas fa-file-alt fa-2x"></i>
             </div>
         </div>
-        <div class="flex items-start space-x-4">
-    <div class="flex-shrink-0 w-24 h-16 rounded-md overflow-hidden">
-        {{-- Gambar --}}
-    </div>
-    <div class="flex-1">
-        {{-- Judul dan detail berita --}}
-    </div>
-</div>
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="font-semibold text-gray-800 dark:text-gray-200">Riwayat Laporan</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Lihat semua laporan Anda.</p>
-                    </div>
-                    <div class="bg-green-100 text-green-600 p-4 rounded-full">
-                        <i class="fas fa-history fa-lg"></i>
-                    </div>
-                </div>
-                <a href="{{ route('complaints.index') }}" class="text-sm text-green-600 font-semibold mt-4 inline-block hover:underline">
-                    Lihat Riwayat &rarr;
-                </a>
+
+        <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 rounded-lg p-5 shadow-sm flex justify-between items-center">
+            <div>
+                <p class="text-gray-600 dark:text-gray-400">Dalam Proses</p>
+                <p class="text-3xl font-bold text-gray-800 dark:text-gray-200">{{ $stats['in_progress'] ?? 0 }}</p>
+                <p class="text-xs text-gray-500">Sedang ditangani</p>
             </div>
-            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="font-semibold text-gray-800 dark:text-gray-200">Pengaturan Akun</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Perbarui data diri & password.</p>
-                    </div>
-                    <div class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 p-4 rounded-full">
-                        <i class="fas fa-user-cog fa-lg"></i>
-                    </div>
-                </div>
-                <a href="{{ route('settings.edit', 'profile') }}" class="text-sm text-gray-600 dark:text-gray-400 font-semibold mt-4 inline-block hover:underline">
-                    Buka Pengaturan &rarr;
-                </a>
+            <div class="text-orange-400">
+                <i class="fas fa-clock fa-2x"></i>
             </div>
         </div>
-        
-        {{-- ============================================================ --}}
-        {{--            BAGIAN BERITA DENGAN TAMPILAN GAMBAR               --}}
-        {{-- ============================================================ --}}
+
+        <div class="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded-lg p-5 shadow-sm flex justify-between items-center">
+            <div>
+                <p class="text-gray-600 dark:text-gray-400">Selesai</p>
+                <p class="text-3xl font-bold text-gray-800 dark:text-gray-200">{{ $stats['completed'] ?? 0 }}</p>
+                <p class="text-xs text-gray-500">Bulan ini</p>
+            </div>
+            <div class="text-green-400">
+                <i class="fas fa-check-circle fa-2x"></i>
+            </div>
+        </div>
+
+        <div class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded-lg p-5 shadow-sm flex justify-between items-center">
+            <div>
+                <p class="text-gray-600 dark:text-gray-400">Mendesak</p>
+                <p class="text-3xl font-bold text-gray-800 dark:text-gray-200">{{ $stats['urgent'] ?? 0 }}</p>
+                <p class="text-xs text-gray-500">Perlu perhatian</p>
+            </div>
+            <div class="text-red-400">
+                <i class="fas fa-exclamation-triangle fa-2x"></i>
+            </div>
+        </div>
+    </div>
+    
+    {{-- Bagian Berita (Tidak ada perubahan) --}}
+    <div class="mt-8 space-y-6">
         <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
             <h3 class="font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
                 <i class="fas fa-newspaper mr-2 text-indigo-500"></i>
@@ -99,7 +84,6 @@
                     @foreach ($newsItems as $item)
                         <a href="{{ $item['link'] }}" target="_blank" rel="noopener noreferrer" class="block bg-gray-50 dark:bg-gray-900/50 hover:bg-gray-100 dark:hover:bg-gray-900 p-4 rounded-lg border dark:border-gray-700 transition duration-300">
                             <div class="flex items-start space-x-4">
-                                {{-- LOGIKA BARU: Tampilkan gambar jika ada, jika tidak tampilkan placeholder --}}
                                 <div class="flex-shrink-0 w-24 h-16 rounded-md overflow-hidden">
                                     @if ($item['image'])
                                         <img src="{{ $item['image'] }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
@@ -132,7 +116,7 @@
                     <p class="text-gray-500 dark:text-gray-400">Tidak ada berita yang dapat ditampilkan saat ini.</p>
                 @endif
             </div>
-            @if (!empty($newsItems) && $newsItems[0]['link'] !== '#')
+             @if (!empty($newsItems) && $newsItems[0]['link'] !== '#')
                 <div class="mt-6 text-center">
                     <a href="https://news.google.com/search?q=Disperkim%20Garut" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 transition">
                         <i class="fas fa-list-alt mr-2"></i>

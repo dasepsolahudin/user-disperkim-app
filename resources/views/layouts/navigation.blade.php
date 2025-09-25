@@ -70,13 +70,18 @@
                         </x-dropdown-link>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
+                            <button @click.prevent="$dispatch('open-modal', 'confirm-logout')" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
+                <i class="fas fa-sign-out-alt w-4 mr-2"></i>
+                {{ __('Log Out') }}
+            </button>
+            
+            <form method="POST" action="{{ route('logout') }}" class="hidden" id="logout-form">
+                @csrf
+            </form>
+        </x-slot>
+    </x-dropdown>
+</div>
+
 
             <!-- Mobile Menu Icons: Search and Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
@@ -136,14 +141,12 @@
                 </x-responsive-nav-link>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
+                    <button @click.prevent="$dispatch('open-modal', 'confirm-logout')" class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
+                {{ __('Log Out') }}
+            </button>
         </div>
     </div>
-
+</div>
     <!-- Search Modal/Overlay -->
     <div x-show="searchOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 overflow-hidden" style="display: none;">
         <!-- Background overlay -->

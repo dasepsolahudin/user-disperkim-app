@@ -1,15 +1,16 @@
 <x-app-layout>
-    <div class="space-y-6">
-        {{-- START: HEADER KUSTOM --}}
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Pengaduan Saya</h1>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Lihat dan kelola semua laporan yang Anda buat.
-            </p>
-        </div>
-        {{-- END: HEADER KUSTOM --}}
+    {{-- PERUBAHAN DI SINI: Judul dipindahkan ke header --}}
+    <x-slot name="header">
+        <h1 class="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+            <i class="fas fa-folder-open text-indigo-500"></i>
+            <span>Pengaduan Saya</span>
+        </h1>
+    </x-slot>
 
-        {{-- START: NAVIGASI TAB --}}
+    <div class="space-y-6">
+        {{-- Header Kustom yang lama dihapus dari sini --}}
+
+        {{-- START: NAVIGASI TAB (Tidak Berubah) --}}
         <div class="bg-white dark:bg-gray-800 p-1.5 rounded-lg shadow-sm flex items-center space-x-2">
             <span class="w-1/2 text-center py-2 px-4 bg-indigo-600 text-white rounded-md font-semibold text-sm cursor-default">
                 <i class="fas fa-list-ul mr-2"></i>
@@ -22,7 +23,7 @@
         </div>
         {{-- END: NAVIGASI TAB --}}
 
-        {{-- START: DAFTAR PENGADUAN --}}
+        {{-- START: DAFTAR PENGADUAN (Tidak Berubah) --}}
         <div class="space-y-4">
             @forelse ($complaints as $complaint)
                 @php
