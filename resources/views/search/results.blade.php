@@ -1,58 +1,53 @@
 <x-app-layout>
+    {{-- HEADER HALAMAN --}}
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-slate-800 dark:text-gray-200 leading-tight">
-            {{ __('Hasil Pencarian untuk:') }} <span class="italic">"{{ $query }}"</span>
-        </h2>
-    </x-slot>
-
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="space-y-6">
-                @if ($complaints->isEmpty())
-                    <div class="bg-white dark:bg-black overflow-hidden shadow-sm rounded-lg">
-                        <div class="p-6 text-center text-slate-600 dark:text-gray-400">
-                            <i class="fas fa-search fa-2x mb-4"></i>
-                            <p class="font-semibold">Tidak ada laporan yang ditemukan.</p>
-                            <p class="text-sm mt-1">Coba gunakan kata kunci lain yang lebih umum.</p>
-                        </div>
-                    </div>
-                @else
-                    @foreach ($complaints as $complaint)
-                        <a href="{{ route('pengaduan.show', $complaint) }}" class="block bg-white dark:bg-black overflow-hidden shadow-sm rounded-lg hover:shadow-lg transition-shadow duration-300">
-                            <div class="p-6">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <p class="text-sm font-medium text-indigo-600 dark:text-indigo-400">{{ Str::title(str_replace('_', ' ', $complaint->category)) }}</p>
-                                        <h3 class="text-lg font-bold text-slate-900 dark:text-gray-100 mt-1">{{ $complaint->title }}</h3>
-                                    </div>
-                                    <span class="text-xs font-semibold px-2 py-1 rounded-full
-                                        @switch($complaint->status)
-                                            @case('dikirim') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 @break
-                                            @case('diproses') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 @break
-                                            @case('selesai') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 @break
-                                            @default bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200
-                                        @endswitch
-                                    ">
-                                        {{ Str::title($complaint->status) }}
-                                    </span>
-                                </div>
-                                <p class="text-sm text-slate-600 dark:text-gray-400 mt-2">
-                                    {{ Str::limit($complaint->description, 150) }}
-                                </p>
-                                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-gray-500 mt-4 pt-4 border-t border-slate-200 dark:border-gray-700">
-                                    <span><i class="fas fa-user-circle mr-1"></i> Dilaporkan oleh {{ $complaint->user->name }}</span>
-                                    <span><i class="fas fa-clock mr-1"></i> {{ $complaint->created_at->diffForHumans() }}</span>
-                                </div>
-                            </div>
-                        </a>
-                    @endforeach
-
-                    <!-- Pagination Links -->
-                    <div class="mt-8">
-                        {{ $complaints->appends(['q' => $query])->links() }}
-                    </div>
-                @endif
+        <div class="flex items-start gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center">
+                <i class="fas fa-search fa-lg text-blue-600 dark:text-blue-400"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-gray-800 dark:text-gray-200">
+                    Hasil Pencarian untuk: "{{ $query }}"
+                </h1>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Ditemukan {{ $complaints->total() }} hasil yang cocok dengan kata kunci Anda.
+                </p>
             </div>
         </div>
+    </x-slot>
+
+    <div class="space-y-6">
+        @if($complaints->count() > 0)
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach ($complaints as $complaint)
+                        <a href="{{ route('pengaduan.show', $complaint) }}" class="block p-4 sm:p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 truncate">{{ $complaint->title }}</p>
+                                <p class="text-xs text-gray-500">{{ $complaint->created_at->diffForHumans() }}</p>
+                            </div>
+                            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                                {{ $complaint->description }}
+                            </p>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Navigasi Halaman --}}
+            @if ($complaints->hasPages())
+                <div class="px-4 py-3">
+                    {{ $complaints->links() }}
+                </div>
+            @endif
+        @else
+            <div class="text-center py-16">
+                <i class="fas fa-box-open fa-3x text-gray-300 dark:text-gray-600"></i>
+                <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-200">Tidak Ada Hasil Ditemukan</h3>
+                <p class="mt-1 text-sm text-gray-500">
+                    Coba gunakan kata kunci lain yang lebih umum.
+                </p>
+            </div>
+        @endif
     </div>
 </x-app-layout>

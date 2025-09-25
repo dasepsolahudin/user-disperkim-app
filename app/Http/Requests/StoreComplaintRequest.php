@@ -27,6 +27,8 @@ class StoreComplaintRequest extends FormRequest
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category' => 'required|string|in:rutilahu,infrastruktur,tata_kota,air_bersih_sanitasi',
+                        'priority' => 'required|string|in:Rendah,Sedang,Tinggi', // <-- TAMBAHKAN INI
+
             
             // Aturan untuk alamat
             'kabupaten' => 'required|string|max:100',
@@ -34,6 +36,8 @@ class StoreComplaintRequest extends FormRequest
             'desa' => 'required|string|max:100',
             'kampung' => 'required|string|max:100',
             'rt_rw' => 'required|string|max:15',
+                        'phone_number' => 'required|string|max:20', 
+
 
             // Aturan untuk file upload
             // 'photos' harus berupa array dan minimal ada 1 file

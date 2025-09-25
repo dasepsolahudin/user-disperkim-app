@@ -47,6 +47,10 @@ require __DIR__.'/auth.php';
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
+
+        Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+
     // Dashboard & Peta
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/map', [MapController::class, 'index'])->name('map');

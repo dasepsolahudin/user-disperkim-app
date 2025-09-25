@@ -26,6 +26,8 @@ class Complaint extends Model
         'status',
         'priority',
         'location_text',
+        'latitude',
+         'longitude',
         // Tambahkan semua field alamat
         'kabupaten',
         'kecamatan',
@@ -34,6 +36,8 @@ class Complaint extends Model
         'rt_rw',
         // Tambahkan field untuk foto KTP
         'foto_ktp',
+                'phone_number', 
+
     ];
     
     public function user(): BelongsTo

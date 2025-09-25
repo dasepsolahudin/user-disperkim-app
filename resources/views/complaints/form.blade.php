@@ -50,6 +50,17 @@
                             </select>
                             <x-input-error :messages="$errors->get('category')" class="mt-2" />
                         </div>
+
+ <div>
+                            <x-input-label for="priority" value="Prioritas *" />
+                            <select id="priority" name="priority" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
+                                <option value="Rendah" {{ old('priority') == 'Rendah' ? 'selected' : '' }}>Rendah</option>
+                                <option value="Sedang" {{ old('priority', 'Sedang') == 'Sedang' ? 'selected' : '' }}>Sedang</option>
+                                <option value="Tinggi" {{ old('priority') == 'Tinggi' ? 'selected' : '' }}>Tinggi</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('priority')" class="mt-2" />
+                        </div>
+
                         <div>
                             <x-input-label for="description" value="Deskripsi Pengaduan *" />
                             <textarea id="description" name="description" rows="23" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required placeholder="Jelaskan detail pengaduan Anda selengkap mungkin...">{{ old('description') }}</textarea>

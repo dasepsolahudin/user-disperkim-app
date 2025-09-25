@@ -70,6 +70,8 @@ class ComplaintController extends Controller
             'user_id' => Auth::id(),
             'status' => 'Baru', // Status default untuk setiap pengaduan baru
             'foto_ktp' => $ktpPath, // Menyimpan path foto KTP ke tabel 'complaints'
+                        'phone_number' => $validated['phone_number'], // <-- PERBAIKAN DI SINI
+
         ]);
         
         // 4. Buat record pengaduan utama di database menggunakan data yang sudah digabung.

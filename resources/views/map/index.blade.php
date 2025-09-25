@@ -1,77 +1,40 @@
 <x-app-layout>
-    {{-- CSS Khusus untuk Leaflet --}}
-    @push('styles')
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-              integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-              crossorigin=""/>
-    @endpush
-
+    {{-- HEADER HALAMAN --}}
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Peta Sebaran Pengaduan') }}
-        </h2>
+        <div class="flex items-center gap-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center">
+                <i class="fas fa-map-marked-alt fa-lg text-blue-600 dark:text-blue-400"></i>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                    Peta Interaktif Disperkim
+                </h2>
+                <p class="text-sm text-gray-500 mt-1">
+                    Lokasi Kantor Dinas Perumahan dan Permukiman.
+                </p>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-6 sm:py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div id="map" style="height: 600px; width: 100%;"></div>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border dark:border-gray-700 overflow-hidden">
+                
+                {{-- Kontainer Peta Responsif --}}
+                <div class="w-full" style="height: 70vh;">
+                    {{-- Kode Iframe Anda dimasukkan di sini dan dibuat responsif --}}
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d6498.833076679432!2d107.87791429032143!3d-7.199726686215864!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sid!2sid!4v1758779736044!5m2!1sid!2sid" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
+
             </div>
         </div>
     </div>
-
-    @push('scripts')
-        {{-- Memuat pustaka Leaflet.js --}}
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-                integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-                crossorigin=""></script>
-        
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Koordinat akurat untuk Jl. Raya Samarang No.115
-                const dinasLocation = [-7.21551, 107.90358];
-
-                // --- Base Layers ---
-                var streetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                });
-
-                var satelliteMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                    maxZoom: 19,
-                    attribution: 'Tiles &copy; Esri'
-                });
-
-                // --- Inisialisasi Peta ---
-                var map = L.map('map', {
-                    center: dinasLocation,
-                    zoom: 18, // Zoom lebih dekat untuk presisi
-                    layers: [streetMap]
-                });
-
-                // --- Kontrol Layer ---
-                var baseMaps = {
-                    "Peta Jalan": streetMap,
-                    "Satelit": satelliteMap
-                };
-                L.control.layers(baseMaps).addTo(map);
-
-                // --- Marker Kantor Dinas ---
-                L.marker(dinasLocation).addTo(map)
-                    .bindPopup('<b>Dinas Perumahan dan Permukiman</b><br>Jl. Raya Samarang No.115, Sukagalih, Kec. Tarogong Kidul, Kabupaten Garut.')
-                    .openPopup();
-
-                // --- Marker Pengaduan ---
-                var complaints = @json($complaints);
-                complaints.forEach(function(complaint) {
-                    if (complaint.latitude && complaint.longitude) {
-                        L.marker([complaint.latitude, complaint.longitude]).addTo(map)
-                            .bindPopup('<b>' + complaint.title + '</b><br>' + complaint.location_text);
-                    }
-                });
-            });
-        </script>
-    @endpush
 </x-app-layout>

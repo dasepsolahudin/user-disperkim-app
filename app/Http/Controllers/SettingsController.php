@@ -19,15 +19,27 @@ class SettingsController extends Controller
      */
     public function edit(Request $request, $section = 'profile'): View
     {
+        $user = $request->user();
         $validPages = ['profile', 'security', 'notifications', 'appearance', 'delete', 'trash'];
         if (!in_array($section, $validPages)) {
             $section = 'profile';
         }
 
+        // --- PENAMBAHAN LOGIKA STATISTIK ---
+        $totalComplaints = Complaint::where('user_id', $user->id)->count();
+        $completedComplaints = Complaint::where('user_id', $user->id)->where('status', 'Selesai')->count();
+        $inProgressComplaints = $totalComplaints - $completedComplaints;
+
         $data = [
-            'user' => $request->user(),
+            'user' => $user,
             'section' => $section,
             'trashedComplaints' => collect(),
+            'stats' => [
+                'total' => $totalComplaints,
+                'completed' => $completedComplaints,
+                'in_progress' => $inProgressComplaints,
+            ],
+            // --- SELESAI PENAMBAHAN ---
         ];
 
         if ($section === 'trash') {
@@ -37,35 +49,35 @@ class SettingsController extends Controller
                 ->paginate(10, ['*'], 'trash_page');
         }
         
-        return view('search.settings.edit', $data); // Perbaikan: Teruskan array $data ke view.
+        return view('search.settings.edit', $data);
     }
+
     /**
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-
-        // Ambil semua data yang sudah divalidasi
         $validatedData = $request->validated();
 
-        // Update nama dan email
+        // Update nama, email, dan nomor telepon
         $user->name = $validatedData['name'];
         $user->email = $validatedData['email'];
         
-        // PERBAIKAN: Mapping data alamat dari form ke database
-        $user->city = $validatedData['kabupaten'] ?? null;
-        $user->district = $validatedData['kecamatan'] ?? null;
-        $user->village = $validatedData['desa'] ?? null;
+        // --- PERBAIKAN: Mengganti logika alamat dengan nomor telepon ---
+        // Menghapus logika alamat yang tidak digunakan lagi (city, district, village)
+        // dan menambahkan pembaruan untuk phone_number.
+        $user->phone_number = $validatedData['phone_number'] ?? null;
+        // --- SELESAI PERBAIKAN ---
 
-        // Cek jika email diubah untuk verifikasi ulang
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
 
         $user->save();
 
-        return Redirect::route('settings.edit')->with('status', 'profile-updated');
+        // --- PERBAIKAN: Mengarahkan kembali ke section 'profile' setelah update ---
+        return Redirect::route('settings.edit', ['section' => 'profile'])->with('status', 'profile-updated');
     }
 
     public function updatePhoto(Request $request): RedirectResponse
@@ -76,7 +88,6 @@ class SettingsController extends Controller
 
         $user = $request->user();
 
-        // Hapus foto lama jika ada
         if ($user->photo) {
             Storage::disk('public')->delete($user->photo);
         }
@@ -84,35 +95,28 @@ class SettingsController extends Controller
         $path = $request->file('photo')->store('photos', 'public');
         $user->forceFill(['photo' => $path])->save();
 
-        return Redirect::route('settings.edit')->with('status', 'photo-updated');
+        // --- PERBAIKAN: Mengarahkan kembali ke section 'profile' setelah update foto ---
+        return Redirect::route('settings.edit', ['section' => 'profile'])->with('status', 'photo-updated');
     }
 
+    // --- (Tidak ada perubahan pada metode di bawah ini, semua struktur Anda tetap sama) ---
 
     public function updateNotifications(Request $request): RedirectResponse
     {
         $user = $request->user();
-
-        // Validasi input
         $request->validate([
             'push_notification' => 'nullable|boolean',
             'email_notification' => 'nullable|boolean',
             'sms_notification' => 'nullable|boolean',
             'auto_save' => 'nullable|boolean',
         ]);
-
-        // Mengambil preferensi yang sudah ada atau membuat array kosong
         $preferences = $user->notification_preferences ?? [];
-
-        // Memperbarui preferensi dengan nilai dari request
         $preferences['push_notification'] = $request->boolean('push_notification');
         $preferences['email_notification'] = $request->boolean('email_notification');
         $preferences['sms_notification'] = $request->boolean('sms_notification');
         $preferences['auto_save'] = $request->boolean('auto_save');
-
-        // Simpan preferensi yang diperbarui ke database
         $user->notification_preferences = $preferences;
         $user->save();
-
         return Redirect::route('settings.edit', ['section' => 'notifications'])->with('status', 'notification-preferences-updated');
     }
 

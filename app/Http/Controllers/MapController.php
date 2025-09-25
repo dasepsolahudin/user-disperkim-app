@@ -13,11 +13,14 @@ class MapController extends Controller
      */
     public function index(): View
     {
-        // Ambil semua pengaduan yang memiliki koordinat latitude dan longitude
+        // 2. Ambil semua pengaduan yang memiliki latitude dan longitude
         $complaints = Complaint::whereNotNull('latitude')
                                ->whereNotNull('longitude')
                                ->get();
 
-        return view('map.index', compact('complaints'));
+        // 3. Kirim data complaints ke view
+        return view('map.index', [
+            'complaints' => $complaints
+        ]);
     }
 }

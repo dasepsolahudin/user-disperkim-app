@@ -35,7 +35,6 @@
                         <a href="{{ route('settings.edit', 'appearance') }}" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm {{ $section == 'appearance' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                             Tampilan
                         </a>
-                        {{-- MENU SAMPAH DITAMBAHKAN KEMBALI DI SINI --}}
                         <a href="{{ route('settings.edit', 'trash') }}" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm {{ $section == 'trash' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
                             Sampah
                         </a>
@@ -89,7 +88,6 @@
                                 </div>
                             </a>
                             
-                            {{-- MENU SAMPAH DITAMBAHKAN KEMBALI DI SINI --}}
                             <a href="{{ route('settings.edit', 'trash') }}"
                                class="group flex items-start gap-3 px-3 py-2 rounded-lg transition {{ $section == 'trash' ? 'bg-indigo-50 dark:bg-indigo-900/50' : 'hover:bg-gray-100 dark:hover:bg-gray-700/50' }}">
                                 <i class="fas fa-trash-alt fa-fw mt-1 text-orange-500"></i>
@@ -116,19 +114,18 @@
                     <div class="p-6 sm:p-8 bg-white dark:bg-gray-800 shadow-lg rounded-2xl">
                         @switch($section)
                             @case('profile')
-    @include('search.settings.partials.update-profile-information-form')
-    @break
+                                @include('search.settings.partials.update-profile-information-form')
+                                @break
                             @case('security')
                                 @include('search.settings.partials.security-layout')
                                 @break
                             @case('notifications')
-    @include('search.settings.partials.update-notification-preferences-form')
-    @break
+                                @include('search.settings.partials.update-notification-preferences-form')
+                                @break
                             @case('appearance')
                                 @include('search.settings.partials.update-appearance-form')
                                 @break
                             @case('trash')
-                                {{-- Pastikan Anda memiliki view partial ini --}}
                                 @include('search.settings.partials.trash-section')
                                 @break
                             @case('delete')

@@ -27,10 +27,11 @@
     </script>
 </head>
 <body class="font-sans antialiased bg-slate-100 dark:bg-gray-900">
-    <div x-data="{ sidebarOpen: true, mobileSidebarOpen: false }">
+    {{-- PERUBAHAN DI SINI: Menambahkan 'searchOpen: false' --}}
+    <div x-data="{ sidebarOpen: true, mobileSidebarOpen: false, searchOpen: false }">
     
         {{-- START: Mobile Sidebar Overlay --}}
-       <div x-show="mobileSidebarOpen" class="fixed inset-0 flex z-40 lg:hidden" x-cloak>
+        <div x-show="mobileSidebarOpen" class="fixed inset-0 flex z-40 lg:hidden" x-cloak>
             <div @click="mobileSidebarOpen = false" class="fixed inset-0 bg-black bg-opacity-50" aria-hidden="true"></div>
             
             <aside class="relative w-64 flex-shrink-0 bg-blue-700 flex flex-col">
@@ -48,8 +49,7 @@
         {{-- END: Desktop Sidebar --}}
 
         {{-- Main Content Area --}}
-        {{-- PERBAIKAN FINAL DI SINI --}}
-<div class="relative lg:pl-64 flex flex-col flex-1 transition-all duration-300"
+        <div class="relative lg:pl-64 flex flex-col flex-1 transition-all duration-300"
              :class="{ 'lg:pl-64': sidebarOpen, 'lg:pl-20': !sidebarOpen }">
             
             <header class="flex items-center justify-between h-16 px-4 sm:px-6 bg-white dark:bg-black border-b border-slate-200 dark:border-gray-800 sticky top-0 z-20">
@@ -69,12 +69,10 @@
                 
                 {{-- START: Grup Item Sebelah Kanan --}}
                 <div class="flex items-center space-x-4">
-                    <form action="{{ route('search') }}" method="GET" class="relative hidden md:block">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fas fa-search text-slate-400"></i>
-                        </span>
-                        <input type="text" name="q" placeholder="Cari..." required value="{{ request('q') }}" class="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-gray-700 rounded-lg bg-slate-50 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    </form>
+                    {{-- Tombol ini sekarang akan berfungsi --}}
+                    <button @click="searchOpen = true" class="p-2 rounded-full text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-900 focus:outline-none">
+                        <i class="fas fa-search"></i>
+                    </button>
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="p-2 rounded-full text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-900 relative">
                             <i class="fas fa-bell"></i>
@@ -123,6 +121,21 @@
                 </div>
                 {{-- END: Grup Item Sebelah Kanan --}}
             </header>
+
+            {{-- Modal pencarian ini sekarang akan muncul --}}
+            <div x-show="searchOpen" x-transition class="fixed inset-0 z-50 overflow-hidden" x-cloak>
+                <div @click="searchOpen = false" class="absolute inset-0 bg-black bg-opacity-50"></div>
+                <div class="absolute inset-x-0 top-0 p-4 mt-12">
+                    <div class="relative w-full max-w-xl mx-auto" @click.away="searchOpen = false">
+                        <form action="{{ route('search') }}" method="GET">
+                            <x-text-input id="search_modal" name="q" class="block w-full pl-10 pr-4 py-3" placeholder="Ketik untuk mencari laporan..." autofocus />
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </span>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
             {{-- Page Content --}}
             <main class="flex-1 overflow-x-hidden overflow-y-auto">
